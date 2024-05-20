@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "checkJs": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true, // Required to import amplify_outputs.json
+    "lib": [
+      "esnext"
+    ],
+    "paths": {
+      "@/styles/*": ["../styles/*"],
+      "@/page-styles/*": ["../styles/pages/*"],
+      "@/component-styles/*": ["../styles/components/*"],
+      "@/components/*": ["components/*"],
+      "@/store/*": ["store/*"],
+      "@/utils/*": ["utils/*"],
+      "@/aws-data/*": ["../amplify/data/*"],
+      "@/aws-outputs/*": ["../*"]
+    }
+  }
+}

@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +16,7 @@
   "devDependencies": {
     "@aws-amplify/backend": "^1.0.2",
     "@aws-amplify/backend-cli": "^1.0.3",
+    "@tanstack/eslint-plugin-query": "^5.35.6",
     "aws-cdk": "^2.142.1",
     "aws-cdk-lib": "^2.142.1",
     "constructs": "^10.3.0",
@@ -20,7 +25,16 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.1.8",
     "@aws-amplify/ui-react": "^6.1.11",
-    "aws-amplify": "^6.3.2"
+    "@tanstack/query-sync-storage-persister": "^5.37.1",
+    "@tanstack/react-query": "^5.37.1",
+    "@tanstack/react-query-persist-client": "^5.37.1",
+    "aws-amplify": "^6.3.2",
+    "next": "^14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-responsive-modal": "^6.4.2",
+    "use-local-storage-state": "^19.2.0"
   }
 }
