@@ -1,0 +1,89 @@
+.loadingContainer {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.insightImagesContainer {
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.insightImagesContainer > div {
+  width: 32%;
+}
+
+.insightImagesContainer > div p.noData {
+  width: 100%;
+  height: 205px;
+  padding-top: 5.25rem;
+}
+
+p.imageLabel {
+  padding-top: 0.2rem;
+  text-align: center;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+p.imageLabelActiveAlert {
+  padding-top: 0.2rem;
+  text-align: center;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #f5d205;
+}
+
+p.noData {
+  color: #fff;
+}
+
+p.zoneName {
+  font-weight: 700;
+  font-size: 0.67rem;
+  color: #636366;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.legendContainer {
+  margin-top: 0.5rem;
+  margin-left: -5px;
+  justify-content: flex-start;
+}
+
+.legendContent {
+  width: auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+p.legend {
+  font-weight: 700;
+  font-size: 0.67rem;
+  color: #f2f2f7;
+  text-align: right;
+  letter-spacing: 0.05em;
+  text-wrap: nowrap;
+}
+
+p.legendUC {
+  font-weight: 700;
+  font-size: 0.67rem;
+  color: #f2f2f7;
+  text-align: right;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+@media screen and (min-width: 1136px) and (max-width: 1439px) {
+
+  .insightImagesContainer {
+    gap: 0.5rem;
+  }
+
+}

@@ -12,7 +12,7 @@ import genericStyles from '@/page-styles/Generic.module.css';
 
 const isMobile = false;
 
-const Layout = ({ currentLocation, setLoading, siteNameHandler, children }) => {
+const Layout = ({ currentLocation, setLoading, townNameHandler, children }) => {
 
   const { isPending, isError, isSuccess, data, error } = useQuery({
     queryKey: ["locationAndTenant"],
@@ -30,7 +30,7 @@ const Layout = ({ currentLocation, setLoading, siteNameHandler, children }) => {
       topNavLocations={data.topNavLocations} locations={data.locations}
       currentLocation={currentLocation} tenantHeaderConfig={data.tenantData?.CONFIG?.header || null}
       resourcesConfig={data.tenantData?.CONFIG?.resources || null}
-      setSiteName={siteNameHandler} /> }
+      setTownName={townNameHandler} /> }
     <View as="main" className={styles.dMain}>
       { cloneElement(children, { setLoading: setLoading }) }
     </View>

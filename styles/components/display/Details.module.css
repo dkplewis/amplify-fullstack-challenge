@@ -1,0 +1,194 @@
+.contentWellHeader {
+  padding: 0 2.65rem 0 2.65rem;
+  width: 59.7825rem;
+  margin: 0 auto;
+}
+
+.mContentWellContainer {
+  margin-top: 2rem;
+  padding: 0 2.65rem;
+}
+
+.dContentWellContainer {
+  padding: 0;
+  height: 87vh;
+}
+
+.areaDetailsContainer {
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 59.7825rem;
+  margin: 1.1rem auto 0 auto;
+  gap: 0;
+}
+
+.areaDetailsWideContainer {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 71rem;
+  margin: 0.25rem auto 0 auto;
+  gap: 0;
+}
+
+.trayId {
+  margin-top: 0.3rem;
+  font-family: 'SF Pro Display', Inter, Roboto, Helvetica Neue, sans-serif;
+  font-size: 1.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #767680;
+}
+
+.trayAlertContainer,
+.periodProgressOverContainer {
+  width: 59.7825rem;
+  margin: 2rem auto;
+}
+
+.trayAlertWideContainer {
+  margin: 2rem auto;
+}
+
+.trayAlertWideContainer,
+.periodProgressUnderContainer {
+  width: 71rem;
+}
+
+.periodProgressUnderContainer {
+  margin: 0 auto 0.75rem auto;
+}
+
+.underContainer {
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.trayAlertContainer {
+  -webkit-touch-callout: none;
+}
+
+.trayContainer {
+  min-height: 29.7rem;
+}
+
+.areaDetailsWideContainer .trayInfoContainer {
+  display: flex;
+  gap: 0.85rem;
+}
+
+.areaDetailsWideContainer .trayInfoContainer > div {
+  width: min-content;
+}
+
+.measurementOptionsContainer {
+  width: 17rem;
+}
+
+.contentWellIcon {
+  margin-top: 1.06rem;
+}
+
+.contentWellIcon > amplify-s3-image {
+  --width: 2.66rem;
+  --height: 2.66rem;
+}
+
+.progressContainer {
+  width: 100%;
+}
+
+.indicesContainer {
+  justify-content: center;
+  padding: 0;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.insightContainer {
+  padding: 0 2.65rem;
+  margin-bottom: 1.2rem;
+  gap: initial;
+  align-items: flex-start;
+}
+
+.overallHealth {
+  width: 11.85rem;
+  margin-top: 0.2rem;
+  margin-right: 3.5rem;
+  text-align: center;
+}
+
+.overallPerf {
+  width: 15.87rem;
+  margin-top: 3.75rem;
+  margin-right: 3rem;
+  text-align: center;
+}
+
+.healthIndex {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.chartDisplay {
+  position: relative;
+  height: 24.25rem;
+}
+
+.imageDisplay {
+  padding: 0 1.65rem;
+}
+
+.trayDisplay {
+  position: relative;
+  height: 24.25rem;
+  background: url('/images/canopy.png') center no-repeat;
+  background-size: cover;
+}
+
+p.infoLabel,
+p.infoText {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+p.infoLabel {
+  width: 12.5rem;
+}
+
+p.infoText {
+  text-transform: capitalize;
+  width: 12rem;
+}
+
+.areaDetailsWideContainer p.infoText {
+  width: max-content;
+}
+
+.happinessLevelContainer {
+  position: absolute;
+  top: 1rem;
+  left: 36%;
+  width: 13.75rem;
+}
+
+.trayBadgeContainer {
+  justify-content: right;
+  gap: 0.25rem;
+  margin-top: 2rem;
+  text-align: right;
+}
+
+p.trayBadge {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.trayImage {
+  position: relative;
+  top: -2px;
+}

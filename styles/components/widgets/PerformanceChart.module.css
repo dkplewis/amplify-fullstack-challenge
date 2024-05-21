@@ -1,0 +1,445 @@
+p.chartTitle {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  text-align: left;
+  line-height: 1.75rem;
+}
+
+p.chartTitleIcon {
+  padding-left: 1.55rem;
+  background: url('/images/chart-icon.svg') no-repeat;
+}
+
+p.plantTitleIcon {
+  padding-left: 1.55rem;
+  background: url('/images/plant-icon.svg') no-repeat;
+}
+
+span.chartTitleText {
+  position: relative;
+  top: 0.4rem;
+  color: #fff;
+}
+
+p.optimalLabel {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: none;
+  text-align: right;
+  color: #636366;
+}
+
+p.progressLabel {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: left;
+  color: #636366;
+}
+
+.healthPerformanceChart {
+  align-items: center;
+  gap: 0.2rem;
+  position: relative;
+  left: -2px;
+}
+
+.healthPerformanceChartHeader {
+  gap: 0.5rem;
+  padding-left: 4px;
+  cursor: help;
+}
+
+.areaComparisonChart {
+  margin-top: 8rem;
+  align-items: center;
+  gap: 0.2rem;
+  position: relative;
+  left: -2px;
+}
+
+.chartYAxisFloating {
+  position: absolute;
+  top: 0;
+  left: 4px;
+}
+
+.chartXAxisFloating {
+  position: absolute;
+  bottom: 0;
+  left: 4px;
+  display: flex;
+  width: 1072px;
+}
+
+.chartWideXAxisFloating {
+  position: absolute;
+  bottom: 0;
+  left: 36px;
+  display: flex;
+  width: 1244px;
+}
+
+.areasChartWideXAxisFloating {
+  position: absolute;
+  bottom: 51px;
+  left: 36px;
+  display: flex;
+  width: 1244px;
+}
+
+.expanderButton {
+  position: absolute;
+  top: -0.25rem;
+  right: 0;
+}
+
+p.healthPerformanceChartHeaderText,
+p.indicesPerformanceChartLabelText,
+.chartYAxis p,
+.chartXAxis p,
+.chartYAxisFloating p,
+.chartXAxisFloating p,
+.chartWideXAxisFloating p,
+.areasChartWideXAxisFloating p,
+.latestDataPoint {
+  font-weight: 700;
+  font-size: 0.67rem;
+  text-align: left;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+p.healthPerformanceChartHeaderText,
+.chartYAxis p,
+.chartYAxisFloating p,
+.chartXAxisFloating p,
+.chartWideXAxisFloating p,
+.areasChartWideXAxisFloating p {
+  color: #636366;
+}
+
+.chartXAxisFloating p,
+.chartWideXAxisFloating p,
+.areasChartWideXAxisFloating p {
+  position: absolute;
+}
+
+p.indicesPerformanceChartLabelText,
+p.healthPerformanceChartHeaderText:hover {
+  color: #f2f2f7;
+}
+
+
+.latestDataPoint {
+  position: absolute;
+  color: #f2f2f7;
+}
+
+p.healthPerformanceChartHeaderText {
+  margin-bottom: 0.5rem;
+}
+
+.chartYAxis {
+  margin-bottom: 0.25rem;
+  padding-left: 4px;
+}
+
+p.chartYAxis90 {
+  margin-top: 2.5rem;
+}
+
+p.chartYAxis20 {
+  margin-top: 0.85rem;
+}
+
+p.chartYAxis0 {
+  margin-top: 4.9rem;
+}
+
+.indicesChartLabelContent {
+  justify-content: center;
+  gap: 0.25rem 0.5rem;
+  flex-wrap: wrap;
+}
+
+.indicesPerformanceChartLabelContainer {
+  padding: 0 1rem;
+  opacity: 0.95;
+  border: 1px solid #1c1c1e;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.indicesPerformanceChartLabelContainer:hover {
+  border: 1px solid #f2f2f7;
+}
+
+.indicesPerformanceChartLabelContainerFocus {
+  padding: 0 1rem;
+  opacity: 0.95;
+  border: 1px solid #f2f2f7;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.indicesPerformanceChartLabelContainerActive {
+  padding: 0 1rem;
+  background-color: #3a3a3c;
+  opacity: 0.95;
+  border: 1px solid #f2f2f7;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.indicesPerformanceChartLabel {
+  gap: 0.5rem;
+  color: #f2f2f7;
+  align-items: center;
+}
+
+.indicesPerformanceChartLabelIcon {
+  width: 14px;
+  filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
+}
+
+.indicesPerformanceChartLabelIconNarrow {
+  width: 10px;
+  filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
+}
+
+.areasPerformanceChartLabelIcon {
+  width: 24px;
+}
+
+p.indicesPerformanceChartLabelText {
+  text-wrap: nowrap;
+}
+
+.indicesPerformanceChartLabelIndicator {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.indicesPerformanceChartLabelTick svg {
+  margin-top: 7px;
+}
+
+.periodProgressUnderContainer {
+  width: 71rem;
+}
+
+.periodProgressUnderContainer {
+  margin: 0 auto 0.75rem auto;
+}
+
+.underContainer {
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.indexSelectorTitle {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #636366;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  width: 90%;
+}
+
+.areaColumn {
+  flex-grow: 1;
+}
+
+.areaSelectorTitle {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 90%;
+}
+
+.indexSelectorOptionLabel {
+  font-size: 0.67rem;
+  font-weight: 400;
+  color: #fff;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #636366;
+  margin-bottom: 0.25rem;
+  width: 90%;
+  letter-spacing: 0.15em;
+}
+
+.indexSelectorButtons {
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 0.5rem;
+
+}
+
+.headingContainer {
+  margin-left: 2rem;
+}
+
+.headingContainer > h2 {
+  width: 30%;
+}
+
+.headingContainer > div {
+  width: 63.25%;
+}
+
+.areaHeading {
+  align-items: center;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.tabsNavContainer {
+  position: relative;
+}
+
+.tabList {
+  gap: 0;
+  padding-bottom: 1px;
+  margin-bottom: 0.4rem;
+  border-width: 0;
+  width: fit-content;
+  min-width: 837px;
+  justify-content: flex-start;
+}
+
+button.tabItem {
+  padding: 0;
+  transition: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
+}
+
+button.tabItem[data-state="active"] {
+  border-width: 0;
+}
+
+button.tabItem .tabContainer {
+  display: flex;
+}
+
+button.tabItem .tabContent {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 6px;
+  padding-bottom: 5px;
+  background: url('/images/tab-border.png') no-repeat bottom;
+}
+
+button.tabItem .tabContent .tabLabel {
+  display: flex;
+  gap: 0.67rem;
+  font-weight: 700;
+  font-size: 0.67rem;
+  text-align: left;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #f2f2f7;
+  opacity: 0.35;
+  text-wrap: nowrap;
+}
+
+button.tabItem[data-state="active"] .tabContent,
+button.tabItem:hover .tabContent {
+  background: url('/images/tab-border.png') no-repeat top;
+}
+
+button.tabItem[data-state="active"] .tabContent,
+button.tabItem:hover .tabContent {
+  opacity: 1;
+}
+
+button.tabItem .before,
+button.tabItem .after,
+.spacer {
+  background: url('/images/tab-border.png') no-repeat bottom;
+}
+
+button.tabItem .before,
+button.tabItem .after {
+  width: 30px;
+  height: 30px;
+}
+
+.spacer {
+  height: 30px;
+  flex: 1;
+}
+
+button.tabItem[data-state="active"] .before,
+button.tabItem:hover .before {
+  background: url('/images/tab-border-active-left.png') no-repeat bottom;
+}
+
+button.tabItem[data-state="active"] .after,
+button.tabItem:hover .after {
+  background: url('/images/tab-border-active-right.png') no-repeat bottom;
+}
+
+button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .before,
+button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .tabContent,
+button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .after,
+button.tabItem:hover + button.tabItem[data-state="active"] .before,
+button.tabItem:hover + button.tabItem[data-state="active"] .tabContent,
+button.tabItem:hover + button.tabItem[data-state="active"] .after {
+  background: url('/images/tab-border.png') no-repeat bottom;
+}
+
+button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .tabLabel,
+button.tabItem:hover + button.tabItem[data-state="active"] .tabLabel {
+  opacity: 0.35;
+}
+
+button.tabItem img {
+  width: 16px;
+  height: 16px;
+  filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
+}
+
+@media screen and (max-width: 1425px) {
+
+  .tabList {
+    border-width: 0 0 1px 0;
+  }
+
+  button.tabItem .tabContainer {
+    border-width: 0 0 1px 0;
+  }
+
+  .tabList {
+    border-width: 0 0 1px 0;
+  }
+
+  button.tabItem[data-state="active"] .tabContainer {
+    padding-bottom: 5px;
+    border-width: 1px 0 1px 0;
+  }
+
+  button.tabItem[data-state="active"] .before {
+    height: 3px;
+    bottom: -3px;
+  }
+
+}
+
+@media screen and (max-width: 1194px) {
+
+  button.tabItem[data-state="active"] .tabContainer {
+    padding-bottom: 6px;
+    border-width: 1px 0 1px 0;
+  }
+
+}

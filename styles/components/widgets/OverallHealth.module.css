@@ -1,0 +1,18 @@
+.overallHealthContainer {
+  margin-top: 1.42rem;
+  position: relative;
+}
+
+.percentageContainer {
+  position: absolute;
+  top: 5.28rem;
+  left: 3.88rem;
+}
+
+p.percentageText {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding-top: 0.1rem;
+  padding-left: 0.3rem;
+}

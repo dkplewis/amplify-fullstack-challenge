@@ -1,46 +1,30 @@
 import { Fragment, useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Analytics } from 'aws-amplify';
-import { Alert, Button, Expander, ExpanderItem, Heading, View } from '@aws-amplify/ui-react';
-//import { isMobile } from 'react-device-detect';
+import { Accordion, Alert, Button, Heading, View } from '@aws-amplify/ui-react';
 import AreasSection from '@/components/display/AreasSection';
 import Breadcrumb from '@/components/structural/Breadcrumb';
 import ContentWellHeader from '@/components/structural/ContentWellHeader';
-import { getActiveScheduleStartDate, getDifferenceInHours, getLatestScheduleStartDate } from '@/utils/datetime';
-import { locationHasActiveAlerts } from '@/utils/location';
 import { hierarchySort } from '@/utils/sort';
 
 import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/display/Areas.module.css';
 
-const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, rootLocationData, tenantId, tId, selectedLocationId,
-  topNavLocationData, locationPath, onClickHandler, currentLocation, animationHandler, showModalHandler, siteName }) => {
+const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationData, tenantId, selectedLocationId,
+  topNavLocationData, locationPath, onClickHandler, currentLocation, showModalHandler, townName }) => {
 
-  const isMobile = false;
-  
   const [expandedSection, setExpandedSection] = useState(null);
   const [viewToggle, setViewToggle] = useState("grid");
   const [pageNo, setPageNo] = useState(0);
-  const [confirmXY, setConfirmXY] = useState([]);
-  const [runAnimation, setRunAnimation] = useState(null);
-
-  let pointerTimerRef = useRef(null);
-
-  const PROGRESS_X = 1;
-  const AREA_PROGRESS_Y = 9.8;
 
   useEffect(() => {
 
-    animationHandler("right");
     document.body.style.cursor = "auto";
-
-    return () => clearTimeout(pointerTimerRef.current);
 
   }, []);
 
   const currentLocations = useMemo(() => {
 
-    const childLocations = locationData.filter(location => location.PATH.startsWith(`PATH#${currentLocation.replace("__tnl", "#").replace("__", "#")}`));
+    const childLocations = locationData.filter(location => location.PATH.startsWith(`PATH#${currentLocation.replace("__country", "#").replace("__", "#")}`));
     return childLocations
       .filter(childLocation =>
         tenantData.CONFIG.areas.expandableLocations.includes(childLocation.GSI2_PK.replace("TYPE#", "").toLowerCase())
@@ -78,11 +62,6 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
           
           return "item_" + currentLocation.ENTITY_TYPE_ID + "_" + index;
 
-        } else if (!selectedLocationId && locationHasActiveAlerts(currentLocation, alertData) && !tenantData.CONFIG.enableHeatmap) {
-
-          // If the selected location has active alerts, expand it
-          return "item_" + currentLocation.ENTITY_TYPE_ID + "_" + index;
-
         } else if (!selectedLocationId && index == 0) {
 
           // If none of the conditions are met, display the first Control Area Container Location
@@ -96,7 +75,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
 
     return result;
 
-  }, [alertData, currentLocations, locationData, selectedLocationId, tenantData]);
+  }, [currentLocations, locationData, selectedLocationId, tenantData]);
 
   const onChangeHandler = useCallback((newValue) => {
 
@@ -109,21 +88,6 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
     :
       newValue.filter((item) => !(expandedSection || defaultExpandedSection).includes(item)).toString();
     const locationKeyParts = (isCollapse ? isCollapse : isExpand ? isExpand : "").split("_");
-
-    // record will only fire if analytics are enabled 
-    Analytics.record({
-      name: "areaExpanderClick",
-      attributes: {
-        clickType: isCollapse ? "collapse" : "expand",
-        location: locationKeyParts[0] == "collapse" || locationKeyParts[0] == "expand" ? "All" : locationData.find(location => location.ENTITY_TYPE_ID == locationKeyParts[1])?.NAME || "Unknown",
-        tenantId: tenantId
-      }
-    })
-    .catch((error) => error.message.indexOf("No credentials, applicationId or region") == -1 ?
-      console.error(error)
-    :
-      {}
-    );
       
     // Reset the pagination to the first data set when expanding sections
     setPageNo(0);
@@ -171,92 +135,18 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
 
   const clickHandler = useCallback((evt, type, detail) => {
 
-    if (isMobile) {
-
-      if (type == "cancel") {
-
-        clearTimeout(pointerTimerRef.current);
-        setConfirmXY([]);
+    if (evt.button != 0) return;
     
-      } else {
-
-        if (typeof evt.target.hasPointerCapture === "function" && evt.target.hasPointerCapture(evt.pointerId)) {
-
-          evt.target.releasePointerCapture(evt.pointerId);
-
-        }
-
-        if (type == "timed-switch") {
-
-          setConfirmXY([
-            (PROGRESS_X ? PROGRESS_X : evt.pageX),
-            (detail.ENTITY_TYPE == "AREA" && AREA_PROGRESS_Y ?
-              AREA_PROGRESS_Y + (siteName ? 1 : 0)
-            :
-              evt.pageY)
-          ]);
-          setRunAnimation(true);
-          onClickHandler(detail.ENTITY_TYPE_ID, tenantData.CONFIG.details.childPath, true, false,
-            rootLocationData.ENTITY_TYPE_ID.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
-
-          pointerTimerRef.current = setTimeout(() => {
-            onClickHandler(detail.ENTITY_TYPE_ID, tenantData.CONFIG.details.childPath, true, true,
-              rootLocationData.ENTITY_TYPE_ID.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
-            setConfirmXY([]);
-            setRunAnimation(null);
-          }, 1750);
-
-        } else {
-
-          onClickHandler(detail.ENTITY_TYPE_ID, tenantData.CONFIG.details.childPath, true, false,
-            rootLocationData.ENTITY_TYPE_ID.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
-
-          setRunAnimation(false);
-
-          pointerTimerRef.current = setTimeout(() => {
-            setConfirmXY([
-              (PROGRESS_X ? PROGRESS_X : evt.pageX),
-              (detail.ENTITY_TYPE == "AREA" && AREA_PROGRESS_Y ?
-                AREA_PROGRESS_Y + (siteName ? 1 : 0)
-              :
-                evt.pageY)
-            ]);
-            setRunAnimation(false);
-          }, 500);
-
-          pointerTimerRef.current = setTimeout(() => {
-            setRunAnimation(true);
-          }, 1750);
-
-          pointerTimerRef.current = setTimeout(() => {
-            onClickHandler(detail.ENTITY_TYPE_ID, tenantData.CONFIG.details.childPath, true, true,
-              rootLocationData.ENTITY_TYPE_ID.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
-          }, (detail.ENTITY_TYPE == "AREA" ? 2750 : 2550));
-
-        }
-
-      }
-
-    } else {
-
-      if (evt.button != 0) return;
-      
-      showModalHandler(detail, locationData, topNavLocationData,
-        currentLocation.split("__")[1], tenantData.CONFIG.site, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
-        tenantData.CONFIG.header, tenantData.CONFIG.enableHeatmap);
+    showModalHandler(detail, locationData, topNavLocationData,
+      currentLocation.split("__")[1], tenantData.CONFIG.town, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
+      tenantData.CONFIG.header, tenantData.CONFIG.enableHeatmap);
   
-    }
-  }, [isMobile, currentLocation, locationData, onClickHandler, rootLocationData, showModalHandler, siteName, tenantData, topNavLocationData, tId]);
+  }, [currentLocation, locationData, onClickHandler, rootLocationData, showModalHandler, townName, tenantData, topNavLocationData]);
 
   return <>
 
     <ContentWellHeader
-      tenantData={tenantData}
-      currentLocation={currentLocation}
-      toggleValue={viewToggle}
-      toggleHandler={setViewToggle}
-      siteName={siteName}
-      isMobile={isMobile}
+      townName={townName}
     >
       <Breadcrumb viewType="areas" resourcesPath={tenantData.CONFIG.resources} tenantName={tenantData.NAME}
         label={tenantData.CONFIG.areas.breadCrumbLabel}
@@ -298,21 +188,24 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
           const areasForLocation = areaData?.filter(ca => ca.PATH.startsWith(location.PATH)) || [];
           const locationKey = "item_" + location.ENTITY_TYPE_ID + "_" + locationIndex;
 
-          return <Expander type="multiple" value={expandedSection || defaultExpandedSection}
+          return <Accordion.Container allowMultiple value={expandedSection || defaultExpandedSection}
             key={locationKey}
             onValueChange={onChangeHandler} className={genericStyles.expander}
           >
-            <ExpanderItem
-              title={locationTypes.join(" ")}
+            <Accordion.Item
               value={locationKey}
-              className={locationHasActiveAlerts(location, alertData) ? genericStyles.expanderActiveAlertItem : genericStyles.expanderItem}
+              className={genericStyles.expanderItem}
             >
+              <Accordion.Trigger>
+                {locationTypes.join(" ")}
+                <Accordion.Icon />
+              </Accordion.Trigger>
+              <Accordion.Content>
               { (expandedSection || defaultExpandedSection).includes(locationKey) && <>
                 <AreasSection
                   sectionId={locationKey}
                   areaData={areasForLocation}
                   scheduleData={scheduleData.filter(schedule => schedule.GSI2_PK == location.ENTITY_TYPE_ID)}
-                  alertData={alertData}
                   tenantId={tenantId}
                   tenantConfig={tenantData?.CONFIG}
                   location={location}
@@ -321,8 +214,9 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
                   pageNo={pageNo}
                 />
               </> }
-            </ExpanderItem>
-          </Expander>;
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Container>;
 
         } else {
 
@@ -333,25 +227,28 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
 
           return <Fragment key={locationKey}>
             <Heading className={genericStyles.h2Heading} level={2}>{location.NAME}</Heading>
-            <Expander type="multiple" value={(expandedSection || defaultExpandedSection)}
+            <Accordion.Container allowMultiple value={(expandedSection || defaultExpandedSection)}
               onValueChange={onChangeHandler} className={genericStyles.expander}>
               { childLocations.map((childLocation, iLocationIndex) => {
 
                 const areasForLocation = areaData?.filter(ca => ca.PATH.startsWith(childLocation.PATH + "#")) || [];
                 const childLocationKey = "item_" + childLocation.ENTITY_TYPE_ID + "_" + iLocationIndex;
 
-                return <ExpanderItem
+                return <Accordion.Item
                   key={childLocationKey}
-                  title={childLocation.NAME}
                   value={childLocationKey}
-                  className={locationHasActiveAlerts(childLocation, alertData) ? genericStyles.expanderActiveAlertItem : genericStyles.expanderItem}
+                  className={genericStyles.expanderItem}
                 >
+                  <Accordion.Trigger>
+                    {childLocation.NAME}
+                    <Accordion.Icon />
+                  </Accordion.Trigger>
+                  <Accordion.Content>
                   { (expandedSection || defaultExpandedSection).includes(childLocationKey) && <>
                     <AreasSection
                       sectionId={childLocationKey}
                       areaData={areasForLocation}
                       scheduleData={scheduleData.filter(schedule => schedule.GSI2_PK == childLocation.ENTITY_TYPE_ID)}
-                      alertData={alertData}
                       tenantId={tenantId}
                       tenantConfig={tenantData?.CONFIG}
                       location={childLocation}
@@ -360,10 +257,11 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, alertData, ro
                       pageNo={pageNo}
                     />
                   </> }
-                </ExpanderItem>;
+                  </Accordion.Content>
+                </Accordion.Item>;
 
               }) }
-            </Expander>
+            </Accordion.Container>
             <View>&nbsp;</View>
           </Fragment>;
 
@@ -413,5 +311,5 @@ Areas.propTypes = {
   currentLocation: PropTypes.string,
   animationHandler: PropTypes.func,
   showModalHandler: PropTypes.func,
-  siteName: PropTypes.string
+  townName: PropTypes.string
 };

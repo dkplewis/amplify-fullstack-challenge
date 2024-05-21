@@ -1,0 +1,63 @@
+.legend {
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 0.2rem;
+}
+
+p.label {
+  font-weight: 700;
+  font-size: 0.67rem;
+  text-align: left;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #828282;
+}
+
+.legend > div {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.key_QE_0,.key_PHI_0, .key_PS2_0, .key_PUI_0, .key_PEI_4 {
+  background-color: #89bc2b;
+}
+
+.key_QE_1, .key_PHI_1 {
+  background-color: #f5d205;
+}
+
+.key_PS2_1, .key_PUI_1, .key_PEI_3, .key_PEI_5 {
+  background-color: #89bc2b;
+  opacity: 0.85;
+}
+
+.key_QE_2, .key_PHI_2 {
+  background-color: #f5d205;
+  opacity: 0.75;
+}
+
+.key_PS2_2, .key_PUI_2, .key_PEI_2, .key_PEI_6 {
+  background-color: #89bc2b;
+  opacity: 0.75;
+}
+
+.key_QE_3, .key_PHI_3 {
+  background-color: #f5d205;
+  opacity: 0.65;
+}
+
+.key_PS2_3, .key_PUI_3, .key_PEI_1, .key_PEI_7 {
+  background-color: #89bc2b;
+  opacity: 0.65;
+}
+
+.key_QE_4, .key_PHI_4 {
+  background-color: #f5d205;
+  opacity: 0.35;
+}
+
+.key_PS2_4, .key_PUI_4, .key_PEI_0, .key_PEI_8 {
+  background-color: #89bc2b;
+  opacity: 0.35;
+}

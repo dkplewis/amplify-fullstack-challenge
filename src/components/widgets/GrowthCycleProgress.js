@@ -1,17 +1,15 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Analytics } from 'aws-amplify';
 import { View } from '@aws-amplify/ui-react';
-import debounce from 'lodash.debounce';
+import { debounce } from 'lodash';
 import moment from 'moment';
 import ReactSlider from 'react-slider';
-import { GardinLoader } from '@/components/widgets/GardinLoader';
+import { SVGLoader } from '@/components/widgets/SVGLoader';
 import { getAllAlertsForArea } from '@/utils/location';
 import { getActiveSchedule, getCurrentCyclePoint, getCycleDurationInDays, getLatestAlertForArea, getFormattedDate,
   getCurrentCycleDayAsPercentageOfCycle, getCurrentCycleDayAsPercentageOfPeriod, getDaysAgoInCycleAsPercentageOfCycle,
   isScheduleComplete, isScheduleRunning, getAlertCreatedDayAsPercentageOfCycle,
-  getAlertResolvedDayAsPercentageOfCycle, getAlertCreatedDayAsPercentageOfPeriod, getAlertResolvedDayAsPercentageOfPeriod,
-  getYesterdayTomorrowAdjustment } from '@/utils/datetime';
+  getAlertResolvedDayAsPercentageOfCycle, getAlertCreatedDayAsPercentageOfPeriod, getAlertResolvedDayAsPercentageOfPeriod } from '@/utils/datetime';
 
 import styles from '@/component-styles/widgets/GrowthCycleProgress.module.css';
 
@@ -32,21 +30,6 @@ const GrowthCycleProgress = ({ schedules = [], area, alerts = [], variant = "sta
       "T" + newTime.split(":")[0] + ":00"
     : "");
     sliderChangeHandler(newValue);
-
-    // record will only fire if analytics are enabled 
-    Analytics.record({
-      name: "currentDayChange",
-      attributes: {
-        area: area.NAME,
-        tenantId: tenantId,
-        date: newDate
-      }
-    })
-    .catch((error) => error.message.indexOf("No credentials, applicationId or region") == -1 ?
-      console.error(error)
-    :
-      {}
-    );
 
   };
 
@@ -122,7 +105,7 @@ const GrowthCycleProgress = ({ schedules = [], area, alerts = [], variant = "sta
           value={value} onChange={onChangeHandler} renderThumb={renderThumb} renderTrack={renderTrack} />
       </View>
     :
-      <GardinLoader variant={variant} showActiveAlert={showActiveState} showResolvedAlert={showResolvedState} tenantId={tenantId}
+      <SVGLoader variant={variant} showActiveAlert={showActiveState} showResolvedAlert={showResolvedState} tenantId={tenantId}
         showAlertHistory={showAlertHistory} showAlertHistoryDuration={showAlertHistoryDuration} showLatestAlertOnlyInHistory={showLatestAlertOnlyInHistory}
         percentage={isScheduleRunning(schedules) ?
           periodStart && periodEnd ?

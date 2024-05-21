@@ -267,7 +267,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
           <View className={styles.trayInfoContainer}>
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>Species:</Text>
-              <Text className={styles.infoText}>{ scheduleData.SPECIES }</Text>
+              <Text className={styles.infoText}>{ scheduleData.CONTRACT }</Text>
             </Flex>
           </View>
           <View className={styles.trayInfoContainer}>
@@ -279,7 +279,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
             </Flex>
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>Recipe:</Text>
-              <Text className={styles.infoText}>{ scheduleData.RECIPE }</Text>
+              <Text className={styles.infoText}>{ scheduleData.PROVIDER }</Text>
             </Flex>
           </View>
         </Flex> }

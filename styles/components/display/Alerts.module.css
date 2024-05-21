@@ -1,0 +1,85 @@
+.sortContainer {
+  margin-top: 0.8rem;
+  justify-content: space-between;
+  padding: 0.4rem 2.65rem 0.4rem 2.65rem;
+  background-color: #3a3a3c;
+  border-radius: 3px; 
+}
+
+.contentWell {
+  margin-top: 1rem;
+  padding: 0.4rem 2.65rem 1.1rem 2.65rem;
+  background-color: #3a3a3c;
+  border-radius: 3px; 
+}
+
+.loadingContainer {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.alertContainer {
+  margin: 1.1rem 0 1.1rem 0;
+}
+
+.alertCollection {
+  margin-top: 0.4rem;
+}
+
+.headingContainer {
+  padding: 0 1.2rem;
+  gap: 0;
+  align-items: center;
+}
+
+.locationHeadings {
+  display: flex;
+  width: 30%;
+}
+
+.headings {
+  gap: 0;
+  align-items: center;
+}
+
+.locationHeading {
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+  padding-left: 5px;
+}
+
+.timeHeading {
+  width: 12%;
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+}
+
+.spacerHeading {
+  width: 29%;
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+}
+
+.sortHeading {
+  width: 27%;
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+}
+
+.severityHeading{
+  width: 13%;
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+}
+
+.durationHeading {
+  width: 14%;
+  color: #fff;
+  font-size: 0.675rem;
+  text-transform: uppercase;
+}

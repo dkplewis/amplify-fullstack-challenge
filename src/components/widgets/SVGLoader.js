@@ -18,7 +18,7 @@ export const CIRCLE_ALERT = "circle-alert";
 export const CIRCLE_RESOLVED = "circle-resolved";
 export const CIRCLE_PERCENTAGE = "circle-percentage";
 
-const GardinLoaderPrimitive = ({
+const SVGLoaderPrimitive = ({
   variant = "standard",
   className,
   borderColor,
@@ -628,6 +628,6 @@ const GardinLoaderPrimitive = ({
 /**
  * [📖 Docs](https://ui.docs.amplify.aws/react/components/loader)
  */
-export const GardinLoader = forwardRef(GardinLoaderPrimitive);
+export const SVGLoader = forwardRef(SVGLoaderPrimitive);
 
-GardinLoader.displayName = "GardinLoader";
+SVGLoader.displayName = "SVGLoader";

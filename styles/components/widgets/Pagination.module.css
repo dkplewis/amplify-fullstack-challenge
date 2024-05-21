@@ -1,0 +1,14 @@
+.select select {
+  font-weight: 700;
+  color: #fff;
+  border: 0;
+}
+
+.select select:focus,
+.select select[data-variation=quiet]:focus {
+  box-shadow: none;
+}
+
+.select svg {
+  color: #fff;
+}

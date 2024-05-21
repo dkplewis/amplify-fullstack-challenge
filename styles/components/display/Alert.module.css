@@ -1,0 +1,233 @@
+.alertCollectionListItem {
+  width: 100%;
+  border-radius: 3px;
+}
+
+.alertCollectionTile {
+  border-radius: 3px;
+}
+
+.alertItem {
+  min-height: 3.5rem;
+  padding: 0.2rem 1.2rem;
+  border-radius: 3px;
+  background-color: transparent;
+}
+
+.alertItem.resolving,
+.alertItem.resolved,
+.alertItem.unresolved {
+  padding-bottom: 0.2rem;
+}
+
+.alertItem > div {
+  margin-top: 0.1rem;
+  min-height: 3rem;
+}
+
+.alertCardCTARight {
+  gap: 0;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.alertCard {
+  gap: 0;
+  align-items: center;
+}
+
+.alertTile {
+  text-align: center;
+  background-color: transparent;
+}
+
+.active {
+  background-color: #f5d205;
+}
+
+.activeClickable {
+  background-color: #f5d205;
+  cursor: pointer;
+}
+
+.resolving {
+  background-color: #c4c4c4;
+}
+
+.resolved {
+  background-color: #89bc2b;
+}
+
+.unresolved {
+  background-color: #f5aa42;
+}
+
+.unsupported {
+  background-color: #c4c4c4;
+}
+
+.clearAlertWide,
+.clearAlertWide:hover,
+.clearAlertWide:active,
+.clearAlertWide:focus {
+  border: 0;
+  box-shadow: none;
+  background-color: #fff;
+  color: #f5d205;
+  width: 14.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1rem;
+  margin: 0.5rem 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.locationIdContainer {
+  width: 30%;
+  display: flex;
+  align-items: center;
+}
+
+.locationId {
+  display: flex;
+  align-items: center;
+}
+
+.tileAlertIdContainer {
+  width: 100%;
+}
+
+.tileAlertIdContainer .alertText {
+  margin-bottom: 0.5rem;
+}
+
+.tileAlertIdContainer .alertText:last-child {
+  margin-bottom: 0;
+}
+
+.alertMessageCtaLeftContainer {
+  width: 58%;
+  text-align: left;
+}
+
+.alertMessageShortCtaLeftContainer {
+ width: 30%;
+ text-align: left;
+}
+
+.alertMessageCtaRightContainer {
+  width: 45%;
+  text-align: center;
+}
+
+.alertMessageContainer {
+  width: 100%;
+  text-align: center;
+}
+
+.alertSeverityCtaLeftContainer {
+  width: 14%;
+  display: flex;
+  align-items: center;
+}
+
+.alertIdContainer {
+  width: 14%;
+  display: flex;
+  align-items: center;
+}
+
+.alertTimeContainer {
+  width: 12%;
+  display: flex;
+  align-items: center;
+}
+
+.ctaRightSpacer {
+  width: 25%;
+}
+
+.ctaRightContainer {
+  width: 30%;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.alertTrayLabelContainer {
+  width: 14%;
+}
+
+.alertTrayIdContainer {
+  width: 17%;
+  text-align: right;
+}
+
+span.alertText,
+p.alertText,
+p.alertMessageText,
+p.alertSeverityText,
+p.alertIdText {
+  color: #fff;
+  font-weight: 700;
+}
+
+span.alertText,
+p.alertText {
+  font-size: 1.35rem;
+  line-height: 1rem;
+  padding-right: 1rem;
+}
+
+p.alertText {
+  padding: 0;
+}
+
+p.alertIdText,
+p.alertMessageText,
+p.alertSeverityText {
+  font-size: 1rem;
+}
+
+p.alertIdText,
+p.alertMessageText {
+  padding-top: 0.2rem;
+}
+
+.alertText > amplify-s3-image,
+.alertMessageText > img,
+.alertSeverityText > img,
+.alertIdText > img {
+  margin-right: 0.2rem;
+}
+
+.alertMessageText > img {
+  position: relative;
+  top: 0.4rem;
+}
+
+.alertText > amplify-s3-image,
+.alertSeverityText > img {
+  position: relative;
+  top: 0.1rem;
+}
+
+.alertText > amplify-s3-image {
+  --width: 1.33rem;
+  --height: 1.33rem;
+}
+
+.alertSeverityText > img,
+.alertIdText > img {
+  width: 1.33rem;
+  height: 1.33rem;
+}
+
+.alertIdText > img {
+  position: relative;
+  top: 0.2rem;
+}

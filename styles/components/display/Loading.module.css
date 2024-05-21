@@ -1,0 +1,20 @@
+.loadingCanvas {
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.loadingContainer {
+  width: 20rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+p.loadingText {
+  font-size: 1.335rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  letter-spacing: 0.05em;
+  color: #f2f2f7;
+}

@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { Image, Link as AmplifyLink, Text, View } from '@aws-amplify/ui-react';
 import UserAuth from '@/components/widgets/UserAuth';
 
+import { MdElectricCar } from 'react-icons/md';
+
 import styles from '@/component-styles/structural/Header.module.css';
 
 const Header = (props) => {
@@ -42,7 +44,7 @@ const Header = (props) => {
       : defaultLocation ?
         "/" + (defaultLocation?.GSI2_PK || "").replace("TYPE#", "").toLowerCase()
       :
-        "/site"
+        "/town"
       ) +
       "/" +
       (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
@@ -51,12 +53,10 @@ const Header = (props) => {
         defaultLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
       :
         rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
-      ) +
-      (tId ? "?tId=" + tId : "")
-    } passHref>
-      <AmplifyLink className={styles.dLogoLink}>
-        <Image alt="Gardin logo" src="/images/gardin-logo-white.svg" width={60} height={38} />
-      </AmplifyLink>
+      )
+    } className={styles.dLogoLink}>
+      <MdElectricCar size={24} />
+      <View className={styles.logoText}>ChargeNG</View>
     </Link>
     <View className={styles.dHeader}>
       { !alertsViewOnly && <>
@@ -69,7 +69,7 @@ const Header = (props) => {
           : defaultLocation ?
             "/" + (defaultLocation?.GSI2_PK || "").replace("TYPE#", "").toLowerCase()
           :
-            "/site"
+            "/town"
           ) +
           "/" +
           (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
@@ -78,8 +78,7 @@ const Header = (props) => {
             defaultLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
           :
             rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
-          ) +
-          (tId ? "?tId=" + tId : "")
+          )
         } passHref>
           <View className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
             <AmplifyLink>
@@ -91,10 +90,10 @@ const Header = (props) => {
                   :
                       tenantHeaderConfig.installation.defaultIcon
                   )}`}
-                  alt="" />
+                  alt="" width={24} height={24} />
                 <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}  
                   src={`/images/${resourcesConfig}/${tenantHeaderConfig.installation.activeIcon}`}
-                  alt="" />
+                  alt="" width={24} height={24} />
                 <Text className={styles.linkText} as="span">
                   {tenantHeaderConfig.installation.label}
                 </Text>
@@ -105,8 +104,7 @@ const Header = (props) => {
         <View className={styles.dSpacer}></View>
         <Link href={"/installation/" + 
           (currentLocation.length ?
-            currentLocation.join("/") + "/areas" +
-            (tId ? "?tId=" + tId : "")
+            currentLocation.join("/") + "/areas"
           :
             null
           )
@@ -121,10 +119,10 @@ const Header = (props) => {
                     :
                       tenantHeaderConfig.areas.defaultIcon
                   )}`}
-                  alt="" />
+                  alt="" width={24} height={24} />
                 <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}
                   src={`/images/${resourcesConfig}/${tenantHeaderConfig.areas.activeIcon}`}
-                  alt="" />
+                  alt="" width={24} height={24} />
                 <Text className={styles.linkText} as="span">
                   {tenantHeaderConfig.areas.label}
                 </Text>
@@ -152,7 +150,7 @@ Header.propTypes = {
   animationHandler: PropTypes.func,
   isVisibleHandler: PropTypes.func,
   ssrDataHandler: PropTypes.func,
-  setSiteName: PropTypes.func,
+  setTownName: PropTypes.func,
   disconnectSocket: PropTypes.func,
   unsubscribeClient: PropTypes.func,
   tId: PropTypes.string,

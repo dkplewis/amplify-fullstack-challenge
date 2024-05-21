@@ -1,0 +1,124 @@
+.mAlertTextContainer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.dAlertTextContainer {
+  position: absolute;
+  left: 7%;
+  bottom: 7%;
+  width: 7.275rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mLocationIdContainer,
+.dLocationIdContainer {
+  width: 29%;
+}
+
+.mTileLocationIdContainer {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 1.55rem;
+  z-index: 10;
+}
+
+.dTileLocationIdContainer {
+  text-align: center;
+  cursor: pointer;
+}
+
+.locationDurationText {
+  color: #fff;
+}
+
+.locationText {
+  line-height: 1rem;
+  color: #fff;
+  text-shadow: -1px 1px 0 #1c1c1e,
+    1px 1px 0 #1c1c1e,
+    1px -1px 0 #1c1c1e,
+    -1px -1px 0 #1c1c1e
+}
+
+.dTileLocationIdContainer .locationText {
+  line-height: 1.25rem;
+}
+
+p.locationText {
+  font-size: 1.89rem;
+}
+
+.dTileLocationIdContainer p.locationText {
+  font-size: 1.115rem;
+}
+
+.alertContainer {
+  position: relative;
+}
+
+.mAlertText span {
+  position: absolute;
+  bottom: 0.1rem;
+  left: 0;
+  display: inline-block;
+  width: 100%;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #3a3a3c;
+  text-transform: uppercase;
+  padding: 0.2rem 0;
+  vertical-align: bottom;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.dAlertText span {
+  position: absolute;
+  bottom: 0.1rem;
+  left: 7%;
+  display: inline-block;
+  width: 86%;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #3a3a3c;
+  text-transform: uppercase;
+  padding: 0.2rem 0 0.1rem 0;
+  vertical-align: bottom;
+  background-color: #f5d205;
+  border: 2px solid #1c1c1e;
+  border-radius: 3px;
+}
+
+.alertBadge {
+  position: absolute;
+  top: -0.2rem;
+  right: 1.5rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  font-family: "Helvetica Neue", sans-serif;
+  border-radius: 50%;
+  border: 1px solid #1c1c1e;
+  background-color: #f5d205;
+  text-align: center;
+}
+
+.alertBadgeText {
+  position: relative;
+  top: 0.35rem;
+}
+
+p.alertBadgeText {
+  font-size: 0.7rem;
+  font-weight: 700;
+}

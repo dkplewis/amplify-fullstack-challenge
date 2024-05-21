@@ -1,18 +1,18 @@
 /** @module utils/crud */
 
-import { generateClient } from 'aws-amplify/data';
-import { getMeasurementsByArea, getMeasurementsOfTypeByLocationForDate, getMeasurementsOfTypeByLocationForDates } from '@/graphql/queries';
+//import { generateClient } from 'aws-amplify/data';
+//import { getMeasurementsByArea, getMeasurementsOfTypeByLocationForDate, getMeasurementsOfTypeByLocationForDates } from '@/graphql/queries';
 import { getActiveSchedule, getLatestSchedule } from '@/utils/datetime';
 import { nameSort, timeSort } from '@/utils/sort';
-import { AREA_ENTITY, GROWTHJOB_ENTITIES, INDICES_ENTITIES,
-  LOCATION_ENTITIES, SUNRISE_SUNSET_ENTITIES, TENANT_ENTITY, ZONE_ENTITIES } from '@/utils/demoData';
+import { AREA_ENTITIES, SCHEDULE_ENTITIES, MEASUREMENTS_ENTITIES,
+  LOCATION_ENTITIES, TENANT_ENTITY, ZONE_ENTITIES } from '@/utils/demoData';
 
-const SUPPORTED_INDICES = ["QE"];
+const SUPPORTED_INDICES = ["SUPPLY"];
 
 /**
  * @type { import('aws-amplify/data').Client<import('@/aws-data/resource').Schema> }
  */
-const client = generateClient();
+//const client = generateClient();
 
 /**
  * Custom types
@@ -115,12 +115,6 @@ export const getLocationDataAndTenant = async (tenantId) => {
       .sort((a, b) => nameSort(a, b, "asc"));
     // Set the tenant data and parse the CONFIG string into JSON
     data.tenantData = tenantData;
-    try {
-      const hashedConfig = await getTenantDataHash(data.tenantData.CONFIG);
-      data.tenantDataHash = hashedConfig;
-    } catch (err) {
-      if (typeof window !== "undefined") console.error(err);
-    }
 
     return new Promise((resolve) => resolve(data));
 
@@ -139,8 +133,7 @@ export const getLocationDataAndTenant = async (tenantId) => {
  * If none of these are given, returns all location data, area entities, zone entities and tenant entity
  * 
  * @async
- * @param {string} tenantId - The tenant ID to indicate which table we are querying
- * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
+ * @param {string} tenantId - The tenant ID to indicate which customer we are querying
  * @param {string} [areaId] - The ID of the area to fetch, if the request is made from the Details View *page*
  * @param {string} [locId] - The ID of the location to fetch, if the request is made from the Installation page
  * @param {string} [baseLocId] - The ID of the parent location whose locations we want to fetch, if the request is made from
@@ -149,127 +142,60 @@ export const getLocationDataAndTenant = async (tenantId) => {
  *  if an error was caught client-side
  * @throws The error message if an error was caught server-side
  */
-export const getLocationDataTenantDataAndArea = async (tenantId, ssr, areaId, locId, baseLocId) => {
+export const getLocationDataTenantDataAndArea = async (tenantId, locId) => {
 
   /** @type {AreaLocationTenantZonesData} */
   let data = {};
 
   try {
 
-    let areaData = null;
-    let locationData = [];
-    let tenantData = {};
-    let zoneData = [];
+    let currentLocation;
+    let path;
 
-    if (areaId) {
+    if (locId) {
 
-      // Get back-end data required for Details View page display
-      areaData = AREA_ENTITY;
-      locationData = LOCATION_ENTITIES;
-      tenantData = TENANT_ENTITY;
-      zoneData = ZONE_ENTITIES;
-
-      // Set the area data (may be empty if the Control Area  has been deleted)
-      data.area = !areaData?.DELETED_AT ? areaData : null;
-      // Set the root location data. This determines the container location for all other locations
-      data.rootLocation = locationData
-        .filter(location => !location.DELETED_AT)
-        .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
-      // Parse the location data into root locations (those with a LOCATION_HEADER_KEY)
-      // and visible locations (no LOCATION_HEADER_KEY and not the root location)
-      data.topNavLocations = locationData
-        .filter(location => !location.DELETED_AT)
-        .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
-        .sort((a, b) => nameSort(a, b, "asc"));
-      data.locations = locationData
-        .filter(location => !location.DELETED_AT)
-        .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
-        .sort((a, b) => nameSort(a, b, "asc"));
-      // Set the tenant data and parse the CONFIG string into JSON
-      data.tenantData = tenantData;
-      if (data.area) {
-
-        let areaZones = zoneData.filter(zone => !zone.DELETED_AT && (data.area.ENTITY_TYPE_ID ? 
-          data.area.PATH.replace("#" + data.area.ENTITY_TYPE_ID.replace("AREA#", ""), "") == zone.PATH
-        :
-          data.area.PATH == zone.PATH));
-
-        if (!areaZones.length && data.rootLocation) areaZones = zoneData.filter(zone => !zone.DELETED_AT &&
-          zone.PATH == data.rootLocation.PATH);
-  
-        data.zones = areaZones;
-      
-      }
-
+      currentLocation = LOCATION_ENTITIES.find(loc => loc.ENTITY_TYPE_ID == "LOCATION#" + locId);
+      path = currentLocation.PATH;
+        
     } else {
 
-      let currentLocation;
-      let path;
-
-      if (locId) {
-
-        currentLocation = LOCATION_ENTITIES.find(loc => loc.ENTITY_TYPE_ID == "LOCATION#" + locId);
-        path = currentLocation.PATH;
-          
-      } else if (baseLocId) {
-
-        // Retrieve the Locations
-        const childLocations = LOCATION_ENTITIES.filter(loc =>
-          loc.PATH.indexOf(baseLocId) > -1 && loc.PATH.split("#").length == 4);
-        if (childLocations.length > 1) {
-          currentLocation = LOCATION_ENTITIES.find(loc =>
-            loc.PATH.indexOf(baseLocId) > -1 && loc.PATH.split("#").length == 3);
-        } else {
-          currentLocation = childLocations.length == 1 ? childLocations[0] : null;
-        } 
-        path = currentLocation ? currentLocation.PATH : "";
-
-      } else {
-
-        // If the request does  not contain a location ID, retrieve the root Location
-        currentLocation = LOCATION_ENTITIES.find(loc => loc.GSI2_PK == "TYPE#ROOT_LOCATION");
-        path = currentLocation.PATH;
-
-      }
-
-      // Get back-end data required for Location page display
-      let areaData = [];
-      let locationData = [];
-      let tenantData = {};
-      let zoneData = [];
-
-      areaData = [AREA_ENTITY];
-      locationData = LOCATION_ENTITIES;
-      tenantData = TENANT_ENTITY;
-      zoneData = ZONE_ENTITIES;
-
-      // Set the area data (may be empty if the Control Areas  has been deleted)
-      // Control Areas are sorted by name
-      data.areas = areaData
-        .filter(area => area.PATH.startsWith(path))
-        .filter(area => !area.DELETED_AT)
-        .sort((a, b) => nameSort(a, b, "asc"));
-      // Set the current location for breadcrumb processing
-      data.currentLocationPath = currentLocation?.PATH || "";
-      // Set the root location data. This determines the container location for all other locations
-      data.rootLocation = locationData
-        .filter(location => !location.DELETED_AT)
-        .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
-      // Parse the location data into root locations (those with a LOCATION_HEADER_KEY)
-      // and visible locations (no LOCATION_HEADER_KEY and not the root location)
-      data.topNavLocations = locationData
-        .filter(location => !location.DELETED_AT)
-        .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
-        .sort((a, b) => nameSort(a, b, "asc"));
-      data.locations = locationData
-        .filter(location => !location.DELETED_AT)
-        .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
-        .sort((a, b) => nameSort(a, b, "asc"));
-      // Set the tenant data and parse the CONFIG string into JSON
-      data.tenantData = tenantData;
-      data.zones = zoneData.filter(zone => !zone.DELETED_AT);
+      // If the request does  not contain a location ID, retrieve the root Location
+      currentLocation = LOCATION_ENTITIES.find(loc => loc.GSI2_PK == "TYPE#ROOT_LOCATION");
+      path = currentLocation.PATH;
 
     }
+
+    // Get back-end data required for Location page display
+    const areaData = AREA_ENTITIES;
+    const locationData = LOCATION_ENTITIES;
+    const tenantData = TENANT_ENTITY;
+    const zoneData = ZONE_ENTITIES;
+
+    // Set the area data (may be empty if the Control Areas  has been deleted)
+    // Control Areas are sorted by name
+    data.areas = areaData
+      .filter(area => area.PATH.startsWith(path))
+      .filter(area => !area.DELETED_AT)
+      .sort((a, b) => nameSort(a, b, "asc"));
+    // Set the current location for breadcrumb processing
+    data.currentLocationPath = currentLocation?.PATH || "";
+    // Set the root location data. This determines the container location for all other locations
+    data.rootLocation = locationData
+      .filter(location => !location.DELETED_AT)
+      .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
+    // Parse the location data into root locations (those with a LOCATION_HEADER_KEY)
+    // and visible locations (no LOCATION_HEADER_KEY and not the root location)
+    data.topNavLocations = locationData
+      .filter(location => !location.DELETED_AT)
+      .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
+      .sort((a, b) => nameSort(a, b, "asc"));
+    data.locations = locationData
+      .filter(location => !location.DELETED_AT)
+      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
+      .sort((a, b) => nameSort(a, b, "asc"));
+    // Set the tenant data and parse the CONFIG string into JSON
+    data.tenantData = tenantData;
+    data.zones = zoneData.filter(zone => !zone.DELETED_AT);
 
     return new Promise((resolve) => resolve(data));
 
@@ -299,7 +225,7 @@ export const getScheduleData = async (tenantId, ssr) => {
 
     let scheduleData = [];
 
-    scheduleData = GROWTHJOB_ENTITIES;
+    scheduleData = SCHEDULE_ENTITIES;
 
     data = scheduleData.filter(schedule => !schedule.DELETED_AT);
 
@@ -337,7 +263,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
     let scheduleData = [];
 
-    scheduleData = GROWTHJOB_ENTITIES;
+    scheduleData = SCHEDULE_ENTITIES;
 
     if (scheduleData) {
 
@@ -351,35 +277,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
       if (querySchedule) {
 
-        let measurementsData = [];
-
-        if (ssr) {
-
-          const response = await ssr.API.graphql({
-            query: getMeasurementsByArea,
-            variables: {
-              id: areaId,
-              tId: tenantId
-            }
-          });
-
-          // Get the data from the GraphQL response object
-          measurementsData = response.data.getMeasurementsByArea;
-
-        } else {
-
-          const response = await API.graphql({
-            query: getMeasurementsByArea,
-            variables: {
-              id: areaId,
-              tId: tenantId
-            }
-          });
-
-          // Get the data from the GraphQL response object
-          measurementsData = response.data.getMeasurementsByArea;
-
-        }
+        let measurementsData = MEASUREMENTS_ENTITIES;
 
         // Set the measurements array
         data.measurements = measurementsData
@@ -407,7 +305,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
  * @async
  * @param {string} locId - The ID of the location for which we want to fetch measurement entities
  * @param {string} date - The date for which we want to fetch index entities, in YYYY-MM-DD format
- * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "QE" 
+ * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY" 
  * @param {string} tenantId - The tenant ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(Index[]|CSError[])>} The measurement entities or an error object,
@@ -421,68 +319,11 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, inde
 
   try {
 
-    let measurementsData = [];
+    let measurementsData = MEASUREMENTS_ENTITIES;
 
     if (date.indexOf("T") > -1) {
 
       date = date.split("T")[0];
-
-    }
-
-    if (SUPPORTED_INDICES.includes(index)) {
-
-      if (ssr) {
-
-        const response = await ssr.API.graphql({
-          query: getMeasurementsOfTypeByLocationForDate,
-          variables: {
-            id: locId,
-            from: date,
-            index: index,
-            type: "AREA",
-            tId: tenantId
-          }
-        });
-
-        // Get the data from the GraphQL response object
-        measurementsData = response.data.getMeasurementsOfTypeByLocationForDate;
-
-      } else {
-
-        const response = await API.graphql({
-          query: getMeasurementsOfTypeByLocationForDate,
-          variables: {
-            id: locId,
-            from: date,
-            index: index,
-            type: "AREA",
-            tId: tenantId
-          }
-        });
-
-        // Get the data from the GraphQL response object
-        measurementsData = response.data.getMeasurementsOfTypeByLocationForDate;
-
-      }
-
-      // Set the measurements array
-      data = measurementsData.filter(index => !index.DELETED_AT);
-
-      // If the request was for today's data and we don't have any data, fetch yesterday's data
-      // and return that instead
-      // Get today's date and time
-      const [today, now] = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T");
-      if (date == today && data.length == 0) {
-
-        const now = (process.env.NEXT_PUBLIC_NOW ? new Date(process.env.NEXT_PUBLIC_NOW) : new Date());
-        const yesterday = now.setDate(now.getDate() - 1);
-        const yesterdaysDate = new Date(yesterday).toJSON().split("T")[0];
-        data = await getLocationMeasurementsDataByDateAndType(locId, yesterdaysDate, index, tenantId, ssr);
-        data = data.map(datum => {
-          return { ...datum, GSI5_SK: datum.GSI5_SK.replace(yesterdaysDate + "#", today + "#") }
-        });
-
-      }
 
     }
 
@@ -502,7 +343,7 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, inde
  * @param {string} locId - The ID of the location for which we want to fetch measurement entities
  * @param {string} dateFrom - The date from which we want to fetch measurement entities, in YYYY-MM-DD(?THH:mm) format
  * @param {string} dateTo - The date from which we want to fetch measurement entities, in YYYY-MM-DD(?THH:mm) format
- * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "QE"
+ * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY"
  * @param {number} areaCount - The number of areas to fetch data for
  * @param {string} tenantId - The tenant ID to indicate which table we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
@@ -517,81 +358,7 @@ export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom,
 
   try {
 
-    let measurementsData = [];
-
-    if (SUPPORTED_INDICES.includes(index)) {
-
-      if (ssr) {
-
-        const response = await ssr.API.graphql({
-          query: getMeasurementsOfTypeByLocationForDates,
-          variables: {
-            id: locId,
-            from: dateFrom,
-            to: dateTo,
-            index: index,
-            type: "AREA",
-            tId: tenantId
-          }
-        });
-
-        // Get the data from the GraphQL response object
-        measurementsData = response.data.getMeasurementsOfTypeByLocationForDates;
-
-      } else {
-
-        const response = await API.graphql({
-          query: getMeasurementsOfTypeByLocationForDates,
-          variables: {
-            id: locId,
-            from: dateFrom,
-            to: dateTo,
-            index: index,
-            type: "AREA",
-            tId: tenantId
-          }
-        });
-
-        // Get the data from the GraphQL response object
-        measurementsData = response.data.getMeasurementsOfTypeByLocationForDates;
-
-      }
-
-      // Set the measurements array
-      data = measurementsData.filter(index => !index.DELETED_AT);
-
-      // If the request includes today's data and we don't have any data for today, fetch yesterday's data
-      // and return that instead
-      // Get today's date and time
-      const [today, now] = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T");
-      if (dateTo == today && data.filter(datum => datum.CREATED_AT.split("T")[0] == today).length != areaCount) {
-
-        const now = (process.env.NEXT_PUBLIC_NOW ? new Date(process.env.NEXT_PUBLIC_NOW) : new Date());
-        const yesterday = now.setDate(now.getDate() - 1);
-        const yesterdaysDate = new Date(yesterday).toJSON().split("T")[0];
-        let yesterdaysData = data.filter(datum => datum.CREATED_AT.split("T")[0] == yesterdaysDate);
-        if (yesterdaysData.length != areaCount) {
-
-          yesterdaysData = await getLocationMeasurementsDataByDateAndType(locId, yesterdaysDate, index, tenantId, ssr);
-
-        }
-        let todaysData = data.filter(datum => datum.CREATED_AT.split("T")[0] == today);
-        for (let c = 0, len = yesterdaysData.length; c < len; c += 1) {
-
-          const yesterdaysDatum = yesterdaysData[c];
-          if (!todaysData.find(todaysDatum => yesterdaysDatum.ENTITY_TYPE == todaysDatum.ENTITY_TYPE)) todaysData.push({
-            ...yesterdaysDatum,
-            GSI5_SK: yesterdaysDatum.GSI5_SK.replace(yesterdaysDate + "#", today + "#")
-          });
-
-        }
-        data = data
-          .filter(datum => datum.CREATED_AT.split("T")[0] != today)
-          .concat(todaysData);
-
-      }
-
-    }
+    let measurementsData = MEASUREMENTS_ENTITIES;
 
     return new Promise((resolve) => resolve(data));
 
@@ -611,7 +378,7 @@ export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom,
  */
 export const getStorageItem = async (itemKey) => {
 
-  return Storage.get(itemKey);
+  return null //Storage.get(itemKey);
 
 };
 
@@ -704,16 +471,3 @@ const processError = (caller, errors) => {
 };
 
 export const name = "crud";
-
-module.exports = {
-  getScheduleData,
-  getScheduleMeasurementsData,
-  getLocationData,
-  getLocationDataAndTenant,
-  getLocationDataTenantDataAndArea,
-  getLocationMeasurementsDataByDateAndType,
-  getLocationMeasurementsDataByDatesAndType,
-  getStorageItem,
-  getStorageItems,
-  name
-};

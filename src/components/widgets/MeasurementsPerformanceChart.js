@@ -85,7 +85,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
         const currIndexValue = curr[index];
         let roundedDownValue = Math.floor(currIndexValue / 10) * 10;
         let previousTen = currIndexValue % 10 == 0 && (
-          index == "phi" || index == "ps2" || index == "etr" || index == "par" || index == "qe" ?
+          index == "phi" || index == "ps2" || index == "etr" || index == "par" || index == "supply" ?
             roundedDownValue > 9
           :
             true
@@ -95,7 +95,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
           roundedDownValue;
         let roundedUpValue = Math.ceil(currIndexValue / 10) * 10;
         let nextTen = currIndexValue % 10 == 0 && (
-          index == "phi" || index == "ps2" || index == "qe" ?
+          index == "phi" || index == "ps2" || index == "supply" ?
             roundedUpValue < 91
           : index == "etr" ?
             roundedUpValue < 1991
@@ -114,7 +114,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
       }, []);
       if (minMax.length == 2) {
 
-        const minMaxDiff = (index == "phi" || index == "ps2" || index == "etr" || index == "par" || index == "qe") && minMax[0] > 0 ? 
+        const minMaxDiff = (index == "phi" || index == "ps2" || index == "etr" || index == "par" || index == "supply") && minMax[0] > 0 ? 
           Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
         : index == "pei" || index == "pui" ? 
           Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
@@ -259,7 +259,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
           </View>
           <View>
             { payload
-              .filter((indexPayload) => ["etr", "par", "qe"].includes(indexPayload.dataKey))
+              .filter((indexPayload) => ["etr", "par", "supply"].includes(indexPayload.dataKey))
               .sort((a, b) => {
                 const aOrder = config[a.dataKey.toUpperCase()].order;
                 const bOrder = config[b.dataKey.toUpperCase()].order;
@@ -268,12 +268,12 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
               .map((indexPayload, idx) => {
 
                 return <Flex key={indexPayload.dataKey + "-" + indexPayload.payload.displayDate + "-" + idx} gap="0" className="custom-tooltip-extraspace">
-                  <Text className="custom-tooltip-label morepad autocase">{indexPayload.dataKey != "qe" ?
+                  <Text className="custom-tooltip-label morepad autocase">{indexPayload.dataKey != "supply" ?
                     indexPayload.dataKey.toUpperCase()
                   :
                     "qE"
                   }&nbsp;=&nbsp;</Text>
-                  <Text className="custom-tooltip-label morepad">{indexPayload.value}{indexPayload.dataKey == "qe" ? "%" : ""}</Text>
+                  <Text className="custom-tooltip-label morepad">{indexPayload.value}{indexPayload.dataKey == "supply" ? "%" : ""}</Text>
                 </Flex>;
 
               })
@@ -531,7 +531,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
             show.includes("PEI") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) &&
-                !(show.includes("QE") && (dataMinMax.qe ?? []).length > 0) && 
+                !(show.includes("SUPPLY") && (dataMinMax.qe ?? []).length > 0) && 
                 !(show.includes("ETR") && (dataMinMax.etr ?? []).length > 0) &&
                 activeIndex == null && focussedIndex == ""
               ) || 
@@ -545,7 +545,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
             show.includes("ETR") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) && 
-                !(show.includes("QE") && (dataMinMax.qe ?? []).length > 0) && 
+                !(show.includes("SUPPLY") && (dataMinMax.qe ?? []).length > 0) && 
                 activeIndex == null && focussedIndex == ""
               ) || 
               (activeIndex == "ETR" && focussedIndex == "") || 
@@ -555,13 +555,13 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
         /> }
         { (dataMinMax.qe ?? []).length && <YAxis yAxisId="qeYAxis" type="number" scale="linear" domain={dataMinMax.qe} interval={0} tickCount={5} ticks={yAxisTicks.qe} tick={<CustomizedYAxisTick />} tickLine={false}
           hide={!(
-            show.includes("QE") && (
+            show.includes("SUPPLY") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) && 
                 activeIndex == null && focussedIndex == ""
               ) || 
-              (activeIndex == "QE" && focussedIndex == "") || 
-              focussedIndex == "QE"
+              (activeIndex == "SUPPLY" && focussedIndex == "") || 
+              focussedIndex == "SUPPLY"
             )
           )}
         /> }
@@ -572,7 +572,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
             show.includes("PUI") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) &&
-                !(show.includes("QE") && (dataMinMax.qe ?? []).length > 0) && 
+                !(show.includes("SUPPLY") && (dataMinMax.qe ?? []).length > 0) && 
                 !(show.includes("ETR") && (dataMinMax.etr ?? []).length > 0) &&
                 !(show.includes("PEI") && (dataMinMax.pei ?? []).length > 0) &&
                 activeIndex == null && focussedIndex == ""
@@ -587,7 +587,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
             show.includes("PAR") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) &&
-                !(show.includes("QE") && (dataMinMax.qe ?? []).length > 0) && 
+                !(show.includes("SUPPLY") && (dataMinMax.qe ?? []).length > 0) && 
                 !(show.includes("ETR") && (dataMinMax.etr ?? []).length > 0) &&
                 !(show.includes("PEI") && (dataMinMax.pei ?? []).length > 0) &&
                 !(show.includes("PUI") && (dataMinMax.pui ?? []).length > 0) &&
@@ -603,7 +603,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
             show.includes("PS2") && (
               (
                 !(show.includes("PHI") && (dataMinMax.phi ?? []).length > 0) &&
-                !(show.includes("QE") && (dataMinMax.qe ?? []).length > 0) && 
+                !(show.includes("SUPPLY") && (dataMinMax.qe ?? []).length > 0) && 
                 !(show.includes("ETR") && (dataMinMax.etr ?? []).length > 0) &&
                 !(show.includes("PEI") && (dataMinMax.pei ?? []).length > 0) &&
                 !(show.includes("PUI") && (dataMinMax.pui ?? []).length > 0) &&

@@ -9,7 +9,7 @@ import { StoreContext } from '@/store/store';
 
 import styles from '@/component-styles/widgets/UserAuth.module.css';
 
-const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setSiteName,
+const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownName,
   unsubscribeClient = (newUnsubscribeClient) => {}, disconnectSocket = () => {}, 
   rootLocation, topNavLocations = [], locations = [], tenantHeaderConfig = {} }) => {
 
@@ -27,7 +27,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setSiteN
       unsubscribeClient(true);
       disconnectSocket();
       setCurrentTopNavLocation("");
-      setSiteName("");
+      setTownName("");
       setAnimation("none")
       // Use the Auth signOut method rather than the context signOut
       await Auth.signOut();
@@ -54,7 +54,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setSiteN
         {" "}
         <Text className={styles.welcomeText} as="span">
           (Not you? 
-          <Button className={styles.signOutLink} variation="link" onClick={tId ? () => {} : signOutHandler}>Sign out</Button>
+          <Button className={styles.signOutLink} variation="link" onClick={signOutHandler}>Sign out</Button>
         )</Text>
       </View>
     :
@@ -105,8 +105,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setSiteN
                         topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
                       :
                         defaultLocationForTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
-                      ) +
-                      (tId ? "?tId=" + tId : "")
+                      )
                     } passHref>
                     <AmplifyLink onClick={() => {
                       setIsOpen(false);
@@ -132,12 +131,6 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setSiteN
             }
           </MenuItem>
         }) }
-        <MenuItem className={styles.menuItem}>
-          <AmplifyLink href="https://www.gardin.co.uk/privacypolicy" target="_blank"
-            onClick={() => setIsOpen(false)} isExternal={true}>
-            <Text className={styles.linkText}>Privacy policy</Text>
-          </AmplifyLink>
-        </MenuItem>
         <MenuItem className={styles.menuItem} onClick={() => {}}>
           <View className={styles.signOutLabel}>Not you?</View>
           <View className={styles.signOutButton}>Sign out</View>

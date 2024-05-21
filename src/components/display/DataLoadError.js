@@ -10,8 +10,7 @@ const DataLoadError = ({ dataLoadError }) => {
         { dataLoadError && dataLoadError.indexOf("status code 401") !== -1 ?
           <Text>
             <br />
-            The app isn&apos;t allowed to use the data API right now.<br />
-            Please contact Gardin support.
+            The app isn&apos;t allowed to use the data API right now.
           </Text>
         : "" }
       </Alert>

@@ -514,7 +514,7 @@ export const getActiveAlertForArea = (alerts, areaId, measurement) => {
 
   } else if (measurement == "PS2") {
 
-    return getActiveAlert(alerts.filter(alert => alert?.GSI3_PK == areaId && (alert?.TRIGGER_METRIC == "qe" || alert?.TRIGGER_METRIC == "qp")));
+    return getActiveAlert(alerts.filter(alert => alert?.GSI3_PK == areaId && (alert?.TRIGGER_METRIC == "supply" || alert?.TRIGGER_METRIC == "qp")));
 
   } else {
 
@@ -815,7 +815,7 @@ export const getLatestAlertForArea = (alerts, areaId, measurement, state) => {
 
     // Find the latest alert date for the given area for the given metric
     return getLatestAlert(alerts.filter(alert => alert?.GSI3_PK == areaId &&
-      (measurement == "PHI" ? alert?.TRIGGER_METRIC == "fv_fm" : alert?.TRIGGER_METRIC == "qe" || alert?.TRIGGER_METRIC == "qp") &&
+      (measurement == "PHI" ? alert?.TRIGGER_METRIC == "fv_fm" : alert?.TRIGGER_METRIC == "supply" || alert?.TRIGGER_METRIC == "qp") &&
       (state ? alert?.STATE == state : true)));
 
   } else {
@@ -828,7 +828,7 @@ export const getLatestAlertForArea = (alerts, areaId, measurement, state) => {
 
     // Find the latest Qe alert date for the given area
     const latestQeAlert = getLatestAlert(alerts.filter(alert => alert?.GSI3_PK == areaId &&
-      (alert?.TRIGGER_METRIC == "qe" || alert?.TRIGGER_METRIC == "qp") &&
+      (alert?.TRIGGER_METRIC == "supply" || alert?.TRIGGER_METRIC == "qp") &&
       (state ? alert?.STATE == state : true)));
     const latestQeAlertSeverity = latestQeAlert ? getAlertSeverity(latestQeAlert) : ""; 
 
@@ -1508,8 +1508,8 @@ export const getMeasurementsDataByTime = (indices, currentDateMs, endDateMs, isH
         "etr"
       : index.GSI5_PK.indexOf("#PAR#") > -1 ?
         "par"
-      : index.GSI5_PK.indexOf("#QE#") > -1 ?
-        "qe"
+      : index.GSI5_PK.indexOf("#DAY#") > -1 ?
+        "supply"
       : "ign";
       const [createDate, createTime] = index.CREATED_AT.split("T");
       if (isSeconds || isMinutes || isHourly) {
@@ -1551,7 +1551,7 @@ export const getMeasurementsDataByTime = (indices, currentDateMs, endDateMs, isH
             data[dateTimeKey].isMinutes = isMinutes;
             data[dateTimeKey].isSeconds = isSeconds;
             if (byCAID) {
-              data[dateTimeKey][index.ENTITY_TYPE.replace("INDEXBYAREA#", "")] = indexValue;
+              data[dateTimeKey][index.ENTITY_TYPE.replace("MEASUREMENTBYAREA#", "")] = indexValue;
             } else {
               data[dateTimeKey][indexType] = indexValue;
             }
@@ -1565,7 +1565,7 @@ export const getMeasurementsDataByTime = (indices, currentDateMs, endDateMs, isH
           data[dateKey].createDate = index.CREATED_AT;
           data[dateKey].displayDate = createDate + "T00:00:00.000Z";
           if (byCAID) {
-            data[dateKey][index.ENTITY_TYPE.replace("INDEXBYAREA#", "")] = index.INDEX_AVG;
+            data[dateKey][index.ENTITY_TYPE.replace("MEASUREMENTBYAREA#", "")] = index.INDEX_AVG;
           } else {
             data[dateKey][indexType] = index.INDEX_AVG;
           }
@@ -1680,61 +1680,10 @@ export const hasInsufficientHourlyData = (indices) => {
 
   // DL-2023-12-13 Support granularity down to one hour rather than 8
   return indices.reduce((acc, curr) => curr.INDEX_HISTORY && curr.INDEX_HISTORY != "null" ?
-    acc += curr.GSI5_PK.indexOf("#QE#") == -1 ? 0 : Object.keys(JSON.parse(curr.INDEX_HISTORY)).length
+    acc += curr.GSI5_PK.indexOf("#DAY#") == -1 ? 0 : Object.keys(JSON.parse(curr.INDEX_HISTORY)).length
   :
     acc += curr.isHourly ? 1 : 0, 0) == 0;
 
 };
 
 export const name = "datetime";
-
-module.exports = {
-  addMinutesToTime,
-  getActiveAlert,
-  getActiveAlertForArea,
-  getActiveCycleDurationInDays,
-  getActiveSchedule,
-  getActiveScheduleStartAndEndDay,
-  getActiveSchedulePeriodStartAndEndDay,
-  getActiveScheduleStartDate,
-  getAlertCreatedDateInPeriod,
-  getAlertCreatedDayAsPercentageOfCycle,
-  getAlertCreatedDayAsPercentageOfPeriod,
-  getAlertCreatedDayInCycle,
-  getAlertResolvedDateInPeriod,
-  getAlertResolvedDayAsPercentageOfCycle,
-  getAlertResolvedDayAsPercentageOfPeriod,
-  getAlertResolvedDayInCycle,
-  getCurrentCyclePoint,
-  getCurrentCycleDayAsPercentageOfCycle,
-  getCurrentCycleDayAsPercentageOfPeriod,
-  getCycleDurationInDays,
-  getDaysAgo,
-  getDaysAgoInCycle,
-  getDaysAgoInCycleAsPercentageOfCycle,
-  getDifferenceInDays,
-  getDifferenceInHours,
-  getFirstAlert,
-  getFormattedDate,
-  getHoursAgo,
-  getMeasurementsDataByTime,
-  getLatestAlert,
-  getLatestAlertDate,
-  getLatestAlertForArea,
-  getLatestCompletedCycleDuration,
-  getLatestSchedule,
-  getLatestSchedulePeriodStartAndEndDay,
-  getLatestScheduleStartDate,
-  getLatestIndexDateForAreas,
-  getLatestIndexValue,
-  getPeriodStartAndEndDate,
-  getPeriodStartAndEndMs,
-  getTimeAsPercentageOfPeriod,
-  getYesterdayTomorrowAdjustment,
-  hasInsufficientHourlyData,
-  isScheduleComplete,
-  isScheduleRunning,
-  isHourlyDataPointThresholdTriggered,
-  isLatestIndexFresh,
-  name
-};

@@ -170,7 +170,7 @@ const AreaMeasurementsTabs = (props) => {
             defaultIndex="0"
             onChange={(tab) => {
               setTab(tab);
-              setActiveIndex((Object.keys(enabledMeasurements)[tab] || "QE").toLowerCase());
+              setActiveIndex((Object.keys(enabledMeasurements)[tab] || "SUPPLY").toLowerCase());
             }}>
             { Object.keys(enabledMeasurements)
               .filter(key => enabledMeasurements[key].enabled)

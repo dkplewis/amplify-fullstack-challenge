@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Collection, Flex, Image, Loader, Text, View } from '@aws-amplify/ui-react';
-import { domAnimation, LazyMotion, m } from 'framer-motion';
-//import { isMobile } from 'react-device-detect';
 import { useQueries } from '@tanstack/react-query';
 import Area from '@/components/display/Area';
 import GrowthCycleProgress from '@/components/widgets/GrowthCycleProgress';
@@ -17,13 +15,11 @@ import { caDimSort } from '@/utils/sort';
 import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/display/Areas.module.css';
 
-const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData = [],
-  tenantId, tenantConfig, location, clickHandler, viewToggle, pageNo }) => {
-
-  const isMobile = false;
+const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
+  tenantId, tenantConfig, location, clickHandler, pageNo }) => {
 
   const [indicesDate, setMeasurementsDate] = useState(null);
-  const [indicesType, setMeasurementsType] = useState("QE");
+  const [indicesType, setMeasurementsType] = useState("SUPPLY");
 
   const [fromDate, toDate] = useMemo(() => {
 
@@ -216,24 +212,6 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData =
       
   }, [scheduleData, tenantConfig]);
 
-  const getShowAlertDurationConfig = useCallback((tenantConfig) => {
-
-    return tenantConfig.areas.locationTypeConfig == "details" ?
-    tenantConfig.details.showAlertDuration
-  :
-    tenantConfig.locations[tenantConfig.areas.locationTypeConfig].showAlertDuration;
-  
-  }, []);
-
-  const getShowLatestAlertOnly = useCallback((tenantConfig) => {
-
-    return tenantConfig.areas.locationTypeConfig == "details" ?  
-      tenantConfig.details.showLatestAlertOnly 
-    :
-      tenantConfig.locations[tenantConfig.areas.locationTypeConfig].showLatestAlertOnly;
-  
-  }, []);
-
   const getLocationTypeConfig = useCallback((tenantConfig) => {
 
     return tenantConfig.areas.locationTypeConfig == "details" ?
@@ -274,60 +252,25 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData =
           tenantConfig.details.resPerPage
         :
           (tenantConfig.locations && tenantConfig.locations[tenantConfig.controlarea?.locationTypeConfig || ""]?.resPerPage) || "50", 10) * (pageNo + 1))}
-      direction={viewToggle === "list" ? "column" : "row"}
-      gap={isMobile && viewToggle === "list" ? "1em" : isMobile ? "0.8em 1em" : "0"}
-      wrap={viewToggle === "list" ? "nowrap" : "wrap"}>
+      direction="row"
+      gap="0"
+      wrap="wrap">
       {(item, index) => (
-        isMobile ? 
-          <LazyMotion key={item.ENTITY_TYPE_ID} features={domAnimation}>
-            <m.div
-              layout
-              role="listitem"
-              className={`withBorder ${viewToggle === "list" ? "locationCollectionListItem" : "locationCollectionTile"} ${viewToggle === "list" ? styles.dAreaCollectionListItem : styles.mAreaCollectionTile}`}
-              whileTap={{ scale: 1.065, transition: { type: "spring", duration: 0.8 } }}
-            >
-              <m.div layout whileTap={{ scale: 0.935, transition: { type: "spring", duration: 0.8 } }}>
-                <Area isMobile={isMobile} location={location} area={item}
-                  schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  showAlertDuration={getShowAlertDurationConfig(tenantConfig)}
-                  showLatestAlertOnly={getShowLatestAlertOnly(tenantConfig)}
-                  locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-                  alertTypeConfig={tenantConfig.alerts.alertTypes} 
-                  resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler} variant={viewToggle === "list" ? "row" : "tile"}
-                  isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
-                  indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
-                    isHourly, item.ENTITY_TYPE_ID)}
-                  puiMaxValue={tenantConfig.measurements.PUI?.maxValue || 30}
-                  tenantId={tenantId}
-                />
-              </m.div>
-            </m.div>
-          </LazyMotion>
-        :
-          <View key={item.ENTITY_TYPE_ID} role="listitem" className={`${viewToggle === "list" ?
-            "locationCollectionListItem" : "locationCollectionTile"
-          } ${viewToggle === "list" ? styles.dAreaCollectionListItem : styles.dAreaCollectionTile}`}>
-            <Area isMobile={isMobile} location={location} area={item}
-              schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-              alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-              showAlertDuration={getShowAlertDurationConfig(tenantConfig)}
-              showLatestAlertOnly={getShowLatestAlertOnly(tenantConfig)}
-              locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-              alertTypeConfig={tenantConfig.alerts.alertTypes} 
-              resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler} variant={viewToggle === "list" ? "row" : "tile"}
-              isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
-              indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
-                isHourly, item.ENTITY_TYPE_ID)}
-              puiMaxValue={tenantConfig.measurements.PUI?.maxValue || 30}
-              tenantId={tenantId}
-            />
-          </View>
-
+        <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
+          <Area location={location} area={item}
+            schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
+            locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
+            resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
+            isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
+            indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
+              isHourly, item.ENTITY_TYPE_ID)}
+            tenantId={tenantId}
+          />
+        </View>
       )}
     </Collection>;
 
-  }, [alertData, clickHandler, scheduleData, viewToggle, tenantConfig, pageNo]);
+  }, [clickHandler, scheduleData, tenantConfig, pageNo]);
 
   const getOrderedCollection = useCallback((collectionItems, location, indexData, currentType, tenantId,
     schedule, initialPeriod, threshold, isRolling) => {
@@ -383,58 +326,21 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData =
           :
             tenantConfig.locations[tenantConfig.areas.locationTypeConfig].resPerPage
           , 10) * (pageNo + 1))}
-        direction={viewToggle === "list" ? "column" : "row"}
-        gap={isMobile && viewToggle === "list" ? "1em" : isMobile ? "0.8em 1em" : "0"}
-        wrap={viewToggle === "list" ? "nowrap" : "wrap"}>
+        direction="row"
+        gap="0"
+        wrap="wrap">
         {(item, index) => (
-          isMobile ?
-            item.isSpacer ? 
-              <View key={"spacer_" + index} role="listitem" aria-hidden="true" className={styles.mAreaCollectionTile}></View>
-            : 
-              <LazyMotion key={item.ENTITY_TYPE_ID} features={domAnimation}>
-                <m.div
-                  layout
-                  role="listitem"
-                  className={`withBorder ${viewToggle === "list" ? "locationCollectionListItem" : "locationCollectionTile"} ${viewToggle === "list" ? styles.dAreaCollectionListItem : styles.mAreaCollectionTile}`}
-                  whileTap={{ scale: 1.065, transition: { type: "spring", duration: 0.8 } }}
-                >
-                  <m.div layout whileTap={{ scale: 0.935, transition: { type: "spring", duration: 0.8 } }}>
-                    <Area isMobile={isMobile} location={location} area={item}
-                      schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                      alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-                      showAlertDuration={getShowAlertDurationConfig(tenantConfig)}
-                      showLatestAlertOnly={getShowLatestAlertOnly(tenantConfig)}
-                      locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-                      alertTypeConfig={tenantConfig.alerts.alertTypes} 
-                      resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler} variant={viewToggle === "list" ? "row" : "tile"}
-                      isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
-                      indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
-                        isHourly, item.ENTITY_TYPE_ID)}
-                      puiMaxValue={tenantConfig.measurements.PUI?.maxValue || 30}
-                      tenantId={tenantId}
-                    />
-                  </m.div>
-                </m.div>
-              </LazyMotion>
-          :
             item.isSpacer ? 
               <View key={"space_" + index} role="listitem" className={styles.dAreaCollectionTile}></View>
             : 
-              <View key={item.ENTITY_TYPE_ID} role="listitem" className={`${viewToggle === "list" ?
-                "locationCollectionListItem" : "locationCollectionTile"
-              } ${viewToggle === "list" ? styles.dAreaCollectionListItem : styles.dAreaCollectionTile}`}>
-                <Area isMobile={isMobile} location={location} area={item}
+              <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
+                <Area location={location} area={item}
                   schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  showAlertDuration={getShowAlertDurationConfig(tenantConfig)}
-                  showLatestAlertOnly={getShowLatestAlertOnly(tenantConfig)}
                   locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-                  alertTypeConfig={tenantConfig.alerts.alertTypes} 
-                  resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler} variant={viewToggle === "list" ? "row" : "tile"}
+                  resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
                   isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
                   indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
                     isHourly, item.ENTITY_TYPE_ID)}
-                  puiMaxValue={tenantConfig.measurements.PUI?.maxValue || 30}
                   tenantId={tenantId}
                 />
               </View>
@@ -443,7 +349,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData =
 
     });
 
-  }, [alertData, clickHandler, scheduleData, viewToggle, tenantConfig, pageNo]);
+  }, [clickHandler, scheduleData, tenantConfig, pageNo]);
 
   const getDurationLabel = useCallback((schedules, initialPeriod, isRolling, tz) => {
 
@@ -593,7 +499,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [], alertData =
                   .split(" - ")[1]}
                   isHourly={Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false}
                   isMinutes={Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false}
-                  alerts={[]} variant="thin" sliderValue={(indicesDate || defaultMeasurementsDate)} sliderChangeHandler={setMeasurementsDate} isSlideable={indicesForDateRangeQueries.isSuccess} 
+                  variant="thin" sliderValue={(indicesDate || defaultMeasurementsDate)} sliderChangeHandler={setMeasurementsDate} isSlideable={indicesForDateRangeQueries.isSuccess} 
                 />
                 <Flex className={styles.durationLabelsContainer}>
                   {/* Assumption that all areas in a location are growing the same thing */}

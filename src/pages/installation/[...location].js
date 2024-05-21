@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useContext, useMemo, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Image } from '@aws-amplify/ui-react';
@@ -10,10 +10,11 @@ import DataLoadError from '@/components/display/DataLoadError';
 import Loading from '@/components/display/Loading';
 import Locations from '@/components/display/Locations';
 import ModalContent from '@/components/display/ModalContent';
+import { StoreContext } from '@/store/store';
 import { getScheduleData, getScheduleMeasurementsData,
   getLocationDataTenantDataAndArea, getLocationMeasurementsDataByDateAndType } from '@/utils/crud';
 import { getLocationBreadcrumbs } from '@/utils/location';
-import { orderSort, timeSort } from '@/utils/sort';
+import { orderSort } from '@/utils/sort';
 
 export const getServerSideProps = async ({ req, res, params, query }) => {
 
@@ -73,12 +74,12 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
 
       // The tenant uses the Control Areas View to show Control Area Container Locations, so ignore the
       // location ID as this is used to expand the correct section on the Control Areas View page
-      response = await getLocationDataTenantDataAndArea(TENANT_ID, null, null, null);
+      response = await getLocationDataTenantDataAndArea(TENANT_ID);
 
     } else {
 
       // We are displaying a Location, so fetch all Control Areas for the current Location path
-      response = await getLocationDataTenantDataAndArea(TENANT_ID, null, locationId, null);
+      response = await getLocationDataTenantDataAndArea(TENANT_ID, locationId);
 
     }
     if (!response.isError) {
@@ -95,7 +96,7 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
     returnObject.props["fetchLocationMeasurements"] = (locationType == "areas" ||
       tenantData.CONFIG?.locations[locationType]?.isAreaContainer) && !!locationId;
  
-    /* currrentSite = if there is more than one immediate child location for the current top nav location, return the immediate child location of the current top nav location
+    /* currrentTown = if there is more than one immediate child location for the current top nav location, return the immediate child location of the current top nav location
         where the current location's PATH starts with the child location's PATH, OR
       if there is more than one immediate child location for the current top nav location, return the immediate child location where the entity ID is the entity ID given in the URL, OR
       if there is more than one immediate child location for the current top nav location, return the top nav location where the entity ID is the entity ID given in the URL, OR
@@ -109,24 +110,24 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
     const topNavLocationPathLen = topNavLocationPath ? topNavLocationPath.split("#").length : 0;
     const childLocationsForTopNavLocation = locationData.filter((location) => location.PATH.startsWith(topNavLocationPath + "#") && location.PATH.split("#").length == topNavLocationPathLen + 1);
 
-    let currentSite = null;
+    let currentTown = null;
     if (childLocationsForTopNavLocation.length) {
 
-      currentSite = childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && currentLocationPath.startsWith(location.PATH + "#"))
+      currentTown = childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && currentLocationPath.startsWith(location.PATH + "#"))
        || childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && location.ENTITY_TYPE_ID == `LOCATION#${locationId}`)
        || topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`) 
        || childLocationsForTopNavLocation.find(location => location.ENTITY_TYPE_ID == `LOCATION#${locationId}`)
        || childLocationsForTopNavLocation.find(location => location.DEFAULT_LOCATION);
 
     }
-    if (!currentSite) {
+    if (!currentTown) {
 
-      currentSite = topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`)
+      currentTown = topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`)
        || rootLocationData;
        
     }
 
-    returnObject.props["currentSiteName"] = currentSite ? currentSite.NAME : null;
+    returnObject.props["currentTownName"] = currentTown ? currentTown.NAME : null;
 
     const breadCrumbData = getLocationBreadcrumbs(
       "/installation/",
@@ -154,7 +155,7 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
     });
 
     await queryClient.prefetchQuery({
-      queryKey: ["locationMeasurementsByDateAndType", TENANT_ID, locationId || "", new Date().toJSON().split("T")[0], "QE"],
+      queryKey: ["locationMeasurementsByDateAndType", TENANT_ID, locationId || "", new Date().toJSON().split("T")[0], "SUPPLY"],
       queryFn: ({ queryKey }) => getLocationMeasurementsDataByDateAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[1])
     });
 
@@ -194,7 +195,7 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
 
 }
 
-const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteName, isAreaView,
+const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownName, isAreaView,
   locationBreadCrumbPaths, locationNavButtonPath, locationPath, locationType, locationURI }) => {
 
   const [showModal, setShowModal] = useState("");
@@ -218,6 +219,8 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
   
   const router = useRouter();
 
+  const { currentTopNavLocation } = useContext(StoreContext);
+
   const modalRef = useRef(null);
 
   const queryClient = useQueryClient();
@@ -225,7 +228,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
   const { isPending: isPendingPageData, isError: isErrorPageData, isSuccess: isSuccessPageData,
     data: pageData, error: pageError } = useQuery({
     queryKey: ["locationTenantAndAreas", tenantId, "locations"],
-    queryFn: ({ queryKey }) => getLocationDataTenantDataAndArea(queryKey[1], null)
+    queryFn: ({ queryKey }) => getLocationDataTenantDataAndArea(queryKey[1])
   });
 
   const { isPending: isPendingScheduleData, isError: isErrorScheduleData, isSuccess: isSuccessScheduleData,
@@ -237,7 +240,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
 
   const { isPending: isPendingLocationMeasurementsData, isError: isErrorLocationMeasurementsData, isSuccess: isSuccessLocationMeasurementsData,
     data: locationMeasurementsData, error: locationMeasurementsError } = useQuery({
-    queryKey: ["locationMeasurementsByDateAndType", tenantId, locId, new Date().toJSON().split("T")[0], "QE"],
+    queryKey: ["locationMeasurementsByDateAndType", tenantId, locId, new Date().toJSON().split("T")[0], "SUPPLY"],
     queryFn: ({ queryKey }) => getLocationMeasurementsDataByDateAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[1]),
     enabled: (locationType !== "details" && fetchLocationMeasurements),
     refetchInterval: 20000
@@ -374,8 +377,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
       (locationSubPath.startsWith("/") ?
         locationSubPath
       :
-        "/" + locationSubPath)}/${locationId.replace("LOCATION#", "").replace("AREA#", "")}${
-        isAreaView ? "/caview" : ""}${tId ? "?tId=" + tId : ""}`;
+        "/" + locationSubPath)}/${locationId.replace("LOCATION#", "").replace("AREA#", "")}`;
 
     if (doNavigation) {
 
@@ -420,34 +422,6 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
 
   }, []);
 
-  const doClearAlertNotification = useCallback((alertId) => {
-
-    let newAlertNotifications = [...alertNotifications];
-    const alertNotificationIdx = newAlertNotifications.findIndex(alertNotification => alertNotification.ENTITY_TYPE_ID == alertId);
-    if (alertNotificationIdx != -1) {
-
-      newAlertNotifications.splice(alertNotificationIdx, 1);
-
-    }
-
-    if (!newAlertNotifications.length) {
-      
-      setShowAlert(false);
-
-      setTimeout(() => {
-
-        setAlertNotifications(newAlertNotifications);
-
-      }, 1100);
-
-    } else {
-
-      setAlertNotifications(newAlertNotifications);
-
-    }
-
-  }, [alertNotifications]);
-
   if (isPendingPageData || (locationType === "details" && isPendingAreaMeasurementsData) ||
   (locationType === "areas" && locId && isPendingLocationMeasurementsData) ||
   (locationType !== "details" && ((locationType === "areas" && !locId) ||
@@ -472,7 +446,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
   return isAreaView ?
     <>
       <Head>
-        <title>Gardin - {pageData.tenantData.CONFIG.areas.allAreasLabel} View</title>
+        <title>{pageData.tenantData.CONFIG.areas.allAreasLabel} View | Dev Community Amplify Fullstack TypeScript Challenge Project</title>
       </Head>
 
       <Modal ref={modalRef} initialFocusRef={modalRef} center open={!!showModal} onClose={() => {
@@ -493,11 +467,6 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
         classNames={{ modal: "modal-details-view" + (pageData.tenantData?.CONFIG?.details?.detailsView == "indeximage" ? " view-wide" : "") }}>
         <ModalContent areaData={modalData.area} areasData={modalData.areas}
           scheduleData={modalData.schedule} zoneData={modalData.zones} locationPath={locationPath}
-          alertData={alertQueries.isPending || alertQueries.isError ? []:
-            alertQueries.data
-              .filter(alert => alert.GSI3_PK == "AREA#" + areaId)
-              .sort((a, b) => timeSort(a, b, "asc"))
-          }
           measurementsData={modalData.measurements} locationData={modalData.locations} tenantData={modalData.tenantData}
           period={period || defaultPeriod} setPeriodHandler={setPeriod}
           timeUnit={timeUnit} setTimeUnitHandler={setTimeUnit} dateRange={dateRange} setDateRangeHandler={setDateRange}
@@ -511,37 +480,28 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentSiteN
       <Areas areaData={pageData.areas} scheduleData={scheduleData} topNavLocationData={pageData.topNavLocations}
         rootLocationData={pageData.rootLocation} tenantData={pageData.tenantData}
         locationData={pageData.locations}
-        alertData={alertQueries.isPending || alertQueries.isError ? []:
-          alertQueries.data
-            .sort((a, b) => timeSort(a, b, "asc"))
-        }
         selectedLocationId={locId} locationPath={locationPath}
-        animationHandler={setAnimation} tenantId={tenantId} tId={tId} currentLocation={locationURI[0] + "__" + locationURI[1]}
-        onClickHandler={handleClick} siteName={currentSiteName} showModalHandler={doShowModal}
+        tenantId={tenantId} currentLocation={locationURI[0] + "__" + locationURI[1]}
+        onClickHandler={handleClick} townName={currentTownName} showModalHandler={doShowModal}
       />
     </>
   :
     <>
       <Head>
-        <title>Gardin - Installation View</title>
+        <title>Town View | Dev Community Amplify Fullstack TypeScript Challenge Project</title>
       </Head>
 
       <Locations locationData={pageData.locations} rootLocationData={pageData.rootLocation} topNavLocationData={pageData.topNavLocations}
         areaData={pageData.areas.filter(area => area.PATH.startsWith(locationPath))}
-        isLoadingAlertData={alertQueries.isPending}
-        scheduleData={scheduleData} siteName={currentSiteName} tId={tId}
-        alertData={alertQueries.isPending || alertQueries.isError ? []:
-          alertQueries.data
-            .sort((a, b) => timeSort(a, b, "asc"))
-        }
-        tenantId={tId ? tId : "GTDEMOAPP"}
+        scheduleData={scheduleData} townName={currentTownName}
+        tenantId={tenantId}
         currentLocations={pageData.locations.filter(location => location.PATH.startsWith(locationPath + "#")).length == 0 ?
           pageData.locations.filter(location => location.PATH.startsWith(locationPath))
         :
-          pageData.locations.filter(location => location.PATH.startsWith(locationPath + "#") && location.PATH.split("#").length - 1 === locationPath.split("#").length)
+          pageData.locations.filter(location => location.PATH.startsWith(locationPath + "#") && location.PATH.split("#").length - 1 === locationPath.split("#").length + 1)
         }
         tenantData={pageData.tenantData} locationType={locationType} locationPath={locationPath} showModalHandler={doShowModal}
-        currentLocation={locationURI[0] + "__" + locationURI[1]} onClickHandler={handleClick} animationHandler={setAnimation}
+        currentLocation={locationURI[0] + "__" + locationURI[1]} onClickHandler={handleClick}
         locationParts={locationURI} locationBreadCrumbPaths={locationBreadCrumbPaths} />
     </>;
 

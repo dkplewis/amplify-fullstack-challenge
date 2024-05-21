@@ -1,0 +1,74 @@
+.userAuth span.welcomeText {
+  font-size: 1rem;
+  color: #f3f3f7;
+  text-transform: none;
+}
+
+button.signOut[data-variation=link],
+button.signOut[data-variation=link]:hover,
+button.signOut[data-variation=link]:active,
+button.signOut[data-variation=link]:focus {
+  text-transform: uppercase;
+}
+
+button.signOutLink[data-variation=link]:hover,
+button.signOutLink[data-variation=link]:active {
+  text-decoration: underline;
+}
+
+button.signOutLink[data-variation=link]:focus {
+  text-decoration: underline;
+  box-shadow: none;
+}
+
+button.welcomeButton[data-variation=link],
+button.welcomeButton[data-variation=link]:hover,
+button.welcomeButton[data-variation=link]:active,
+button.welcomeButton[data-variation=link]:focus {
+  padding: 0.4rem 0.1rem 0.715rem 0.1rem;
+  font-size: 0.67rem;
+  font-weight: 400;
+  letter-spacing: 0.125rem;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: #f3f3f7;
+  box-shadow: none;
+}
+
+.welcomeIcon {
+  margin-right: 1rem;
+}
+
+.welcomeIcon > img {
+  position: relative;
+  top: 0.15rem;
+}
+
+.expanderIconContainer {
+  margin-left: 1rem;
+  margin-right: 0.95rem;
+}
+
+svg.expanderIcon {
+  transform: rotate(-90deg);
+  transition-property: transform;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+svg.expanderOpenIcon {
+  transform: none;
+  transition-property: transform;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.signOutLabel,
+.signOutButton {
+  width: 100%;
+  text-align: center;
+}
+
+.signOutButton {
+  text-transform: uppercase;
+}

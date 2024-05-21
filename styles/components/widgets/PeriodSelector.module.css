@@ -1,0 +1,95 @@
+.periodSelector {
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.label,
+.input,
+.inputRange,
+.dash,
+.selectField select {
+  font-size: 0.675rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.input {
+  padding: 0.1rem 0.2rem;
+  width: 3.25rem;
+  background-color: transparent;
+  border: 1px solid #636366;
+  border-radius: 3px;
+}
+
+.inputRange {
+  padding: 0.1rem 0.2rem;
+  width: 7.75rem;
+  text-align: left; 
+  background-color: transparent;
+  border: 1px solid #636366;
+  border-radius: 3px;
+}
+
+.input:hover,
+.inputRange:hover {
+  border-color: #f2f2f7;
+}
+
+.input:focus,
+.inputRange:focus {
+  background-color: #3a3a3c;
+  border-color: #f2f2f7;
+}
+
+.input:-webkit-autofill,
+.inputRange:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.inputRange:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.inputRange:-webkit-autofill:focus,
+.input:-webkit-autofill:active,
+.inputRange:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #fff;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px #3a3a3c;
+}
+
+.selectField {
+  position: relative;
+  top: -2px;
+}
+
+.selectField label {
+  display: none;
+}
+
+.selectField select{
+  padding: 0.1rem;
+  box-shadow: none;
+  border-block-end-color: transparent;
+}
+
+.selectField select:focus {
+  box-shadow: none;
+  border-block-end-color: transparent;
+}
+
+.selectField select option {
+  background-color: #3a3a3c;
+  color: #fff;
+}
+
+.selectField select option:checked {  
+  background-color: #3a3a3c;
+  color: #fff;
+  font-weight: 700;
+}
+
+.datePickerButtons {
+  justify-content: center;
+  gap: 3rem;
+  padding: 0.5rem 0;
+}

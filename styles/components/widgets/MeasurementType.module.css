@@ -1,0 +1,137 @@
+.headingContainer {
+  margin-bottom: 0.5rem;
+}
+
+.toggleButtonGroup {
+  gap: 0.55rem;
+}
+
+.toggleButtonGroup .toggleButton,
+.toggleButtonGroup .toggleButtonActive {
+  padding-block-start: 0.3rem;
+  padding-block-end: 0.3rem;
+}
+
+.toggleButtonGroup .toggleButtonAdjusted,
+.toggleButtonGroup .toggleButtonAdjustedActive {
+  padding-block-start: 0.2rem;
+  padding-block-end: 0.25rem;
+}
+
+.toggleButtonGroup .toggleButton,
+.toggleButtonGroup .toggleButtonAdjusted {
+  background-color: transparent;
+  border: 1px solid #f2f2f7;
+  opacity: 0.35;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  width: 8.34rem;
+}
+
+.toggleButtonGroup .toggleButton:hover,
+.toggleButtonGroup .toggleButtonAdjusted:hover,
+.toggleButtonGroup .toggleButtonActive,
+.toggleButtonGroup .toggleButtonAdjustedActive,
+.toggleButtonGroup .toggleButtonActive:hover,
+.toggleButtonGroup .toggleButtonAdjustedActive:hover,
+.toggleButtonGroup .toggleButton:active,
+.toggleButtonGroup .toggleButtonAdjusted:active {
+  background-color: transparent;
+  border: 1px solid #fff;
+  opacity: 1;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  width: 8.34rem;
+}
+
+.toggleButtonGroup .toggleButton[aria-pressed=true],
+.toggleButtonGroup .toggleButtonAdjusted[aria-pressed=true],
+.toggleButtonGroup .toggleButton[aria-pressed=true]:hover:not(:disabled),
+.toggleButtonGroup .toggleButtonAdjusted[aria-pressed=true]:hover:not(:disabled) {
+  background-color: transparent;
+  border: 1px solid #fff;
+  opacity: 1;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  width: 8.34rem;
+}
+
+.toggleButtonGroup .toggleButton:focus,
+.toggleButtonGroup .toggleButtonAdjusted:focus {
+  box-shadow: none;
+  background-color: transparent;
+  border: 1px solid #fff;
+  opacity: 1;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  width: 8.34rem;
+}
+
+.toggleButtonGroup .toggleButton:not(:last-of-type),
+.toggleButtonGroup .toggleButtonAdjusted:not(:last-of-type),
+.toggleButtonGroup .toggleButtonActive:not(:last-of-type),
+.toggleButtonGroup .toggleButtonAdjustedActive:not(:last-of-type) {
+  border-start-end-radius: 0.25rem;
+  border-end-end-radius: 0.25rem;
+}
+
+.toggleButtonGroup .toggleButton:not(:first-of-type),
+.toggleButtonGroup .toggleButtonAdjusted:not(:first-of-type),
+.toggleButtonGroup .toggleButtonActive:not(:first-of-type),
+.toggleButtonGroup .toggleButtonAdjustedActive:not(:first-of-type) {
+  border-start-start-radius: 0.25rem;
+  border-end-start-radius: 0.25rem;
+}
+
+.toggleButtonGroup .toggleButton:not(:first-of-type):not(:focus),
+.toggleButtonGroup .toggleButtonAdjusted:not(:first-of-type):not(:focus),
+.toggleButtonGroup .toggleButtonActive:not(:first-of-type):not(:focus),
+.toggleButtonGroup .toggleButtonAdjustedActive:not(:first-of-type):not(:focus) {
+  -webkit-border-start: 1px solid #ffffffbf;
+  border-inline-start: 1px solid #ffffffbf;
+}
+
+.toggleButtonGroup .toggleButton:not(:first-of-type):not(:focus):hover,
+.toggleButtonGroup .toggleButtonAdjusted:not(:first-of-type):not(:focus):hover,
+.toggleButtonGroup .toggleButtonActive:not(:first-of-type):not(:focus):hover,
+.toggleButtonGroup .toggleButtonAdjustedActive:not(:first-of-type):not(:focus):hover {
+  -webkit-border-start: 1px solid #fff;
+  border-inline-start: 1px solid #fff;
+}
+
+.infoIcon {
+  width: 30px;
+  padding-top: 3px;
+  height: 36px;
+  font-size: 1.5rem;
+  color: #f2f2f7;
+  opacity: 0.35;
+  cursor: help;
+}
+
+.infoIcon:hover {
+  opacity: 1;
+}
+
+@media screen and (min-width: 1136px) and (max-width: 1423px) {
+
+  .toggleButtonGroup .toggleButton,
+  .toggleButtonGroup .toggleButtonAdjusted,
+  .toggleButtonGroup .toggleButton:hover,
+  .toggleButtonGroup .toggleButtonAdjusted:hover,
+  .toggleButtonGroup .toggleButtonActive,
+  .toggleButtonGroup .toggleButtonAdjustedActive,
+  .toggleButtonGroup .toggleButtonActive:hover,
+  .toggleButtonGroup .toggleButtonAdjustedActive:hover,
+  .toggleButtonGroup .toggleButton:active,
+  .toggleButtonGroup .toggleButtonAdjusted:active,
+  .toggleButtonGroup .toggleButton[aria-pressed=true],
+  .toggleButtonGroup .toggleButtonAdjusted[aria-pressed=true],
+  .toggleButtonGroup .toggleButton[aria-pressed=true]:hover:not(:disabled),
+  .toggleButtonGroup .toggleButtonAdjusted[aria-pressed=true]:hover:not(:disabled),
+  .toggleButtonGroup .toggleButton:focus,
+  .toggleButtonGroup .toggleButtonAdjusted:focus {
+    width: 24%;
+  }
+
+}

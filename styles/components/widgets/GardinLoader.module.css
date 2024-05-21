@@ -1,0 +1,15 @@
+.gardinLoader {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 5rem;
+  height: 0.45rem;
+  font-size: 1rem;
+  fill: none;
+  stroke-width: 0.7rem;
+  stroke-linecap: round;
+}
+
+.gardinLoader line:nth-child(1) {
+  stroke-width: 0.8rem;
+}

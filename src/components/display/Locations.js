@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Collection, Expander, ExpanderItem, Flex, Heading, Image, Loader, Text, View } from '@aws-amplify/ui-react';
-//import { isMobile } from 'react-device-detect';
+import { Alert, Collection, Accordion, Flex, Heading, Image, Loader, Text, View } from '@aws-amplify/ui-react';
 import Area from '@/components/display/Area';
 import Location from '@/components/display/Location';
 import Breadcrumb from '@/components/structural/Breadcrumb';
@@ -17,14 +16,12 @@ import styles from '@/component-styles/display/Locations.module.css';
 
 const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLocationData, alertData = [],
   tenantData, tId, locationPath, locationType, onClickHandler, currentLocation, locationParts,
-  showModalHandler, currentLocations, tenantId, locationBreadCrumbPaths, animationHandler, siteName, topNavLocationData,
+  showModalHandler, currentLocations, tenantId, locationBreadCrumbPaths, animationHandler, townName, topNavLocationData,
   isLoadingAlertData }) => {
 
-  const isMobile = false;
-
-  const [expandedSection, setExpandedSection] = useState("itemGroup_0");
+  const [expandedSection, setExpandedSection] = useState(["itemGroup_0"]);
   const [indicesDate, setMeasurementsDate] = useState((process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T")[0]);
-  const [indicesType, setMeasurementsType] = useState("QE");
+  const [indicesType, setMeasurementsType] = useState("SUPPLY");
   const [indices, setMeasurements] = useState({});
   const [indicesLoaded, setMeasurementsLoaded] = useState(true);
   const [historicMeasurementsLoaded, setHistoricMeasurementsLoaded] = useState(true);
@@ -56,7 +53,7 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
     if (detail.ENTITY_TYPE == "AREA") {
 
       showModalHandler(detail, locationData, topNavLocationData,
-        currentLocation.split("__")[1], tenantData.CONFIG.site, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
+        currentLocation.split("__")[1], tenantData.CONFIG.town, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
         tenantData.CONFIG.header, tenantData.CONFIG.enableHeatmap);
 
     } else {
@@ -66,11 +63,11 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
 
     }
 
-  }, [currentLocation, locationData, onClickHandler, rootLocationData, showModalHandler, siteName, tenantData, topNavLocationData, tId]);
+  }, [currentLocation, locationData, onClickHandler, rootLocationData, showModalHandler, townName, tenantData, topNavLocationData, tId]);
 
   const getLocationTitle = useCallback((rangeLabel, start, end) => {
 
-    return <Flex justifyContent="space-between">
+    return <Flex justifyContent="space-between" style={{ "padding": "0 1rem" }}>
       { rangeLabel && <View>{ rangeLabel.indexOf("{") !== -1 ?
         rangeLabel.substring(0, rangeLabel.indexOf("{")) + rangeLabel.substring(rangeLabel.indexOf("}") + 1)
       :
@@ -92,27 +89,22 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
           tenantData.CONFIG?.locations[locationType]?.isAreaContainer ?      
             <View key={item.ENTITY_TYPE_ID} role="listitem"
               className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-              <Area isMobile={isMobile} location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
-                resourcesBucket={tenantData.CONFIG.resources} alertTypeConfig={tenantData.CONFIG.alerts.alertTypes}
-                showAlertDuration={tenantData.CONFIG.details.showAlertDuration}
-                showLatestAlertOnly={tenantData.CONFIG.details.showLatestAlertOnly}
+              <Area location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
+                resourcesBucket={tenantData.CONFIG.resources}
                 area={item} onClickHandler={clickHandler}
-                schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-                variant="tile" animation="immediate"
-                isHeatmapEnabled={tenantData.CONFIG.enableHeatmap} viewType={indexType}
+                schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)} 
+                animation="immediate" viewType={indexType}
                 indexValue={(indices || []).find(index => index.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
-                puiMaxValue={tenantData.CONFIG.measurements.PUI.maxValue || 30}
                 tenantId={tenantId}
               />
             </View>
           :
           <View key={item.ENTITY_TYPE_ID} role="listitem"
             className={`locationCollectionTile ${styles.dLocationCollectionTile}`}>
-            <Location isMobile={isMobile} location={item} alerts={alertData}
+            <Location location={item}
               locationTypeConfig={tenantData.CONFIG?.locations[item.GSI2_PK.replace("TYPE#", "").toLowerCase()]}
               resourcesBucket={tenantData.CONFIG?.resources} measurements={tenantData.CONFIG?.measurements} onClickHandler={clickHandler}
-              variant="tile" animation="immediate" tenantId={tenantId} />
+              animation="immediate" tenantId={tenantId} />
           </View>
       )}
     </Collection>;
@@ -153,17 +145,12 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
               <View key={"spacer_" + index} className={styles.dAreaCollectionTile}></View>
             : 
               <View key={item.ENTITY_TYPE_ID} className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-                <Area isMobile={isMobile} location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
+                <Area location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
                   resourcesBucket={tenantData.CONFIG.resources} alertTypeConfig={tenantData.CONFIG.alerts.alertTypes}
-                  showAlertDuration={tenantData.CONFIG.details.showAlertDuration}
-                  showLatestAlertOnly={tenantData.CONFIG.details.showLatestAlertOnly}
                   area={item} onClickHandler={clickHandler}
                   schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  alerts={alertData.filter(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  variant="tile" animation="immediate"
-                  isHeatmapEnabled={tenantData.CONFIG.enableHeatmap} viewType={indexType}
+                  animation="immediate" viewType={indexType}
                   indexValue={(indices || []).find(index => index.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
-                  puiMaxValue={tenantData.CONFIG.measurements.PUI.maxValue || 30}
                   tenantId={tenantId}
                 />
               </View>
@@ -174,7 +161,7 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
 
   }, [alertData, clickHandler, currentLocations, scheduleData, tenantData, TODAY]);
 
-  const getExpanderItems = useCallback((collectionItems, alertItems, indicesItems, indexType, isAreaContainer, tenantId) => {
+  const getExpanderItems = useCallback((collectionItems, indicesItems, indexType, isAreaContainer, tenantId) => {
 
     let expanderItems = [];
 
@@ -183,74 +170,78 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
       const itemGroupStartIdx = c == 0 ? c : (c * (tenantData.CONFIG?.locations[locationType]?.resPerPage || DEFAULT_PAGE_SIZE)) - 1;
       const itemGroupEndIdx = (tenantData.CONFIG?.locations[locationType]?.resPerPage || DEFAULT_PAGE_SIZE) * (c + 1);
 
-      expanderItems.push(<ExpanderItem
+      expanderItems.push(<Accordion.Item
         key={"itemGroup_" + c}
-        title={getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel, itemGroupStartIdx + 1,
-          collectionItems.length < itemGroupEndIdx + 1 ? collectionItems.length : itemGroupEndIdx + 1)
-        }
         value={"itemGroup_" + c}
         className={genericStyles.expanderItem}
       >
-        { isAreaContainer && tenantData?.CONFIG?.enableHeatmap && <>
-          <View className={styles.infoContainer}>
-            <Flex className={styles.infoContent}>
-              <View className={styles.measurementContainer}>
-                { Object.keys(tenantData.CONFIG.measurements || {}).filter(measurement => tenantData.CONFIG.measurements[measurement].enabled).length ?
-                  <MeasurementType current={indicesType} options={tenantData.CONFIG.measurements} tenantId={tenantId}
-                    onChangeHandler={setMeasurementsType} locationId={collectionItems[c].ENTITY_TYPE_ID.replace("LOCATION#", "")} />
-                :
-                  <></>
-                }
-              </View>
-              <View className={styles.legendContainer}>
-                <IndexLegend type={indicesType} />
-              </View>
-              <View className={styles.growthCycleContainer}>
-                <Flex className={styles.duration}>
-                  <Image src="/images/calendar.svg" alt="" title="Growth cycle duration" />
-                  <View className={styles.durationLabel}>
-                    { getActiveScheduleStartAndEndDay(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]),
-                      collectionItems[c].TIMEZONE_ID || "UTC") }
-                  </View>
-                </Flex>
-                <Text className={genericStyles.progressLabel}>
-                  Days Running
-                </Text>
-                { scheduleData.length > 0 && <>
-                  <GrowthCycleProgress area={areaData[0]} tenantId={tenantId}
-                  schedules={[getActiveSchedule(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]))]}
-                  alerts={[]} variant="thin" sliderValue={indicesDate} sliderChangeHandler={setMeasurementsDate} isSlideable={historicMeasurementsLoaded} />
-                  <Flex justifyContent="space-between">
-                    <Text className={genericStyles.locationDurationText}>0</Text>
-                    {/* Assumption that all areas in a location are growing the same thing */}
-                    <Text className={ isScheduleComplete(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) ?
-                      genericStyles.locationDurationCompleted100PcText
-                    :
-                      genericStyles.locationDurationText }
-                    >
-                      { getCycleDurationInDays(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) }
-                    </Text>
+        <Accordion.Trigger>
+          { getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel, itemGroupStartIdx + 1,
+            collectionItems.length < itemGroupEndIdx + 1 ? collectionItems.length : itemGroupEndIdx + 1) }
+          <Accordion.Icon />
+        </Accordion.Trigger>
+        <Accordion.Content>
+          { isAreaContainer && tenantData?.CONFIG?.enableHeatmap && <>
+            <View className={styles.infoContainer}>
+              <Flex className={styles.infoContent}>
+                <View className={styles.measurementContainer}>
+                  { Object.keys(tenantData.CONFIG.measurements || {}).filter(measurement => tenantData.CONFIG.measurements[measurement].enabled).length ?
+                    <MeasurementType current={indicesType} options={tenantData.CONFIG.measurements} tenantId={tenantId}
+                      onChangeHandler={setMeasurementsType} locationId={collectionItems[c].ENTITY_TYPE_ID.replace("LOCATION#", "")} />
+                  :
+                    <></>
+                  }
+                </View>
+                <View className={styles.legendContainer}>
+                  <IndexLegend type={indicesType} />
+                </View>
+                <View className={styles.growthCycleContainer}>
+                  <Flex className={styles.duration}>
+                    <Image src="/images/calendar.svg" alt="" title="Growth cycle duration" />
+                    <View className={styles.durationLabel}>
+                      { getActiveScheduleStartAndEndDay(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]),
+                        collectionItems[c].TIMEZONE_ID || "UTC") }
+                    </View>
                   </Flex>
-                </> }
-              </View>
-            </Flex>
-          </View>
-        </> }
-        { collectionItems.find(collectionItem => collectionItem.CA_DIMENSIONS) &&
-          getOrderedCollection(collectionItems
-            .filter(collectionItem => !collectionItem.DELETED_AT && collectionItem.CA_DIMENSIONS)
-            .sort((a, b) => caDimSort(a, b, "asc")),
-          indicesItems,
-          indexType,
-          tenantId
-        ) }
-        { getUnorderedCollection(collectionItems
-            .filter(collectionItem => !collectionItem.DELETED_AT && !collectionItem.CA_DIMENSIONS),
-          indicesItems,
-          indexType,
-          tenantId
-        ) }
-      </ExpanderItem>);
+                  <Text className={genericStyles.progressLabel}>
+                    Days Running
+                  </Text>
+                  { scheduleData.length > 0 && <>
+                    <GrowthCycleProgress area={areaData[0]} tenantId={tenantId}
+                    schedules={[getActiveSchedule(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]))]}
+                    alerts={[]} variant="thin" sliderValue={indicesDate} sliderChangeHandler={setMeasurementsDate} isSlideable={historicMeasurementsLoaded} />
+                    <Flex justifyContent="space-between">
+                      <Text className={genericStyles.locationDurationText}>0</Text>
+                      {/* Assumption that all areas in a location are growing the same thing */}
+                      <Text className={ isScheduleComplete(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) ?
+                        genericStyles.locationDurationCompleted100PcText
+                      :
+                        genericStyles.locationDurationText }
+                      >
+                        { getCycleDurationInDays(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) }
+                      </Text>
+                    </Flex>
+                  </> }
+                </View>
+              </Flex>
+            </View>
+          </> }
+          { collectionItems.find(collectionItem => collectionItem.CA_DIMENSIONS) &&
+            getOrderedCollection(collectionItems
+              .filter(collectionItem => !collectionItem.DELETED_AT && collectionItem.CA_DIMENSIONS)
+              .sort((a, b) => caDimSort(a, b, "asc")),
+            indicesItems,
+            indexType,
+            tenantId
+          ) }
+          { getUnorderedCollection(collectionItems
+              .filter(collectionItem => !collectionItem.DELETED_AT && !collectionItem.CA_DIMENSIONS),
+            indicesItems,
+            indexType,
+            tenantId
+          ) }
+        </Accordion.Content>
+      </Accordion.Item>);
 
     }
 
@@ -266,7 +257,7 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
     <>
 
       <ContentWellHeader
-        siteName={siteName}
+        townName={townName}
       >
         <Breadcrumb viewType={tenantData.CONFIG?.useAreasView ? "locations" : "location"}
           resourcesPath={tenantData.CONFIG?.resources || "gardin"} tenantName={tenantData.NAME}
@@ -284,14 +275,13 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
         <View className={`contentWellContainer ${genericStyles.contentWellContainer}`}>
           { ((tenantData && tenantData.CONFIG?.locations[locationType]?.isAreaContainer && currentLocations.length && areaData.length > tenantData.CONFIG.locations[locationType]?.resPerPage) ||
             tenantData && currentLocations.length > tenantData.CONFIG?.locations[locationType]?.resPerPage) ?
-            <Expander type="single" isCollapsible={true} value={expandedSection}
+            <Accordion.Container value={expandedSection}
               onValueChange={onChangeHandler} className={genericStyles.expander}>
               { getExpanderItems(
                 tenantData.CONFIG?.locations[locationType]?.isAreaContainer ?
                   areaData
                 :
                   currentLocations,
-                alertData.filter(alert => alert.STATE === "active"),
                 indices[locationParts[locationParts.length - 1]] && indices[locationParts[locationParts.length - 1]][indicesDate] ?
                   indices[locationParts[locationParts.length - 1]][indicesDate][indicesType]
                 : [],
@@ -299,89 +289,89 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
                 tenantData.CONFIG.locations[locationType]?.isAreaContainer,
                 tenantId
               )}
-            </Expander>
+            </Accordion.Container>
           :
             tenantData.CONFIG?.locations[locationType]?.isAreaContainer ?
-              <View className={`amplify-expander__item ${(areaData
+              <View as="details" className={`amplify-accordion__item ${(areaData
                 .find(item => 
                   getActiveSchedule(scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)) != null && alertData.find(alert => alert.GSI3_PK == item.ENTITY_TYPE_ID && alert.STATE == "active") != null
                 ) != null) ?
                   genericStyles.expanderActiveAlertItem
                 :
                   genericStyles.expanderItem
-              }`} data-state="open">
-                <Heading className="amplify-expander__header" level={3} data-state="open">
-                  <View className="amplify-expander__trigger">
-                    <View>{getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel)}</View>
+              }`} open>
+                <View as="summary" className="amplify-accordion__item__trigger">
+                  { getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel) }
+                  <View as="span" className="amplify-accordion__item__icon" ariaHidden="true">
+                    <View as="span" className="amplify-icon" style={{ "width": "1em", "height": "1em" }}>
+                    </View>
                   </View>
-                </Heading>
-                <View className="amplify-expander__content">
-                  <View className="amplify-expander__content__text">
-                    { indicesLoaded ?
-                      <>
-                        { tenantData?.CONFIG?.enableHeatmap && <Flex className={styles.infoContainer}>
-                          <View className={styles.measurementContainer}>
-                            { Object.keys(tenantData.CONFIG.measurements || {}).filter(measurement => tenantData.CONFIG.measurements[measurement].enabled).length ?
-                              <MeasurementType current={indicesType} options={tenantData.CONFIG.measurements}
-                                onChangeHandler={setMeasurementsType} tenantId={tenantId}
-                                locationId={locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locationParts[locationParts.length - 1])?.ENTITY_TYPE_ID.replace("LOCATION#", "")} />
-                            :
-                              <></>
-                            }
-                          </View>
-                          <View className={styles.growthCycleContainer}>s
-                            <Flex className={styles.duration}>
-                              <Image src="/images/calendar.svg" alt="" title="Growth cycle duration" />
-                              <View className={styles.durationLabel}>
-                                { getActiveScheduleStartAndEndDay(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]),
-                                  locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locationParts[locationParts.length - 1])?.TIMEZONE_ID || "UTC") }
-                              </View>
+                </View>
+                <View className="amplify-accordion__item__content">
+                  { indicesLoaded ?
+                    <>
+                      { tenantData?.CONFIG?.enableHeatmap && <Flex className={styles.infoContainer}>
+                        <View className={styles.measurementContainer}>
+                          { Object.keys(tenantData.CONFIG.measurements || {}).filter(measurement => tenantData.CONFIG.measurements[measurement].enabled).length ?
+                            <MeasurementType current={indicesType} options={tenantData.CONFIG.measurements}
+                              onChangeHandler={setMeasurementsType} tenantId={tenantId}
+                              locationId={locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locationParts[locationParts.length - 1])?.ENTITY_TYPE_ID.replace("LOCATION#", "")} />
+                          :
+                            <></>
+                          }
+                        </View>
+                        <View className={styles.growthCycleContainer}>s
+                          <Flex className={styles.duration}>
+                            <Image src="/images/calendar.svg" alt="" title="Growth cycle duration" />
+                            <View className={styles.durationLabel}>
+                              { getActiveScheduleStartAndEndDay(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]),
+                                locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locationParts[locationParts.length - 1])?.TIMEZONE_ID || "UTC") }
+                            </View>
+                          </Flex>
+                          <Text className={genericStyles.progressLabel}>
+                            Days Running
+                          </Text>
+                          { scheduleData.length > 0 && <>
+                            <GrowthCycleProgress area={areaData[0]} tenantId={tenantId}
+                            schedules={[getActiveSchedule(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]))]}
+                            alerts={[]} variant="thin" sliderValue={indicesDate} sliderChangeHandler={setMeasurementsDate} isSlideable={historicMeasurementsLoaded} />
+                            <Flex justifyContent="space-between">
+                              <Text className={genericStyles.locationDurationText}>0</Text>
+                              {/* Assumption that all areas in a location are growing the same thing */}
+                              <Text className={ isScheduleComplete(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) ?
+                                genericStyles.locationDurationCompleted100PcText
+                              :
+                                genericStyles.locationDurationText }
+                              >
+                                { getCycleDurationInDays(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) }
+                              </Text>
                             </Flex>
-                            <Text className={genericStyles.progressLabel}>
-                              Days Running
-                            </Text>
-                            { scheduleData.length > 0 && <>
-                              <GrowthCycleProgress area={areaData[0]} tenantId={tenantId}
-                              schedules={[getActiveSchedule(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1]))]}
-                              alerts={[]} variant="thin" sliderValue={indicesDate} sliderChangeHandler={setMeasurementsDate} isSlideable={historicMeasurementsLoaded} />
-                              <Flex justifyContent="space-between">
-                                <Text className={genericStyles.locationDurationText}>0</Text>
-                                {/* Assumption that all areas in a location are growing the same thing */}
-                                <Text className={ isScheduleComplete(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) ?
-                                  genericStyles.locationDurationCompleted100PcText
-                                :
-                                  genericStyles.locationDurationText }
-                                >
-                                  { getCycleDurationInDays(scheduleData.filter(schedule => schedule.GSI2_PK == "LOCATION#" + locationParts[locationParts.length - 1])) }
-                                </Text>
-                              </Flex>
-                            </> }
-                          </View>
-                        </Flex> }
-                        { areaData.find(area => area.CA_DIMENSIONS) &&
-                          getOrderedCollection(areaData
-                            .filter(area => !area.DELETED_AT && area.CA_DIMENSIONS)
-                            .sort((a, b) => caDimSort(a, b, "asc")),
-                          indices[locationParts[locationParts.length - 1]] && indices[locationParts[locationParts.length - 1]][indicesDate] ?
-                            indices[locationParts[locationParts.length - 1]][indicesDate][indicesType]
-                          : [],
-                          indicesType,
-                          tenantId)
-                        }
-                        { getUnorderedCollection(areaData
-                            .filter(area => !area.DELETED_AT && !area.CA_DIMENSIONS),
-                          indices[locationParts[locationParts.length - 1]] && indices[locationParts[locationParts.length - 1]][indicesDate] ?
-                            indices[locationParts[locationParts.length - 1]][indicesDate][indicesType]
+                          </> }
+                        </View>
+                      </Flex> }
+                      { areaData.find(area => area.CA_DIMENSIONS) &&
+                        getOrderedCollection(areaData
+                          .filter(area => !area.DELETED_AT && area.CA_DIMENSIONS)
+                          .sort((a, b) => caDimSort(a, b, "asc")),
+                        indices[locationParts[locationParts.length - 1]] && indices[locationParts[locationParts.length - 1]][indicesDate] ?
+                          indices[locationParts[locationParts.length - 1]][indicesDate][indicesType]
                         : [],
                         indicesType,
-                        tenantId) }
-                      </>
-                    :
-                      <View className={styles.loadingContainer}>
-                        <Loader size="large" emptyColor="#F2F2F7" filledColor="#89BC2B" />
-                      </View>
-                    }
-                  </View>
+                        tenantId)
+                      }
+                      { getUnorderedCollection(areaData
+                          .filter(area => !area.DELETED_AT && !area.CA_DIMENSIONS),
+                        indices[locationParts[locationParts.length - 1]] && indices[locationParts[locationParts.length - 1]][indicesDate] ?
+                          indices[locationParts[locationParts.length - 1]][indicesDate][indicesType]
+                      : [],
+                      indicesType,
+                      tenantId) }
+                    </>
+                  :
+                    <View className={styles.loadingContainer}>
+                      <Loader size="large" emptyColor="#F2F2F7" filledColor="#89BC2B" />
+                    </View>
+                  }
                 </View>
               </View>
             :
@@ -393,7 +383,7 @@ const Locations = ({ areaData = [], scheduleData = [], locationData = [], rootLo
                 </Heading>
                 <View className="amplify-expander__content">
                   <View className="amplify-expander__content__text">
-                    { getUnorderedCollection(currentLocations, null, "QE", tenantId) }
+                    { getUnorderedCollection(currentLocations, null, "SUPPLY", tenantId) }
                   </View>
                 </View>
               </View>
@@ -431,7 +421,7 @@ Locations.propTypes = {
   tenantId: PropTypes.string,
   locationBreadCrumbPaths: PropTypes.arrayOf(PropTypes.string),
   animationHandler: PropTypes.func,
-  siteName: PropTypes.string,
+  townName: PropTypes.string,
   topNavLocationData: PropTypes.arrayOf(PropTypes.object),
   isLoadingAlertData: PropTypes.bool
 };

@@ -2,14 +2,11 @@ import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Flex, Heading, Image, Link as AmplifyLink, View } from '@aws-amplify/ui-react';
-//import { isMobile } from 'react-device-detect';
 
 import genericStyles from '@/page-styles/Generic.module.css';
 
-const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, icon,
+const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
   area, areaConfig, locationPath, locations, locationConfigs, locationBreadCrumbPaths }) => {
-
-  const isMobile = false;
 
   return <Flex className={genericStyles.locationHeadings}>
     { viewType != "details" ?
@@ -18,30 +15,30 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
         level={1}
         key="breadCrumb_tenant"
       >
-        <Image src={`/images/${resourcesPath}/${ isMobile ? "" : "desktop-" }site-breadcrumb-icon.svg`} alt="" />
-        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#SITE").length > 1 ?
-          locations.filter(location => location.GSI2_PK == "TYPE#SITE" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
+        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" />
+        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
+          locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
             tenantName
           :
-            locations.find(location => location.GSI2_PK == "TYPE#SITE" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
+            locations.find(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
         :
-          locations.find(location => location.GSI2_PK == "TYPE#SITE")?.NAME || tenantName
+          locations.find(location => location.GSI2_PK == "TYPE#TOWN")?.NAME || tenantName
         }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
       </Heading>
     :
       <Heading
         className={genericStyles.h2Heading}
         level={2}
-        key="breadCrumb_site"
+        key="breadCrumb_town"
       >
-        <Image src={`/images/${resourcesPath}/${ isMobile ? "" : "desktop-" }site-breadcrumb-icon.svg`} alt="" />
-        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#SITE").length > 1 ?
-          locations.filter(location => location.GSI2_PK == "TYPE#SITE" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
+        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" />
+        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
+          locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
             tenantName
           :
-            locations.find(location => location.GSI2_PK == "TYPE#SITE" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
+            locations.find(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
         :
-          locations.find(location => location.GSI2_PK == "TYPE#SITE")?.NAME || tenantName
+          locations.find(location => location.GSI2_PK == "TYPE#TOWN")?.NAME || tenantName
         }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
       </Heading>
     }
@@ -54,7 +51,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
         { viewType == "alerts" ?
           <Image src={`/images/${icon}`} alt="" />
         :
-          <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}${icon}`} alt="" />
+          <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" />
         }
         <View as="span">{label} View</View>
       </Heading>
@@ -74,7 +71,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
               level={1}
               key={"breadCrumb_location_" + idx}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
               { locationUrl ?
                 <>
                   <Link href={locationUrl} passHref>
@@ -125,7 +122,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
               level={1}
               key={"breadCrumb_location_" + ((locationPath.split("#") || []).length)}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
               <View as="span">
                 All {label} in { locationConfig?.breadCrumbLabel.indexOf("{") != -1 ?
                   locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
@@ -148,7 +145,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
         {(area?.PATH?.split("#") || []).map((locId, idx, arr) => {
 
           const locationData = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locId);
-          if (locationData && locationData.GSI2_PK != "TYPE#SITE") {
+          if (locationData && locationData.GSI2_PK != "TYPE#TOWN") {
 
             const locationConfig = locationConfigs[locationData.GSI2_PK.replace("TYPE#", "").toLowerCase()];
 
@@ -157,7 +154,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
               level={2}
               key={"breadCrumb_location_" + idx}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
               <View as="span">
               { (locationConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
                 locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
@@ -182,7 +179,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
           level={2}
           key="breadCrumb_area"
         >
-          <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}${icon}`} alt="" />
+          <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" />
           <View as="span">
             { (areaConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
               areaConfig.breadCrumbLabel.substring(0, areaConfig.breadCrumbLabel.indexOf("{")) +
@@ -199,7 +196,7 @@ const Breadcrumb = ({ viewType, resourcesPath = "gardin", tenantName, label, ico
           level={2}
           key="breadCrumb_details"
         >
-          <Image src={`/images/${resourcesPath}/${isMobile ? "" : "desktop-"}details-breadcrumb-icon.svg`} alt="" />
+          <Image src={`/images/${resourcesPath}/desktop-details-breadcrumb-icon.svg`} alt="" />
           <View as="span">{label}</View>
         </Heading>
       </Fragment>

@@ -99,8 +99,8 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
 
     if (isSuccess) {
 
-      let newTopNavLocation = "tnl";
-      if (!currentTopNavLocation || currentTopNavLocation == "tnl") {
+      let newTopNavLocation = "country";
+      if (!currentTopNavLocation || currentTopNavLocation == "country") {
 
         const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
         if (defaultTopNavLocation) {
@@ -124,8 +124,8 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
 
   if (isSuccess) {
 
-    let newTopNavLocation = "tnl";
-    if (!currentTopNavLocation || currentTopNavLocation == "tnl") {
+    let newTopNavLocation = "country";
+    if (!currentTopNavLocation || currentTopNavLocation == "country") {
 
       const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
       if (defaultTopNavLocation) {
@@ -139,58 +139,50 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
     const rootLocationId = data.rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
     let theRoute = "";
 
-    if (alertsViewOnly) {
+    let topNavLocationPathLen = 0;
+    let childLocationsForTopNavLocation = [];
+    const currentTopNavLocationData = data.topNavLocations
+      .find(topNavLocation => topNavLocation.ENTITY_TYPE_ID == `LOCATION#${currentTopNavLocation}`);
+    if (currentTopNavLocationData) {
 
-      theRoute = `/alerts/${rootLocationId}/${currentTopNavLocation}${tId ? "?tId=" + tId : ""}`;
+      topNavLocationPathLen = currentTopNavLocationData.PATH.split("#").length;
+      childLocationsForTopNavLocation = data.locations
+        .filter((location) => location.PATH.startsWith(currentTopNavLocationData.PATH + "#") &&
+          location.PATH.split("#").length == topNavLocationPathLen + 1);
+
+    }
+
+    let currentTown;
+    if (currentTopNavLocationData) {
+
+      currentTown = childLocationsForTopNavLocation.length > 1 ?
+        currentTopNavLocationData
+      :
+        childLocationsForTopNavLocation.find(location => location.DEFAULT_LOCATION);
 
     } else {
 
-      let topNavLocationPathLen = 0;
-      let childLocationsForTopNavLocation = [];
-      const currentTopNavLocationData = data.topNavLocations
-        .find(topNavLocation => topNavLocation.ENTITY_TYPE_ID == `LOCATION#${currentTopNavLocation}`);
-      if (currentTopNavLocationData) {
+      currentTown = data.locations.find(location => location.DEFAULT_LOCATION);
 
-        topNavLocationPathLen = currentTopNavLocationData.PATH.split("#").length;
-        childLocationsForTopNavLocation = data.locations
-          .filter((location) => location.PATH.startsWith(currentTopNavLocationData.PATH + "#") &&
-            location.PATH.split("#").length == topNavLocationPathLen + 1);
+    }
 
-      }
+    if (currentTown) {
 
-      let currentSite;
-      if (currentTopNavLocationData) {
-
-        currentSite = childLocationsForTopNavLocation.length > 1 ?
-          currentTopNavLocationData
+      theRoute = `/installation/${rootLocationId}/${currentTopNavLocation || newTopNavLocation}${
+        (childLocationsForTopNavLocation.length > 1 ? 
+          data.tenantData.CONFIG.header[currentTown.LOCATION_HEADER_KEY].childPath
         :
-          childLocationsForTopNavLocation.find(location => location.DEFAULT_LOCATION);
+          "/" + currentTown.GSI2_PK.replace("TYPE#", "").toLowerCase()) +
+        "/" + 
+        (childLocationsForTopNavLocation.length > 1 ? 
+          currentTopNavLocation
+        :
+          currentTown.ENTITY_TYPE_ID.replace("LOCATION#", ""))
+      }`;
 
-      } else {
+    } else {
 
-        currentSite = data.locations.find(location => location.DEFAULT_LOCATION);
-
-      }
-
-      if (currentSite) {
-
-        theRoute = `/installation/${rootLocationId}/${currentTopNavLocation || newTopNavLocation}${
-          (childLocationsForTopNavLocation.length > 1 ? 
-            data.tenantData.CONFIG.header[currentSite.LOCATION_HEADER_KEY].childPath
-          :
-            "/" + currentSite.GSI2_PK.replace("TYPE#", "").toLowerCase()) +
-          "/" + 
-          (childLocationsForTopNavLocation.length > 1 ? 
-            currentTopNavLocation
-          :
-            currentSite.ENTITY_TYPE_ID.replace("LOCATION#", ""))
-        }${tId ? "?tId=" + tId : ""}`;
-
-      } else {
-
-        theRoute = `/installation/${rootLocationId}/${currentTopNavLocation || newTopNavLocation}/site/${rootLocationId}${tId ? "?tId=" + tId : ""}`;
-
-      }
+      theRoute = `/installation/${rootLocationId}/${currentTopNavLocation || newTopNavLocation}/town/${rootLocationId}`;
 
     }
 

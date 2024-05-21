@@ -46,7 +46,7 @@ const InsightImages = ({ alerts = [], schedule, zones = [], tz = "UTC",
         :
           zones.sort((a, b) => zoneDimSort(a, b, "asc"))[idx];
         let imgData = !currZone ? "" : `/public/traydetail/${
-          schedule.ENTITY_TYPE_ID.replace("GROWTHJOB#", "")
+          schedule.ENTITY_TYPE_ID.replace("SCHEDULE#", "")
         }/${
           currZone.ENTITY_TYPE_ID.replace("ZONE#", "")
         }/${idx + 1}.png?t=${now}`;

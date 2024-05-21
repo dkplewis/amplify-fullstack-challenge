@@ -259,19 +259,3 @@ export const valueSort = (a, b, sortOrder) => {
 };
 
 export const name = "sort";
-
-module.exports = {
-  areaSort,
-  caDimSort,
-  zoneDimSort,
-  getLocationHierarchy,
-  hierarchySort,
-  labelSort,
-  nameSort,
-  orderSort,
-  pathSort,
-  severitySort,
-  timeSort,
-  valueSort,
-  name
-};

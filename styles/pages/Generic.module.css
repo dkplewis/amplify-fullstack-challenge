@@ -1,0 +1,165 @@
+.contentWellHeader {
+  padding: 1.57rem 2.65rem 1.1rem 2.65rem;
+  margin-bottom: 1.65rem;
+}
+
+.contentWellHeading {
+  min-height: 1.55rem;
+}
+
+div.locationHeadings {
+  gap: 0;
+  align-items: center;
+  position: relative;
+  left: -0.325rem;
+}
+
+h1.h1Heading, 
+h1.h1Heading > div {
+  font-size: 2rem;
+  text-transform: uppercase;
+  background-repeat: no-repeat;
+  background-position: left;
+}
+
+.h1Heading > img {
+  margin-right: 0.55rem;
+  width: 30px;
+  height: 30px;
+}
+
+.h1Heading > amplify-storageimage {
+  margin-right: 0.25rem;
+}
+
+h2.h2Heading,
+h2.h2Heading > div {
+  text-transform: uppercase;
+}
+
+.h2Heading > img {
+  margin-right: 0.1rem;
+}
+
+.h2Heading > storageimage {
+  margin-right: 0.25rem;
+}
+
+.contentWellContainer .h2Heading {
+  margin-bottom: 1rem;
+}
+
+h3.h3Heading {
+  text-transform: uppercase;
+}
+
+.h5Heading {
+  text-transform: uppercase;
+}
+
+p.siteName {
+  padding: 0.1rem 0;
+}
+
+.backButton {
+  margin-bottom: -1.33rem; /* This adjusts the header to the correct height */
+  width: 3.22rem;
+  height: 3.22rem;
+  cursor: pointer;
+}
+
+.backButton a img {
+  padding: 0.1rem;
+}
+
+.closeButton {
+  width: 3.22rem;
+  height: 3.22rem;
+  cursor: pointer;
+}
+
+.closeButton a img {
+  padding: 0.1rem;
+}
+
+.widgetContainer {
+  align-items: flex-end;
+  gap: 0;
+  margin: 0.8rem 0 0.6rem 0;
+}
+
+.logoContainer {
+  align-items: flex-start;
+  width: 37%;
+}
+
+.logo {
+  width: 4rem;
+}
+
+.widgets {
+  position: relative;
+  top: 0.8rem;
+  justify-content: flex-end;
+  width: 63%;
+}
+
+.contentWellContainer {
+  padding: 0;
+}
+
+.contentWell {
+  padding: 2.875rem 0;
+}
+
+.paginationContainer {
+  justify-content: flex-end;
+}
+
+.expanderItem h3 {
+  text-transform: uppercase;
+}
+
+.growthCycleProgress {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.growthCycleProgressNoMargin {
+  align-items: start;
+  justify-content: space-between;
+}
+
+.progressContainer {
+  width: 100%;
+}
+
+p.progressLabel {
+  margin: 0 0 0.1rem 0;
+  text-transform: uppercase;
+}
+
+p.measurementDescriptionText {
+  text-transform: none !important;
+}
+
+p.locationDuration100PcText,
+p.locationDurationCompleted100PcText {
+  text-align: right;
+}
+
+p.locationDurationSeverityText {
+  text-align: center;
+}
+
+.dFooter {
+  width: 100%;
+  text-align: center;
+}
+
+.expandCollapseButton {
+  width: 100%;
+  text-align: right;
+}

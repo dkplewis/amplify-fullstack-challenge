@@ -1,0 +1,56 @@
+.aggregationContainer {
+  padding: 0 2.65rem;
+  margin-top: 3rem;
+  margin-bottom: 1.2rem;
+  gap: initial;
+  align-items: flex-start;
+}
+
+.contentWellIcon {
+  width: 2.84rem;
+  margin-right: 2.72rem;
+}
+
+.overallHealth {
+  width: 11.85rem;
+  margin-top: 2.18rem;
+  margin-right: 3.6rem;
+  text-align: center;
+}
+
+.overallPerf {
+  width: 19.87rem;
+  margin-top: 2.18rem;
+  margin-right: 4.2rem;
+  text-align: center;
+}
+
+.overallPerfHeading {
+  text-transform: uppercase;
+  color: #636366;
+  line-height: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.7rem;
+}
+
+.firstPerfChart {
+  margin-bottom: 1.7rem;
+}
+
+.totalAlerts {
+  margin-top: 2.18rem;
+  width: 9.44rem;
+  text-align: center;
+}
+
+p.totalAlertText {
+  margin-top: 0.95rem;
+  color: #d1d1d6;
+  font-size: 8rem;
+  font-weight: 700;
+}
+
+p.hasActiveAlert {
+  color: #f5d205
+}

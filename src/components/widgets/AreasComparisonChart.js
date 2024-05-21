@@ -234,7 +234,7 @@ const AreasComparisonChart = ({ data = [], measurementConfig, period, defaultPer
           return <Flex key={areaPayload.dataKey + "-" + idx} gap="0.5rem" className="custom-tooltip-extraspace">
             <Text className="custom-tooltip-label evenly">{areas
               .find(area => area.ENTITY_TYPE_ID == "AREA#" + areaPayload.dataKey)?.NAME || "Area"}</Text>
-            <Text className="custom-tooltip-label evenly">{`${areaPayload.value}${["phi", "ps2", "qe"].includes(activeIndex) ?
+            <Text className="custom-tooltip-label evenly">{`${areaPayload.value}${["phi", "ps2", "supply"].includes(activeIndex) ?
               "%"
             : activeIndex == "pui" && config.PUI?.maxValue ?
               " out of " + config.PUI.maxValue

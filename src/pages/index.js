@@ -7,6 +7,8 @@ import Loading from '@/components/display/Loading';
 import { StoreContext } from '@/store/store';
 import { getLocationDataAndTenant } from '@/utils/crud';
 
+import styles from '@/page-styles/Alert.module.css';
+
 export const getServerSideProps = async ({ req }) => {
 
   const queryClient = new QueryClient();
@@ -79,7 +81,7 @@ const Home = ({ tenantId }) => {
     if (isSuccess) {
 
       const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
-      let newTopNavLocation = "tnl";
+      let newTopNavLocation = "country";
       if (defaultTopNavLocation) {
 
         newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
@@ -104,7 +106,7 @@ const Home = ({ tenantId }) => {
   if (isSuccess) {
 
     const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
-    let newTopNavLocation = "tnl";
+    let newTopNavLocation = "country";
     if (defaultTopNavLocation) {
 
       newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
@@ -112,20 +114,20 @@ const Home = ({ tenantId }) => {
     }
 
     const rootLocationId = data.rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
-    const currentSite = data.locations.find(location => location.GSI2_PK == "TYPE#SITE" && location.DEFAULT_LOCATION);
+    const currentTown = data.locations.find(location => location.GSI2_PK == "TYPE#TOWN" && location.DEFAULT_LOCATION);
 
     let theRoute;
 
     const rootUrl = "/installation/" + rootLocationId + "/" + newTopNavLocation + "/";
 
-    if (currentSite) {
+    if (currentTown) {
 
-      theRoute = rootUrl + currentSite.GSI2_PK.replace("TYPE#", "").toLowerCase() + "/" +
-        currentSite.ENTITY_TYPE_ID.replace("LOCATION#", "");
+      theRoute = rootUrl + currentTown.GSI2_PK.replace("TYPE#", "").toLowerCase() + "/" +
+        currentTown.ENTITY_TYPE_ID.replace("LOCATION#", "");
     
     } else {
 
-      theRoute = rootUrl + "site/" + rootLocationId;
+      theRoute = rootUrl + "town/" + rootLocationId;
 
     }
 

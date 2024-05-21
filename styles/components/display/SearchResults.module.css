@@ -1,0 +1,20 @@
+.searchContainer {
+  width: 18.75rem;
+  margin: 0 auto;
+}
+
+.searchResultsContainer {
+  margin: 1.1rem 0 0 0.1rem;
+}
+
+.searchResultsCollection {
+  margin-top: 1.3rem;
+}
+
+.searchResultsCollectionListItem {
+  width: 100%;
+}
+
+.searchResultsCollectionTile {
+  width: 18%;
+}

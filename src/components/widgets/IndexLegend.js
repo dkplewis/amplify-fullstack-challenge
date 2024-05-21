@@ -3,7 +3,7 @@ import { Flex, Text, View } from '@aws-amplify/ui-react';
 
 import styles from '@/component-styles/widgets/IndexLegend.module.css';
 
-const IndexLegend = ({ type = "QE" }) => {
+const IndexLegend = ({ type = "SUPPLY" }) => {
 
   const thresholds = {
     PHI: ["> 80%", "71 - 80%", "61 - 70%", "51 - 60%", "< 50%" ],
