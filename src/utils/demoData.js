@@ -25,7 +25,7 @@ export const TENANT_ENTITY = {
       "childPath": "/details",
       "detailsView": "indeximage",
       "enableColourPalette": true,
-      "icon": "tray-breadcrumb-icon.svg",
+      "icon": "area-breadcrumb-icon.svg",
       "isAreaContainer": true,
       "label": "Street",
       "rangeLabel": "Streets",
@@ -34,7 +34,7 @@ export const TENANT_ENTITY = {
       "searchResultLabel": "Street",
       "showAlertDuration": true,
       "showLatestAlertOnly": true,
-      "tileBackground": "tray-icon.svg",
+      "tileBackground": "area-icon.svg",
       "trendlinePeriod": "1"
     },
     "enableHeatmap": true,
@@ -86,30 +86,29 @@ export const TENANT_ENTITY = {
     },
     "measurements": {
       "SUPPLY": {
-        "buttonIcon": "quantumefficiency-index",
+        "buttonIcon": "supply-measurement",
         "defaultExpanded": false,
-        "description": "The ratio of light photons converted for photosynthesis, impacted by light intensity and plant stress.",
+        "description": "The percentage of electricity supply available for charging in an area.",
         "displayOnView": "both",
         "enabled": true,
         "impact": "",
-        "label": "Efficiency",
-        "order": 2,
+        "label": "Supply",
+        "order": 1,
         "showTooltip": true
       },
       "DEMAND": {
-        "buttonIcon": "quantumefficiency-index",
+        "buttonIcon": "demand-measurement",
         "defaultExpanded": false,
-        "description": "The ratio of light photons converted for photosynthesis, impacted by light intensity and plant stress.",
+        "description": "The percentage of electricity required for charging in an area.",
         "displayOnView": "both",
         "enabled": true,
         "impact": "",
-        "label": "Efficiency",
+        "label": "Demand",
         "order": 2,
         "showTooltip": true
       }
     },
     "resources": "devto",
-    "tenantLogo": "triplet.svg",
     "useAreasView": true
   },
   "CREATED_AT": "2023-01-12T17:32:49.48Z",
@@ -205,6 +204,21 @@ export const LOCATION_ENTITIES = [
     "MAX_ROW": 1,
     "NAME": "South View",
     "PATH": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31",
+    "TIMEZONE_ID": "Europe/London",
+    "TOTAL_CONTROL_AREAS": 1
+  },
+  {
+    "CREATED_AT": "2022-09-01T18:59:50.29Z",
+    "DEFAULT_LOCATION": false,
+    "ENTITY_TYPE": "LOCATION",
+    "DELETED_AT": null,
+    "ENTITY_TYPE_ID": "LOCATION#01HYEEVJMRK4SM9X492BBTNAPS",
+    "GSI2_PK": "TYPE#NEIGHBOURHOOD",
+    "LOCATION_HEADER_KEY": null,
+    "MAX_COL": 7,
+    "MAX_ROW": 1,
+    "NAME": "South Ham",
+    "PATH": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01HYEEVJMRK4SM9X492BBTNAPS",
     "TIMEZONE_ID": "Europe/London",
     "TOTAL_CONTROL_AREAS": 1
   }

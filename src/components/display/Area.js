@@ -4,8 +4,8 @@ import { Card, Text, View } from '@aws-amplify/ui-react';
 
 import styles from '@/component-styles/display/Area.module.css';
 
-const Area = ({ location, area, schedules, locationTypeConfig, resourcesBucket, onClickHandler,
-  animation = "immediate", viewType, indexValue, tenantId }) => {
+const Area = ({ location, area, locationTypeConfig, resourcesBucket, onClickHandler,
+  indexValue, tenantId }) => {
 
   const tileBg = useMemo(() => {
 
@@ -33,9 +33,6 @@ const Area = ({ location, area, schedules, locationTypeConfig, resourcesBucket, 
   return <>
     <Card className={`areaTile ${styles.locationTile}`} backgroundImage={"url('" + tileBg + "')"} title="Go to this area"
       id={`area-${location.NAME}-${area.NAME}_tenantId-${tenantId}`}
-      data-amplify-analytics-on="click"
-      data-amplify-analytics-name="areaClick"
-      data-amplify-analytics-attrs={`area:${location.NAME}-${area.NAME},tenantId:${tenantId}`}
       onClick={(evt) => onClickHandler(evt, "immediate", area)}
     >
     </Card>
@@ -54,18 +51,10 @@ Area.propTypes = {
   isMobile: PropTypes.bool,
   location: PropTypes.object.isRequired,
   area: PropTypes.object.isRequired,
-  schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
-  alerts: PropTypes.arrayOf(PropTypes.object),
-  alertTypeConfig: PropTypes.object,
   locationTypeConfig: PropTypes.object,
   resourcesBucket: PropTypes.string,
-  showAlertDuration: PropTypes.bool,
-  showLatestAlertOnly: PropTypes.bool,
   onClickHandler: PropTypes.func.isRequired,
-  puiMaxValue: PropTypes.number,
   variant: PropTypes.string,
-  animation: PropTypes.string,
-  isHeatmapEnabled: PropTypes.bool,
   viewType: PropTypes.string,
   indexValue: PropTypes.number,
   tenantId: PropTypes.string

@@ -1496,20 +1496,10 @@ export const getMeasurementsDataByTime = (indices, currentDateMs, endDateMs, isH
     .filter(index => indicesKeys.includes(index.GSI5_SK.split("#")[0]) &&
       ((type && index.GSI5_PK.indexOf("#" + type.toUpperCase() + "#") > -1) || !type))
     .map(index => {
-      const indexType = index.GSI5_PK.indexOf("#PHI#") > -1 ?
-        "phi"
-      : index.GSI5_PK.indexOf("#PS2#") > -1 ?
-        "ps2"
-      : index.GSI5_PK.indexOf("#PUI#") > -1 ?
-        "pui"
-      : index.GSI5_PK.indexOf("#PEI#") > -1 ?
-        "pei"
-      : index.GSI5_PK.indexOf("#ETR#") > -1 ?
-        "etr"
-      : index.GSI5_PK.indexOf("#PAR#") > -1 ?
-        "par"
-      : index.GSI5_PK.indexOf("#DAY#") > -1 ?
+      const indexType = index.GSI5_PK.indexOf("#SUPPLY#") > -1 ?
         "supply"
+      : index.GSI5_PK.indexOf("#DEMAND#") > -1 ?
+        "demand"
       : "ign";
       const [createDate, createTime] = index.CREATED_AT.split("T");
       if (isSeconds || isMinutes || isHourly) {

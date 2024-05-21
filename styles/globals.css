@@ -166,8 +166,7 @@ p.amplify-text {
 .highlightButton.area.amplify-button[data-variation=link]:hover img,
 .highlightButton.area.amplify-button[data-variation=link]:active img,
 .highlightButton.area.amplify-button[data-variation=link]:focus img,
-.custom-tooltip .custom-tooltip-image img.index-icon,
-img.index-type-button {
+.custom-tooltip .custom-tooltip-image img.index-icon {
   opacity: 1;
   filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
 }
@@ -471,11 +470,6 @@ ul.slider {
   height: 9.25rem;
 }
 
-.tenantLogo > amplify-storageimage {
-  --width: 2.66rem;
-  --height: 2.66rem;
-}
-
 .h1Heading > img {
   width: 1.33rem;
   height: 1.33rem;
@@ -490,21 +484,21 @@ ul.slider {
   display: none;
 }
 
-.headerNav > a:hover > span,
-.headerNav > a:focus > span,
-.headerNav > a:active > span {
+.headerNav:hover > span,
+.headerNav:focus > span,
+.headerNav:active > span {
   text-decoration: underline;
 }
 
-.headerNav > a:hover > img.headerNavImg,
-.headerNav > a:focus > img.headerNavImg,
-.headerNav > a:active > img.headerNavImg {
+.headerNav:hover > img.headerNavImg,
+.headerNav:focus > img.headerNavImg,
+.headerNav:active > img.headerNavImg {
   display: none;
 }
 
-.headerNav > a:hover > img.headerNavHoverImg,
-.headerNav > a:focus > img.headerNavHoverImg,
-.headerNav > a:active > img.headerNavHoverImg {
+.headerNav:hover > img.headerNavHoverImg,
+.headerNav:focus > img.headerNavHoverImg,
+.headerNav:active > img.headerNavHoverImg {
   display: inline;
 }
 
@@ -537,18 +531,9 @@ ul.slider {
   padding: 1.57rem 0 0 1rem;
 }
 
-.isDesktop .detailsView.multiCharts .contentWellHeader {
-  padding: 1.57rem 0 0 0;
-}
-
 .isDesktop .detailsView.multiIndices .contentWellHeader {
   width: 71rem;
   padding: 0.25rem 0 0 0;
-}
-
-.isDesktop .alertsView .contentWellHeader {
-  margin-bottom: 0;
-  padding: 1.57rem 0 1rem 1rem;
 }
 
 .isDesktop .contentWellHeader a:hover {
@@ -560,6 +545,10 @@ ul.slider {
   margin-top: 6px;
 }
 
+.isDesktop .locationCollection {
+  margin-bottom: 1.3rem;
+}
+
 .isDesktop .locationTile,
 .isDesktop .controlAreaTile {
   background-color: transparent;
@@ -567,22 +556,8 @@ ul.slider {
   padding: 0 1rem;
 }
 
-.isDesktop .locationTile {
-  height: 3.96rem;
-}
-
-.isDesktop .controlAreaTile {
-  height: 3.96rem;
-  background-position: bottom;
-  margin-bottom: 0.2775rem;
-}
-
 .isDesktop .multiIndices .infoLabel {
   width: auto;
-}
-
-.isDesktop footer > .tenantLogo {
-  margin: 1rem auto;
 }
 
 [data-amplify-container] .login-logo-text {

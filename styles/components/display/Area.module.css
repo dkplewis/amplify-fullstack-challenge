@@ -3,22 +3,17 @@
   text-align: center;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: inset 0px 0px 31px rgba(58, 58, 60, 0.45);
-  height: 5.46rem;
+  background-size: 50%;
+  width: 6.5rem;
+  height: 6.5rem;
   padding: 0.2rem 1rem 0.5rem 1rem;
   cursor: pointer;
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 .locationIdContainer {
   width: 29%;
-}
-
-.mTileLocationIdContainer {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  bottom: 1.75rem;
-  z-index: 10;
 }
 
 .dTileLocationIdContainer {

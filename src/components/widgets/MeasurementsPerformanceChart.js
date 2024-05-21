@@ -114,9 +114,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
       }, []);
       if (minMax.length == 2) {
 
-        const minMaxDiff = (index == "phi" || index == "ps2" || index == "etr" || index == "par" || index == "supply") && minMax[0] > 0 ? 
-          Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
-        : index == "pei" || index == "pui" ? 
+        const minMaxDiff = (index == "supply" || index == "demand") && minMax[0] > 0 ? 
           Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
         : 0;
         // Add extra padding to the min value to ensure data points aren't covered by the indices selector buttons
@@ -182,17 +180,9 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
         [undefined, undefined];
       if (min != undefined && max != undefined) {
 
-        if (key != "pei") {
-
-          const diff = max - min;
-          const initialTick = diff / 4;
-          result[key] = [min, min + initialTick, min + (initialTick * 2), min + (initialTick * 3), max];
-
-        } else if (key == "pei") {
-
-          result[key] = [min, -25, 0, 25, max];
-
-        }
+        const diff = max - min;
+        const initialTick = diff / 4;
+        result[key] = [min, min + initialTick, min + (initialTick * 2), min + (initialTick * 3), max];
 
       }
       
@@ -229,7 +219,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
         <Flex className="custom-tooltip-columns">
           <View>
             { payload
-              .filter((indexPayload) => ["phi", "pei", "ps2", "pui"].includes(indexPayload.dataKey))
+              .filter((indexPayload) => ["supply", "demand"].includes(indexPayload.dataKey))
               .sort((a, b) => {
                 const aOrder = config[a.dataKey.toUpperCase()].order;
                 const bOrder = config[b.dataKey.toUpperCase()].order;
@@ -245,35 +235,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
                       ""
                     }-active.svg`} alt="" />
                   </View>
-                  <Text className="custom-tooltip-label lesspad">{`${indexPayload.value}${["phi", "ps2"].includes(indexPayload.dataKey) ?
-                    "%"
-                  : indexPayload.dataKey == "pui" && config.PUI?.maxValue ?
-                    " out of " + config.PUI.maxValue
-                  :
-                    ""
-                  }`}</Text>
-                </Flex>;
-
-              })
-            }
-          </View>
-          <View>
-            { payload
-              .filter((indexPayload) => ["etr", "par", "supply"].includes(indexPayload.dataKey))
-              .sort((a, b) => {
-                const aOrder = config[a.dataKey.toUpperCase()].order;
-                const bOrder = config[b.dataKey.toUpperCase()].order;
-                return aOrder > bOrder ? 1 : aOrder < bOrder ? -1 : 0;
-              })
-              .map((indexPayload, idx) => {
-
-                return <Flex key={indexPayload.dataKey + "-" + indexPayload.payload.displayDate + "-" + idx} gap="0" className="custom-tooltip-extraspace">
-                  <Text className="custom-tooltip-label morepad autocase">{indexPayload.dataKey != "supply" ?
-                    indexPayload.dataKey.toUpperCase()
-                  :
-                    "qE"
-                  }&nbsp;=&nbsp;</Text>
-                  <Text className="custom-tooltip-label morepad">{indexPayload.value}{indexPayload.dataKey == "supply" ? "%" : ""}</Text>
+                  <Text className="custom-tooltip-label lesspad">%</Text>
                 </Flex>;
 
               })

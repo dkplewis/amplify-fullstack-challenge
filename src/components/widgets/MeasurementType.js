@@ -28,17 +28,11 @@ const MeasurementType = ({ current, options, locationId, tenantId, onChangeHandl
         return options[option].enabled && options[option].displayOnView != "details" && <ToggleButton
           key={option}
           value={option}
-          className={option == "PEI" ?
-            current == option ? styles.toggleButtonAdjustedActive : styles.toggleButtonAdjusted
-          :
-            current == option ? styles.toggleButtonActive : styles.toggleButton
-          }
+          className={current == option ? styles.toggleButtonActive : styles.toggleButton}
           id={`indexType-${option}_location-${locationId}_tenantId-${tenantId}`}
-          data-amplify-analytics-on="click"
-          data-amplify-analytics-name="indexTypeChange"
-          data-amplify-analytics-attrs={`indexType:${option},location:${locationId},tenantId:${tenantId}`}
         >
-          <Image className="index-type-button" src={"/images/" + options[option].buttonIcon + (current == option ? "-active" : "") + ".svg"} alt="" title={options[option].label} />
+          <Image className="index-type-button" src={"/images/" + options[option].buttonIcon + (current == option ? "-active" : "") + ".svg"}
+            alt="" title={options[option].label} width={24} height={24} />
         </ToggleButton>;
 
       }) }

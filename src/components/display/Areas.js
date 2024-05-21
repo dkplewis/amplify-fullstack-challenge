@@ -156,7 +156,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       />
     </ContentWellHeader>
     { currentLocations.length > 1 && <View className={genericStyles.expandCollapseButton}>
-      <Button className="standard-button" style={{ width: "7.5rem", marginTop: "0.5rem" }}
+      <Button className="standard-button"
         onClick={(evt) => (expandedSection && expandedSection.length == 0) || !expandedSection ? 
           onChangeHandler("expand")
         :
@@ -279,7 +279,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       <></>
     }
     { currentLocations.length > 1 && <View className={genericStyles.expandCollapseButton}>
-      <Button className="standard-button" style={{ width: "7.5rem", marginTop: "0.5rem" }}
+      <Button className="standard-button"
         onClick={(evt) => (expandedSection && expandedSection.length == 0) || !expandedSection ? 
           onChangeHandler("expand")
         :
@@ -299,17 +299,14 @@ Areas.propTypes = {
   areaData: PropTypes.arrayOf(PropTypes.object),
   scheduleData: PropTypes.arrayOf(PropTypes.object),
   tenantData: PropTypes.object,
-  alertData: PropTypes.arrayOf(PropTypes.object),
   locationData: PropTypes.arrayOf(PropTypes.object),
   rootLocationData: PropTypes.object,
   tenantId: PropTypes.string,
-  tId: PropTypes.string,
   selectedLocationId: PropTypes.string,
   topNavLocationData: PropTypes.arrayOf(PropTypes.object),
   locationPath: PropTypes.string,
   onClickHandler: PropTypes.func,
   currentLocation: PropTypes.string,
-  animationHandler: PropTypes.func,
   showModalHandler: PropTypes.func,
   townName: PropTypes.string
 };

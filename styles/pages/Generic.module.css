@@ -34,6 +34,7 @@ h1.h1Heading > div {
 
 h2.h2Heading,
 h2.h2Heading > div {
+  font-size: 1.5rem;
   text-transform: uppercase;
 }
 

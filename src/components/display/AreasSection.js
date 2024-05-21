@@ -243,25 +243,15 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
     }
 
     return <Collection type="list" role="list" className="locationCollection"
-      items={collectionItems.slice(
-        (pageNo * parseInt(tenantConfig.areas?.locationTypeConfig == "details" ?
-          tenantConfig.details.resPerPage
-        :
-          tenantConfig.locations && tenantConfig.locations[tenantConfig.areas?.locationTypeConfig || ""]?.resPerPage || "50", 10)),
-        parseInt(tenantConfig.areas?.locationTypeConfig == "details" ?
-          tenantConfig.details.resPerPage
-        :
-          (tenantConfig.locations && tenantConfig.locations[tenantConfig.controlarea?.locationTypeConfig || ""]?.resPerPage) || "50", 10) * (pageNo + 1))}
+      items={collectionItems}
       direction="row"
-      gap="0"
       wrap="wrap">
       {(item, index) => (
         <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
           <Area location={location} area={item}
-            schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
             locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
             resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
-            isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
+            viewType={currentType}
             indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
               isHourly, item.ENTITY_TYPE_ID)}
             tenantId={tenantId}
@@ -315,35 +305,24 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
     return Object.values(collectionItemsByRow).map((items, idx) => {
 
       return <Collection key={"row_" + idx} type="list" role="list" className="locationCollection"
-        items={items.slice(
-          (pageNo * parseInt(tenantConfig.areas.locationTypeConfig == "details" ?
-            tenantConfig.details.resPerPage
-          :
-            tenantConfig.locations[tenantConfig.areas.locationTypeConfig].resPerPage
-          , 10)),
-          parseInt(tenantConfig.areas.locationTypeConfig == "details" ?
-            tenantConfig.details.resPerPage
-          :
-            tenantConfig.locations[tenantConfig.areas.locationTypeConfig].resPerPage
-          , 10) * (pageNo + 1))}
+        items={items}
         direction="row"
-        gap="0"
+        gap="1rem"
         wrap="wrap">
         {(item, index) => (
-            item.isSpacer ? 
-              <View key={"space_" + index} role="listitem" className={styles.dAreaCollectionTile}></View>
-            : 
-              <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-                <Area location={location} area={item}
-                  schedules={scheduleData.filter(schedule => schedule.GSI3_PK == item.ENTITY_TYPE_ID)}
-                  locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-                  resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
-                  isHeatmapEnabled={tenantConfig.enableHeatmap} viewType={currentType}
-                  indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
-                    isHourly, item.ENTITY_TYPE_ID)}
-                  tenantId={tenantId}
-                />
-              </View>
+          item.isSpacer ? 
+            <View key={"space_" + index} role="listitem" className={styles.dAreaCollectionTile}></View>
+          : 
+            <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
+              <Area location={location} area={item}
+                locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
+                resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
+                viewType={currentType}
+                indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
+                  isHourly, item.ENTITY_TYPE_ID)}
+                tenantId={tenantId}
+              />
+            </View>
         )}
       </Collection>;
 

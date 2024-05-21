@@ -5,19 +5,16 @@ import { debounce } from 'lodash';
 import moment from 'moment';
 import ReactSlider from 'react-slider';
 import { SVGLoader } from '@/components/widgets/SVGLoader';
-import { getAllAlertsForArea } from '@/utils/location';
-import { getActiveSchedule, getCurrentCyclePoint, getCycleDurationInDays, getLatestAlertForArea, getFormattedDate,
+import { getActiveSchedule, getCurrentCyclePoint, getCycleDurationInDays, getFormattedDate,
   getCurrentCycleDayAsPercentageOfCycle, getCurrentCycleDayAsPercentageOfPeriod, getDaysAgoInCycleAsPercentageOfCycle,
-  isScheduleComplete, isScheduleRunning, getAlertCreatedDayAsPercentageOfCycle,
-  getAlertResolvedDayAsPercentageOfCycle, getAlertCreatedDayAsPercentageOfPeriod, getAlertResolvedDayAsPercentageOfPeriod } from '@/utils/datetime';
+  isScheduleComplete, isScheduleRunning } from '@/utils/datetime';
 
 import styles from '@/component-styles/widgets/GrowthCycleProgress.module.css';
 
-const GrowthCycleProgress = ({ schedules = [], area, alerts = [], variant = "standard", showNoData = false, 
-  showActiveState = false, showResolvedState = false, showAlertHistory = false, showAlertHistoryDuration = false,
-  showLatestAlertOnlyInHistory = false, sliderValue = "", sliderChangeHandler = (yyyyddmm) => {}, isSlideable = false,
+const GrowthCycleProgress = ({ schedules = [], area, variant = "standard", showNoData = false, 
+  sliderValue = "", sliderChangeHandler = (yyyyddmm) => {}, isSlideable = false,
   periodStart, periodEnd, period, isRollingPeriod, hourlyDailyThreshold, isHourly = false, isMinutes = false, tz = "UTC",
-  selectedAlert, tenantId, onClickHandler }) => {
+  tenantId, onClickHandler }) => {
 
   const [value, setValue] = useState(getCurrentCyclePoint(schedules, period, isRollingPeriod, isHourly, isMinutes));
 
@@ -99,51 +96,10 @@ const GrowthCycleProgress = ({ schedules = [], area, alerts = [], variant = "sta
     getCycleDurationInDays(schedules) + " (" + 
     getDaysAgoInCycleAsPercentageOfCycle(0, schedules) + "% completed)"
   }>
-    { sliderValue != "" && schedules.length > 0 ?
-      <View className={styles.rangeSliderContainer}>
-        <ReactSlider min={0} max={Math.ceil(moment.duration(moment(periodEnd).diff(moment(periodStart))).as(isMinutes ? "minutes" : isHourly ? "hours" : "days"))} step={1}
-          value={value} onChange={onChangeHandler} renderThumb={renderThumb} renderTrack={renderTrack} />
-      </View>
-    :
-      <SVGLoader variant={variant} showActiveAlert={showActiveState} showResolvedAlert={showResolvedState} tenantId={tenantId}
-        showAlertHistory={showAlertHistory} showAlertHistoryDuration={showAlertHistoryDuration} showLatestAlertOnlyInHistory={showLatestAlertOnlyInHistory}
-        percentage={isScheduleRunning(schedules) ?
-          periodStart && periodEnd ?
-            getCurrentCycleDayAsPercentageOfPeriod(periodStart, periodEnd, isHourly)
-          :
-            getCurrentCycleDayAsPercentageOfCycle(schedules)
-        : isScheduleComplete(schedules) ?
-          100
-        :
-          0
-        }
-        startPercentage={isScheduleRunning(schedules) && (showActiveState || showResolvedState) ?
-          periodStart && periodEnd ?
-            getAlertCreatedDayAsPercentageOfPeriod(getLatestAlertForArea(alerts, area.ENTITY_TYPE_ID), area, periodStart, periodEnd, isHourly)
-          :
-            getAlertCreatedDayAsPercentageOfCycle(getLatestAlertForArea(alerts, area.ENTITY_TYPE_ID), area, schedules)
-        :
-          0
-        }
-        endPercentage={isScheduleRunning(schedules) && (showActiveState || showResolvedState) ?
-          periodStart && periodEnd ?
-            getAlertResolvedDayAsPercentageOfPeriod(getLatestAlertForArea(alerts, area.ENTITY_TYPE_ID), area, periodStart, periodEnd, isHourly)
-          :
-            getAlertResolvedDayAsPercentageOfCycle(getLatestAlertForArea(alerts, area.ENTITY_TYPE_ID), area, schedules)
-        :
-          0
-        }
-        borderColor={ variant == "standard" ? "#636366" : null }
-        emptyColor={ variant == "standard" ? "#3a3a3c" : "#636366" } filledColor="#fff" noDataColor="#000" activeAlertColor="#f5d205" resolvedAlertColor="#89bc2b"
-        area={area} schedules={schedules} showNoData={showNoData}
-        alerts={periodStart && periodEnd ? 
-          getAllAlertsForArea(alerts, area, schedules.length == 1 ? schedules[0] : getActiveSchedule(schedules))
-            .filter(alert => !alert.CLOSED_AT || alert.CLOSED_AT > periodStart)
-        :
-          getAllAlertsForArea(alerts, area, schedules.length == 1 ? schedules[0] : getActiveSchedule(schedules))
-        } periodStart={periodStart} periodEnd={periodEnd} threshold={hourlyDailyThreshold} isHourly={isHourly} selectedAlert={selectedAlert} onClickHandler={onClickHandler}
-      />
-    }
+    <View className={styles.rangeSliderContainer}>
+      <ReactSlider min={0} max={Math.ceil(moment.duration(moment(periodEnd).diff(moment(periodStart))).as(isMinutes ? "minutes" : isHourly ? "hours" : "days"))} step={1}
+        value={value} onChange={onChangeHandler} renderThumb={renderThumb} renderTrack={renderTrack} />
+    </View>
   </View>;
 
 }
@@ -157,15 +113,8 @@ const dateTimeString = (props, propName, componentName) => {
 };
 
 GrowthCycleProgress.propTypes = {
-  alerts: PropTypes.array.isRequired,
   area: PropTypes.object.isRequired,
   schedules: PropTypes.array.isRequired,
-  showActiveState: PropTypes.bool,
-  showAlertHistory: PropTypes.bool,
-  showAlertHistoryDuration: PropTypes.bool,
-  showLatestAlertOnlyInHistory: PropTypes.bool,
-  showResolvedState: PropTypes.bool,
-  showNoData: PropTypes.bool,
   sliderValue: PropTypes.string,
   sliderChangeHandler: PropTypes.func,
   isSlideable: PropTypes.bool,
@@ -176,7 +125,6 @@ GrowthCycleProgress.propTypes = {
   hourlyDailyThreshold: PropTypes.number,
   isHourly: PropTypes.bool,
   tz: PropTypes.string,
-  selectedAlert: PropTypes.object,
   tenantId: PropTypes.string,
   onClickHandler: PropTypes.func,
   variant: PropTypes.string

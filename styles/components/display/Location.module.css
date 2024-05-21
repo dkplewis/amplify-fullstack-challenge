@@ -4,10 +4,12 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 50%;
-  box-shadow: inset 0px 0px 31px rgba(58, 58, 60, 0.45);
-  height: 5.46rem;
-  padding: 0.5rem 1rem;
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 0.2rem 1rem 0.5rem 1rem;
   cursor: pointer;
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 .dLocationIdContainer {

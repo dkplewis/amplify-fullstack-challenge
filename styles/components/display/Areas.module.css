@@ -81,40 +81,20 @@ p.locationDuration100PcText {
 
 .locationCollection {
   margin-top: 1.3rem;
-  margin-left: 2%
+  margin-left: 2%;
+  margin-bottom: 1.3rem;
 }
 
-.mControlAreaCollectionListItem,
-.dControlAreaCollectionListItem {
+.dAreaCollectionListItem {
   width: 100%;
 }
 
-.mControlAreaCollectionTile {
-  width: 9.05rem;
-  height: 9.95rem;
-}
-
-.dControlAreaCollectionTile {
+.dAreaCollectionTile {
   width: 12.5%;
   height: 7.5rem;
   padding-top: 1rem;
   background-color: transparent;
   cursor: pointer;
-}
-
-.duration {
-  margin-bottom: 1rem;
-  margin-left: 1.45rem;
-  gap: 0.3rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.durationLabel {
-  font-size: 0.67rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #fff;
 }
 
 @media screen and (min-width: 1136px) and (max-width: 1423px) {

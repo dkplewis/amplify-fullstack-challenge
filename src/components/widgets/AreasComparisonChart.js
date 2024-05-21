@@ -105,9 +105,7 @@ const AreasComparisonChart = ({ data = [], measurementConfig, period, defaultPer
       }, []);
       if (minMax.length == 2) {
 
-        const minMaxDiff = (activeIndex == "phi" || activeIndex == "ps2" || activeIndex == "etr" || activeIndex == "par") && minMax[0] > 0 ? 
-          Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
-        : activeIndex == "pei" || activeIndex == "pui" ? 
+        const minMaxDiff = (activeIndex == "supply" || activeIndex == "demand") && minMax[0] > 0 ? 
           Math.floor(Math.abs(minMax[1] - minMax[0]) / 10)
         : 0;
         // Add extra padding to the min value to ensure data points aren't covered by the indices selector buttons
@@ -175,17 +173,9 @@ const AreasComparisonChart = ({ data = [], measurementConfig, period, defaultPer
     const [min, max] = dataMinMax;
     if (min != undefined && max != undefined) {
 
-      if (activeIndex != "pei") {
-
-        const diff = max - min;
-        const initialTick = diff / 4;
-        result = [min, min + initialTick, min + (initialTick * 2), min + (initialTick * 3), max];
-
-      } else if (activeIndex == "pei") {
-
-        result = [min, -25, 0, 25, max];
-
-      }
+      const diff = max - min;
+      const initialTick = diff / 4;
+      result = [min, min + initialTick, min + (initialTick * 2), min + (initialTick * 3), max];
 
     }
 

@@ -79,27 +79,23 @@ const Header = (props) => {
           :
             rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
           )
-        } passHref>
-          <View className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
-            <AmplifyLink>
-              { tenantHeaderConfig && <>
-                <Image className={`headerNavImg ${styles.linkAdjustImage}`}  
-                  src={`/images/${resourcesConfig}/${(
-                    currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? 
-                      tenantHeaderConfig.installation.activeIcon
-                  :
-                      tenantHeaderConfig.installation.defaultIcon
-                  )}`}
-                  alt="" width={24} height={24} />
-                <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}  
-                  src={`/images/${resourcesConfig}/${tenantHeaderConfig.installation.activeIcon}`}
-                  alt="" width={24} height={24} />
-                <Text className={styles.linkText} as="span">
-                  {tenantHeaderConfig.installation.label}
-                </Text>
-              </> }
-            </AmplifyLink>
-          </View>
+        } passHref className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
+          { tenantHeaderConfig && <>
+            <Image className={`headerNavImg ${styles.linkAdjustImage}`}  
+              src={`/images/${resourcesConfig}/${(
+                currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? 
+                  tenantHeaderConfig.installation.activeIcon
+              :
+                  tenantHeaderConfig.installation.defaultIcon
+              )}`}
+              alt="" width={24} height={24} />
+            <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}  
+              src={`/images/${resourcesConfig}/${tenantHeaderConfig.installation.activeIcon}`}
+              alt="" width={24} height={24} />
+            <Text className={styles.linkText} as="span">
+              {tenantHeaderConfig.installation.label}
+            </Text>
+          </> }
         </Link>
         <View className={styles.dSpacer}></View>
         <Link href={"/installation/" + 
@@ -108,29 +104,24 @@ const Header = (props) => {
           :
             null
           )
-        } passHref>
-          <View className={`headerNav ${currentRoute.indexOf("/areas") !== -1 ? styles.dActive : styles.dLink}`}> 
-            <AmplifyLink>
-              { tenantHeaderConfig && <>
-                <Image className={`headerNavImg ${styles.linkAdjustImage}`}
-                  src={`/images/${resourcesConfig}/${(
-                    currentRoute.indexOf("/areas") !== -1 ?
-                      tenantHeaderConfig.areas.activeIcon
-                    :
-                      tenantHeaderConfig.areas.defaultIcon
-                  )}`}
-                  alt="" width={24} height={24} />
-                <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}
-                  src={`/images/${resourcesConfig}/${tenantHeaderConfig.areas.activeIcon}`}
-                  alt="" width={24} height={24} />
-                <Text className={styles.linkText} as="span">
-                  {tenantHeaderConfig.areas.label}
-                </Text>
-              </> }
-            </AmplifyLink>
-          </View>
+        } passHref className={`headerNav ${currentRoute.indexOf("/areas") !== -1 ? styles.dActive : styles.dLink}`}> 
+          { tenantHeaderConfig && <>
+            <Image className={`headerNavImg ${styles.linkAdjustImage}`}
+              src={`/images/${resourcesConfig}/${(
+                currentRoute.indexOf("/areas") !== -1 ?
+                  tenantHeaderConfig.areas.activeIcon
+                :
+                  tenantHeaderConfig.areas.defaultIcon
+              )}`}
+              alt="" width={24} height={24} />
+            <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}
+              src={`/images/${resourcesConfig}/${tenantHeaderConfig.areas.activeIcon}`}
+              alt="" width={24} height={24} />
+            <Text className={styles.linkText} as="span">
+              {tenantHeaderConfig.areas.label}
+            </Text>
+          </> }
         </Link>
-        { false && <View className={styles.dSpacer}></View> }
       </>}
     </View>
     <UserAuth {...props}/>
