@@ -58,13 +58,13 @@ export const TENANT_ENTITY = {
       "neighbourhood": {
         "allAreasLabel": "",
         "breadCrumbLabel": "Neighbourhoods",
-        "icon": "sublocation-breadcrumb-icon-v2.svg",
+        "icon": "location-breadcrumb-icon.svg",
         "isAreaContainer": true,
         "label": "Neighbourhood",
         "rangeLabel": "Streets",
         "resPerPage": 50,
         "searchResultLabel": "",
-        "tileBackground": "sublocation-icon.svg",
+        "tileBackground": "location-icon.svg",
       },
       "root_location": {
         "searchResultLabel": ""

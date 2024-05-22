@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Flex, Text, View } from '@aws-amplify/ui-react';
-//import { isMobile } from 'react-device-detect';
 import AreaMeasurementsTabs from '@/components/widgets/AreaMeasurementsTabs';
 import Breadcrumb from '@/components/structural/Breadcrumb';
 import MeasurementsPerformanceChart from '@/components/widgets/MeasurementsPerformanceChart';
@@ -14,8 +13,8 @@ import { hierarchySort, nameSort } from '@/utils/sort';
 import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/display/Details.module.css';
 
-const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, alertData, indicesData = [],
-  zoneData = [], tenantId, currentLocation, locationPath, period, setPeriodHandler,
+const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, indicesData = [],
+  zoneData = [], tenantId, locationPath, period, setPeriodHandler,
   timeUnit, setTimeUnitHandler, dateRange, setDateRangeHandler,
   availableMeasurements, setAvailableMeasurementsHandler, show, setShowHandler }) => {
 
@@ -24,9 +23,6 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
   const scrollableContentRef = useRef(null);
 
   const [scrollableContentHeight, setScrollableContentHeight] = useState(undefined);
-  const [updateError, setUpdateError] = useState(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [sunriseSunsets, setSunriseSunsets] = useState([]);
   const [ogAvailableMeasurements, setOGAvailableMeasurements] = useState(null);
   const [editedMeasurements, setEditedMeasurements] = useState(null);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -39,9 +35,8 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
 
   useEffect(() => {
 
-    const vhAlertAdjustment = areaHasActiveAlerts(alertData, areaData, scheduleData) ? 0 : 11;
     const windowHeightRatio = window.innerHeight / 95.25;
-    setScrollableContentHeight((scrollableContentRef.current.offsetHeight / windowHeightRatio) + vhAlertAdjustment);
+    setScrollableContentHeight((scrollableContentRef.current.offsetHeight / windowHeightRatio));
 
   }, []);
 
@@ -274,7 +269,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>{isMobile ? "Last activity date:" : "Date:"}</Text>
               <Text className={styles.infoText}>
-                { getLatestActivityDate(alertData, areaData, scheduleData, indicesDataByDateTime, tz) }
+                { getLatestActivityDate([], areaData, scheduleData, indicesDataByDateTime, tz) }
               </Text>
             </Flex>
             <Flex>
@@ -290,7 +285,6 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
                 data={indicesDataByDateTime}
                 measurementConfig={availableMeasurements}
                 editedMeasurements={editedMeasurements || defaultEditedMeasurements}
-                hasActiveAlerts={areaHasActiveAlerts(alertData, areaData, scheduleData)}
                 period={period}
                 defaultPeriod={Number.parseInt(tenantData.CONFIG.details.trendlinePeriod, 10) || 48}
                 tz={tz}
@@ -301,7 +295,6 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
                 isRollingPeriod={tenantData.CONFIG.details.rollingTrendlinePeriod}
                 threshold={Number.parseInt(tenantData.CONFIG.defaultHourlyDailyDataThreshold || "72", 10)}
                 isColourEnabled={tenantData.CONFIG.details.enableColourPalette}
-                sunriseSunsets={sunriseSunsets}
                 activeIndex={activeIndex == "" ? null : (activeIndex || (tenantData.CONFIG.details.enableColourPalette ? null : defaultActiveIndex))}
                 activeIndexHandler={setActiveIndex}
                 show={show}
@@ -321,7 +314,6 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
                 measurementConfig={availableMeasurements}
                 currentActiveIndex={activeIndex || defaultActiveIndex}
                 indices={indicesData}
-                alerts={alertData}
                 period={period}
                 defaultPeriod={Number.parseInt(tenantData.CONFIG.details.trendlinePeriod, 10) || 48}
                 tz={tz}
@@ -332,7 +324,6 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
                 isRollingPeriod={tenantData.CONFIG.details.rollingTrendlinePeriod}
                 threshold={Number.parseInt(tenantData.CONFIG.defaultHourlyDailyDataThreshold || "72", 10)}
                 isColourEnabled={tenantData.CONFIG.details.enableColourPalette}
-                sunriseSunsets={sunriseSunsets}
                 availableAreas={availableAreas || defaultAvailableAreas}
                 editedAreas={editedAreas || defaultEditedAreas}
                 periodChangeHandler={setPeriodHandler}
@@ -352,7 +343,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
           }
         </View>
         <View className={styles.imageDisplay}>
-          { scheduleData?.ENTITY_TYPE_ID && areasZones.length > 0 && <InsightImages alerts={alertData} schedule={scheduleData} isMobile={isMobile} zones={areasZones}
+          { scheduleData?.ENTITY_TYPE_ID && areasZones.length > 0 && <InsightImages schedule={scheduleData} isMobile={isMobile} zones={areasZones}
             areaName={areaData.NAME} showAreaName={tenantData.CONFIG.details.detailsView == "indeximage"}
             resources={tenantData.CONFIG.resources} areaIcon={tenantData.CONFIG.details.icon} tz={tz} /> }
         </View>

@@ -7,7 +7,7 @@ const Loading = ({ loadingText }) => {
 
   return <Flex className={styles.loadingCanvas}>
     <Flex className={styles.loadingContainer}>
-      <Loader size="large" width="3.335rem" height="3.335rem" emptyColor="#F2F2F7" filledColor="#89BC2B" />
+      <Loader size="large" width="3.335rem" height="3.335rem" />
       <Text className={styles.loadingText}>
         { loadingText ? loadingText : "Loading ..." }
       </Text>

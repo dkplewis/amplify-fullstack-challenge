@@ -15,7 +15,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         level={1}
         key="breadCrumb_tenant"
       >
-        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" />
+        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" width={24} height={24} />
         <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
           locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
             tenantName
@@ -31,7 +31,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         level={2}
         key="breadCrumb_town"
       >
-        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" />
+        <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" width={24} height={24} />
         <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
           locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
             tenantName
@@ -42,17 +42,13 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
       </Heading>
     }
-    { viewType == "locations" || viewType == "areas" || viewType == "alerts" ?
+    { viewType == "locations" || viewType == "areas" ?
       <Heading
         className={genericStyles.h1Heading}
         level={1}
         key="breadCrumb_location"
       >
-        { viewType == "alerts" ?
-          <Image src={`/images/${icon}`} alt="" />
-        :
-          <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" />
-        }
+        <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" width={24} height={24} />
         <View as="span">{label} View</View>
       </Heading>
     : viewType == "location" ?
@@ -71,7 +67,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
               level={1}
               key={"breadCrumb_location_" + idx}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" width={24} height={24} /> }
               { locationUrl ?
                 <>
                   <Link href={locationUrl} passHref>
@@ -122,7 +118,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
               level={1}
               key={"breadCrumb_location_" + ((locationPath.split("#") || []).length)}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" width={24} height={24} /> }
               <View as="span">
                 All {label} in { locationConfig?.breadCrumbLabel.indexOf("{") != -1 ?
                   locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
@@ -154,7 +150,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
               level={2}
               key={"breadCrumb_location_" + idx}
             >
-              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" /> }
+              {locationConfig?.icon && <Image src={`/images/${resourcesPath}/desktop-${locationConfig.icon}`} alt="" width={24} height={24} /> }
               <View as="span">
               { (locationConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
                 locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
@@ -179,7 +175,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
           level={2}
           key="breadCrumb_area"
         >
-          <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" />
+          <Image src={`/images/${resourcesPath}/desktop-${icon}`} alt="" width={24} height={24} />
           <View as="span">
             { (areaConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
               areaConfig.breadCrumbLabel.substring(0, areaConfig.breadCrumbLabel.indexOf("{")) +
@@ -196,7 +192,7 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
           level={2}
           key="breadCrumb_details"
         >
-          <Image src={`/images/${resourcesPath}/desktop-details-breadcrumb-icon.svg`} alt="" />
+          &nbsp;&nbsp;
           <View as="span">{label}</View>
         </Heading>
       </Fragment>

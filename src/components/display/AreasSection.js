@@ -1,18 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Collection, Flex, Image, Loader, Text, View } from '@aws-amplify/ui-react';
+import { Collection, Flex, Loader, View } from '@aws-amplify/ui-react';
 import { useQueries } from '@tanstack/react-query';
 import Area from '@/components/display/Area';
-import GrowthCycleProgress from '@/components/widgets/GrowthCycleProgress';
-import IndexLegend from '@/components/widgets/IndexLegend';
-import MeasurementType from '@/components/widgets/MeasurementType';
 import { getLocationMeasurementsDataByDatesAndType } from '@/utils/crud';
-import { getActiveSchedule, getActiveSchedulePeriodStartAndEndDay, getActiveScheduleStartDate, getDifferenceInHours,
-  getLatestSchedule, getLatestSchedulePeriodStartAndEndDay, getLatestScheduleStartDate, getLatestIndexValue,
-  hasInsufficientHourlyData, isScheduleComplete, isHourlyDataPointThresholdTriggered } from '@/utils/datetime';
+import { getActiveSchedulePeriodStartAndEndDay, getActiveScheduleStartDate, getDifferenceInHours,
+  getLatestSchedulePeriodStartAndEndDay, getLatestScheduleStartDate, getLatestIndexValue,
+  hasInsufficientHourlyData,isHourlyDataPointThresholdTriggered } from '@/utils/datetime';
 import { caDimSort } from '@/utils/sort';
 
-import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/display/Areas.module.css';
 
 const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
@@ -407,118 +403,6 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
   return indicesForDateRangeQueries.isSuccess ?
     <>
-      { tenantConfig.enableHeatmap && <>
-        <View className={styles.infoContainer}>
-          <Flex className={styles.infoContent}>
-            <View className={styles.measurementContainer}>
-              { Object.keys(tenantConfig.measurements || {})
-                .filter(measurement => tenantConfig.measurements[measurement].enabled &&
-                  tenantConfig.measurements[measurement].displayOnView != "details").length ?
-                <MeasurementType current={indicesType} options={tenantConfig.measurements} tenantId={tenantId}
-                  onChangeHandler={setMeasurementsType} locationId={location.ENTITY_TYPE_ID.replace("LOCATION#", "")} />
-              :
-                <></>
-              }
-            </View>
-            <View className={styles.legendContainer}>
-              <IndexLegend type={indicesType} />
-            </View>
-            <View className={styles.growthCycleContainer}>
-              <Flex className={styles.duration}>
-                <Image src="/images/calendar.svg" alt="" title="Growth cycle duration" />
-                <View className={styles.durationLabel}>
-                  { getDurationLabel(scheduleData, Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                    tenantConfig.details.rollingTrendlinePeriod, location.TIMEZONE_ID) }
-                </View>
-              </Flex>
-              <View className={styles.growthCycleLabelContainer}>
-                <Text className={genericStyles.progressLabel}>
-                  { getTimePeriodLabel(scheduleData, Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                  Number.parseInt(tenantConfig.defaultHourlyDailyDataThreshold || "72", 10), tenantConfig.details.rollingTrendlinePeriod, sectionMeasurements,
-                  sectionId, (indicesDate || defaultMeasurementsDate), indicesType) }
-                </Text>
-              </View>
-              { scheduleData.length > 0 && <>
-                <GrowthCycleProgress area={areaData[0]} tenantId={tenantId}
-                  schedules={getActiveSchedule(scheduleData) ? [getActiveSchedule(scheduleData)] : getLatestSchedule(scheduleData) ? [getLatestSchedule(scheduleData)] : []}
-                  period={Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10)} isRollingPeriod={tenantConfig.details.rollingTrendlinePeriod}
-                  hourlyDailyThreshold={Number.parseInt(tenantConfig.defaultHourlyDailyDataThreshold || "72", 10)} tz={location.TIMEZONE_ID || "UTC"}
-                  periodStart={(getActiveSchedulePeriodStartAndEndDay(scheduleData,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                    "JSON",
-                    tenantConfig.details.rollingTrendlinePeriod,
-                    "UTC",
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                    ||
-                    getLatestSchedulePeriodStartAndEndDay(scheduleData,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                    "JSON",
-                    tenantConfig.details.rollingTrendlinePeriod,
-                    "UTC",
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                  ).split(" - ")[0]}
-                  periodEnd={(getActiveSchedulePeriodStartAndEndDay(scheduleData,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                    "JSON",
-                    tenantConfig.details.rollingTrendlinePeriod,
-                    "UTC",
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                    ||
-                    getLatestSchedulePeriodStartAndEndDay(scheduleData,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                    "JSON",
-                    tenantConfig.details.rollingTrendlinePeriod,
-                    "UTC",
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                    Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                  )
-                  .split(" - ")[1]}
-                  isHourly={Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false}
-                  isMinutes={Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false}
-                  variant="thin" sliderValue={(indicesDate || defaultMeasurementsDate)} sliderChangeHandler={setMeasurementsDate} isSlideable={indicesForDateRangeQueries.isSuccess} 
-                />
-                <Flex className={styles.durationLabelsContainer}>
-                  {/* Assumption that all areas in a location are growing the same thing */}
-                  { getActiveSchedule(scheduleData) || getLatestSchedule(scheduleData) ?
-                      (getActiveSchedulePeriodStartAndEndDay(scheduleData,
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? "HH:mm" : "Mmm DD",
-                        tenantConfig.details.rollingTrendlinePeriod,
-                        location.TIMEZONE_ID || "UTC",
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                        ||
-                        getLatestSchedulePeriodStartAndEndDay(scheduleData,
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? "HH:mm" : "Mmm DD",
-                        tenantConfig.details.rollingTrendlinePeriod,
-                        location.TIMEZONE_ID || "UTC",
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 24 ? true : false,
-                        Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10) <= 1 ? true : false)
-                      )
-                      .split(" - ")
-                      .map((date, idx) => {
-                        return <Text key={date} className={idx == 1 && isScheduleComplete(scheduleData) ?
-                          styles.locationDuration100PcText
-                        :
-                          styles.locationDurationText
-                        }>{date}</Text>
-                      })
-                  :
-                      <>
-                        <Text className={styles.locationDurationText}>&nbsp;</Text>
-                        <Text className={styles.locationDurationText}>&nbsp;</Text>
-                      </>
-                  }
-                </Flex>
-              </> }
-            </View>
-          </Flex>
-        </View>
-      </> }
       { areaData.find(area => area.CA_DIMENSIONS) &&
         getOrderedCollection(areaData
           .filter(area => !area.DELETED_AT && area.CA_DIMENSIONS)
