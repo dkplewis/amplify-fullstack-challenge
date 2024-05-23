@@ -40,19 +40,19 @@ export const areaSort = (a, b, sortOrder) => {
 };
 
 /**
- * Sorts two zones by their ZONE_DIMENSIONS array attribute, ordered from left to right, top to bottom when the
+ * Sorts two zones by their zoneDimensions array attribute, ordered from left to right, top to bottom when the
  *  sort order is "asc" or ordered from bottom to top, right to left when the sort order is "desc" 
  * 
  * @param {Area} a - The first zone to compare 
  * @param {Area} b - The second zone to compare 
  * @param {string} sortOrder - The sort order to apply. One of "asc" or "desc" 
- * @returns {number} If the sort order is "asc", 1 if a's ZONE_DIMENSIONS attribute is greater than b's, 0 if they are the same
- *  and -1 if a's ZONE_DIMENSIONS attribute is less than b's. If the sort order is "desc", 1 if a's ZONE_DIMENSIONS attribute is less
- *  than b's, 0 if they are the same and -1 if a's ZONE_DIMENSIONS attribute is greater than b's. 
+ * @returns {number} If the sort order is "asc", 1 if a's zoneDimensions attribute is greater than b's, 0 if they are the same
+ *  and -1 if a's zoneDimensions attribute is less than b's. If the sort order is "desc", 1 if a's zoneDimensions attribute is less
+ *  than b's, 0 if they are the same and -1 if a's zoneDimensions attribute is greater than b's. 
  */
 export const zoneDimSort = (a, b, sortOrder) => {
-  const aDim = (a.ZONE_DIMENSIONS || []).join("_");
-  const bDim = (b.ZONE_DIMENSIONS || []).join("_");
+  const aDim = (a.zoneDimensions || []).join("_");
+  const bDim = (b.zoneDimensions || []).join("_");
   if (aDim < bDim) {
     return sortOrder === "asc" ? -1 : 1;
   } else if (aDim > bDim) {
@@ -69,12 +69,12 @@ export const getLocationHierarchy = (path, locations, tenantLocationsConfig) => 
   const currentLocationParts = path.split("#");
 
   for (let c = 2, len = currentLocationParts.length; c < len; c += 1) {
-    const currentLocation = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + currentLocationParts[c]);
+    const currentLocation = locations.find(location => location.entityTypeId == "LOCATION#" + currentLocationParts[c]);
     if (currentLocation) {
-      locationNames.push(currentLocation.NAME.length < 5 ?
-        `${tenantLocationsConfig[currentLocation.GSI2_PK.replace("TYPE#", "").toLowerCase()].searchResultLabel} ${currentLocation.NAME}`
+      locationNames.push(currentLocation.name.length < 5 ?
+        `${tenantLocationsConfig[currentLocation.gsi2Pk.replace("TYPE#", "").toLowerCase()].searchResultLabel} ${currentLocation.name}`
       :
-        currentLocation.NAME);
+        currentLocation.name);
     }
   }
 
@@ -93,8 +93,8 @@ export const getLocationHierarchy = (path, locations, tenantLocationsConfig) => 
  */
 export const hierarchySort = (a, b, sortOrder, locationData, tenantData) => {
   // Sort locations based on their location hierarchy converted into location names
-  let aLocationNames = getLocationHierarchy(a.PATH, locationData, tenantData.CONFIG.locations);
-  let bLocationNames = getLocationHierarchy(b.PATH, locationData, tenantData.CONFIG.locations);
+  let aLocationNames = getLocationHierarchy(a.path, locationData, tenantData.config.locations);
+  let bLocationNames = getLocationHierarchy(b.path, locationData, tenantData.config.locations);
   if (aLocationNames < bLocationNames) {
     return sortOrder === "asc" ? -1 : 1;
   } else if (aLocationNames > bLocationNames) {
@@ -129,9 +129,9 @@ export const labelSort = (a, b, sortOrder) => {
  */
 export const nameSort = (a, b, sortOrder) => {
   if (sortOrder == "asc") {
-    return new Intl.Collator(undefined, { numeric: true }).compare(a.NAME, b.NAME);
+    return new Intl.Collator(undefined, { numeric: true }).compare(a.name, b.name);
   } else {
-    return new Intl.Collator(undefined, { numeric: true }).compare(b.NAME, a.NAME);
+    return new Intl.Collator(undefined, { numeric: true }).compare(b.name, a.name);
   }
 };
 
@@ -158,9 +158,9 @@ export const orderSort = (a, b, sortOrder) => {
  * @returns 
  */
 export const pathSort = (a, b, sortOrder) => {
-  if (a.PATH < b.PATH) {
+  if (a.path < b.path) {
     return sortOrder === "asc" ? -1 : 1;
-  } else if (a.PATH > b.PATH) {
+  } else if (a.path > b.path) {
     return sortOrder === "asc" ? 1 : -1;
   } else {
     return 0;
@@ -175,9 +175,9 @@ export const pathSort = (a, b, sortOrder) => {
  * @returns 
  */
 export const timeSort = (a, b, sortOrder) => {
-  if (a.CREATED_AT < b.CREATED_AT) {
+  if (a.createdAt < b.createdAt) {
     return sortOrder === "asc" ? -1 : 1;
-  } else if (a.CREATED_AT > b.CREATED_AT) {
+  } else if (a.createdAt > b.createdAt) {
     return sortOrder === "asc" ? 1 : -1;
   } else {
     return 0;

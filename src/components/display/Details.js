@@ -33,7 +33,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
 
   const periodDates = useMemo(() => {
 
-    const hourlyDailyThreshold = Number.parseInt(tenantData.CONFIG.defaultHourlyDailyDataThreshold || "72", 10);
+    const hourlyDailyThreshold = Number.parseInt(tenantData.config.defaultHourlyDailyDataThreshold || "72", 10);
     let [periodStartMs, periodEndMs, isHourly] = [null, null, 0, 0, 0];
     if (dateRange && dateRange.length == 2 && dateRange[0] && dateRange[1]) {
 
@@ -52,7 +52,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
     } else {
 
       [periodStartMs, periodEndMs, isHourly] = getPeriodStartAndEndMs(scheduleData, period,
-        hourlyDailyThreshold, tenantData.CONFIG.details.rollingTrendlinePeriod, measurementsData);
+        hourlyDailyThreshold, tenantData.config.details.rollingTrendlinePeriod, measurementsData);
 
     }
     
@@ -107,18 +107,18 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
 
   const measurementsDataByDateTime = useMemo(() => {
 
-    const hourlyDailyThreshold = Number.parseInt(tenantData.CONFIG.defaultHourlyDailyDataThreshold || "72", 10);
+    const hourlyDailyThreshold = Number.parseInt(tenantData.config.defaultHourlyDailyDataThreshold || "72", 10);
     return getMeasurementsDataByTime(measurementsData, periodDates.fromDateMs, periodDates.toDateMs, periodDates.isHourly, period, hourlyDailyThreshold)
   
   }, [measurementsData, periodDates, period, tenantData]);
 
   const defaultEditedAreas = useMemo(() => {
 
-    const caclPath = areaData?.PATH.split("#").slice(0, -1).join("#");
+    const caclPath = areaData?.path.split("#").slice(0, -1).join("#");
     let result = [...areasData];
     result = result.map(item => {
 
-      return { ...item, enabledFlag: item.ENTITY_TYPE_ID == areaData.ENTITY_TYPE_ID || item.PATH.startsWith(caclPath + "#") }
+      return { ...item, enabledFlag: item.entityTypeId == areaData.entityTypeId || item.path.startsWith(caclPath + "#") }
 
     });
     return result.sort((a, b) => hierarchySort(a, b, "asc", locationData, tenantData));
@@ -129,12 +129,12 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
 
   const cacls = useMemo(() => {
 
-    const caclLocationTypes = Object.keys(tenantData.CONFIG.locations).reduce((acc, curr) => {
-      const currLocationConfig = tenantData.CONFIG.locations[curr];
+    const caclLocationTypes = Object.keys(tenantData.config.locations).reduce((acc, curr) => {
+      const currLocationConfig = tenantData.config.locations[curr];
       if (currLocationConfig.isAreaContainer) acc.push(curr);
       return acc;
     }, []);
-    const caclLocations = locationData.filter(location => caclLocationTypes.includes(location.GSI2_PK.replace("TYPE#", "").toLowerCase()));
+    const caclLocations = locationData.filter(location => caclLocationTypes.includes(location.gsi2Pk.replace("TYPE#", "").toLowerCase()));
     return caclLocations.sort((a, b) => nameSort(a, b, "asc"));
 
   }, [locationData, tenantData]);
@@ -142,17 +142,17 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
   const areasZones = useMemo(() => getMeasurementsZones(areaData, zoneData), [areaData, zoneData]);
 
   const tz = useMemo(() =>
-    locationData.find(location => location.PATH == areaData?.PATH.split("#").slice(0, -1).join("#"))?.TIMEZONE_ID || "UTC",
+    locationData.find(location => location.path == areaData?.path.split("#").slice(0, -1).join("#"))?.timeZoneId || "UTC",
     [areaData, locationData]);
 
   const getLatestActivityDate = useCallback((alerts, area, schedule, measures, tz) => {
 
-    if (!schedule?.ENTITY_TYPE_ID) return "";
+    if (!schedule?.entityTypeId) return "";
 
     const latestIndexDate = getLatestIndexDateForAreas(measures, area, tz);
     if (latestIndexDate) return latestIndexDate;
 
-    return getFormattedDate(new Date(schedule.CYCLE_STARTED_AT).setUTCHours(0, 0, 0, 0), "Mmm DD, YYYY", tz);
+    return getFormattedDate(new Date(schedule.cycleStartedAt).setUTCHours(0, 0, 0, 0), "Mmm DD, YYYY", tz);
 
   }, []);
 
@@ -161,14 +161,14 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
       <View className="scrollableContent" style={{ height: scrollableContentHeight + "vh" }}>
         <View className="contentWellHeader">
           <Flex className={genericStyles.contentWellHeading}>
-            <Breadcrumb viewType="details" resourcesPath={tenantData.CONFIG.resources} tenantName={tenantData.NAME}
+            <Breadcrumb viewType="details" resourcesPath={tenantData.config.resources} tenantName={tenantData.name}
               label="Detailed View"
-              icon={tenantData.CONFIG.details.icon}
+              icon={tenantData.config.details.icon}
               area={areaData}
-              areaConfig={tenantData.CONFIG.details}
+              areaConfig={tenantData.config.details}
               locationPath={locationPath}
               locations={locationData}
-              locationConfigs={tenantData.CONFIG.locations}
+              locationConfigs={tenantData.config.locations}
             />
           </Flex>
         </View>
@@ -176,7 +176,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
           <View className={styles.trayInfoContainer}>
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>Contract:</Text>
-              <Text className={styles.infoText}>{ scheduleData.CONTRACT }</Text>
+              <Text className={styles.infoText}>{ scheduleData.contract }</Text>
             </Flex>
           </View>
           <View className={styles.trayInfoContainer}>
@@ -188,28 +188,28 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
             </Flex>
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>Provider:</Text>
-              <Text className={styles.infoText}>{ scheduleData.PROVIDER }</Text>
+              <Text className={styles.infoText}>{ scheduleData.provider }</Text>
             </Flex>
           </View>
         </Flex> }
         <View className={styles.measuresContainer}>
-          { scheduleData.ENTITY_TYPE_ID &&
+          { scheduleData.entityTypeId &&
             <View className={styles.healthIndex}>
               { Object.keys(availableMeasurements).length > 0 && <MeasurementsPerformanceChart
                 data={measurementsDataByDateTime}
                 measurementConfig={availableMeasurements}
                 period={period}
-                defaultPeriod={Number.parseInt(tenantData.CONFIG.details.trendlinePeriod, 10) || 48}
+                defaultPeriod={Number.parseInt(tenantData.config.details.trendlinePeriod, 10) || 48}
                 tz={tz}
                 periodDates={periodDates}
                 tenantId={tenantId}
                 area={areaData}
                 schedule={scheduleData}
-                isRollingPeriod={tenantData.CONFIG.details.rollingTrendlinePeriod}
-                threshold={Number.parseInt(tenantData.CONFIG.defaultHourlyDailyDataThreshold || "72", 10)}
-                isColourEnabled={tenantData.CONFIG.details.enableColourPalette}
+                isRollingPeriod={tenantData.config.details.rollingTrendlinePeriod}
+                threshold={Number.parseInt(tenantData.config.defaultHourlyDailyDataThreshold || "72", 10)}
+                isColourEnabled={tenantData.config.details.enableColourPalette}
                 periodChangeHandler={setPeriodHandler}
-                chartLineType={tenantData.CONFIG.details.chartLineType || "monotone"}
+                chartLineType={tenantData.config.details.chartLineType || "monotone"}
                 timeUnit={timeUnit}
                 timeUnitHandler={setTimeUnitHandler}
                 dateRange={dateRange}
@@ -219,9 +219,9 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
           }
         </View>
         <View className={styles.imageDisplay}>
-          { scheduleData?.ENTITY_TYPE_ID && areasZones.length > 0 && <InsightImages schedule={scheduleData} zones={areasZones}
-            areaName={areaData.NAME} showAreaName={tenantData.CONFIG.details.detailsView == "measureimage"}
-            resources={tenantData.CONFIG.resources} areaIcon={tenantData.CONFIG.details.icon} tz={tz} /> }
+          { scheduleData?.entityTypeId && areasZones.length > 0 && <InsightImages schedule={scheduleData} zones={areasZones}
+            areaName={areaData.name} showAreaName={tenantData.config.details.detailsView == "measureimage"}
+            resources={tenantData.config.resources} areaIcon={tenantData.config.details.icon} tz={tz} /> }
         </View>
       </View>
     </View>

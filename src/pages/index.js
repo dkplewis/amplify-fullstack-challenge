@@ -80,11 +80,11 @@ const Home = ({ tenantId }) => {
 
     if (isSuccess) {
 
-      const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
+      const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.defaultLocation) || null;
       let newTopNavLocation = "country";
       if (defaultTopNavLocation) {
 
-        newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
+        newTopNavLocation = defaultTopNavLocation.entityTypeId.replace("LOCATION#", "");
 
       }
       setCurrentTopNavLocation(newTopNavLocation);
@@ -105,16 +105,16 @@ const Home = ({ tenantId }) => {
 
   if (isSuccess) {
 
-    const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
+    const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.defaultLocation) || null;
     let newTopNavLocation = "country";
     if (defaultTopNavLocation) {
 
-      newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
+      newTopNavLocation = defaultTopNavLocation.entityTypeId.replace("LOCATION#", "");
 
     }
 
-    const rootLocationId = data.rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
-    const currentTown = data.locations.find(location => location.GSI2_PK == "TYPE#TOWN" && location.DEFAULT_LOCATION);
+    const rootLocationId = data.rootLocation.entityTypeId.replace("LOCATION#", "");
+    const currentTown = data.locations.find(location => location.gsi2Pk == "TYPE#TOWN" && location.defaultLocation);
 
     let theRoute;
 
@@ -122,8 +122,8 @@ const Home = ({ tenantId }) => {
 
     if (currentTown) {
 
-      theRoute = rootUrl + currentTown.GSI2_PK.replace("TYPE#", "").toLowerCase() + "/" +
-        currentTown.ENTITY_TYPE_ID.replace("LOCATION#", "");
+      theRoute = rootUrl + currentTown.gsi2Pk.replace("TYPE#", "").toLowerCase() + "/" +
+        currentTown.entityTypeId.replace("LOCATION#", "");
     
     } else {
 

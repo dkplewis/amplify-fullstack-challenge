@@ -23,7 +23,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
     let to = toDateStr.split("T")[0];
 
     const activeScheduleStartDate = getActiveScheduleStartDate(scheduleData
-      .filter((schedule) => schedule.GSI2_PK == location.ENTITY_TYPE_ID),
+      .filter((schedule) => schedule.gsi2Pk == location.entityTypeId),
       Number.parseInt(tenantConfig?.details?.trendlinePeriod || "48", 10),
       tenantConfig?.details?.rollingTrendlinePeriod, true, true);
 
@@ -49,12 +49,12 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
       console.debug("Showing measures data from " + from +
         (from.indexOf("T") == 10 ? from.lastIndexOf(":") != 16 ? ":00" : "" : ":00") +
-        " to " + to + " for " + location.NAME + "...");
+        " to " + to + " for " + location.name + "...");
 
     } else {
 
       const latestScheduleStartDate = getLatestScheduleStartDate(scheduleData
-        .filter((schedule) => schedule.GSI2_PK == location.ENTITY_TYPE_ID),
+        .filter((schedule) => schedule.gsi2Pk == location.entityTypeId),
         Number.parseInt(tenantConfig?.details?.trendlinePeriod || "48", 10),
         tenantConfig?.details?.rollingTrendlinePeriod, true, true);
 
@@ -80,7 +80,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
         console.debug("Showing historic measures data from " + from +
           (from.indexOf("T") == 10 ? from.lastIndexOf(":") != 16 ? ":00" : "" : ":00") +
-          " to " + to + " for " + location.NAME + "...");
+          " to " + to + " for " + location.name + "...");
 
       }
 
@@ -112,9 +112,9 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
       return ({
         data: results.reduce((acc, curr) => {
           return acc.concat(curr.data ? curr.data.filter(datum => fromDate.lastIndexOf(":") == 16 ?
-            datum.GSI5_SK.lastIndexOf(":") == 16
+            datum.gsi5Sk.lastIndexOf(":") == 16
           : fromDate.lastIndexOf(":") == 13 ?
-            datum.GSI5_SK.lastIndexOf(":") == 13
+            datum.gsi5Sk.lastIndexOf(":") == 13
           : true) : []);
         }, []),
         isPending: results.some(result => result.isPending),
@@ -141,9 +141,9 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
       measuresForDateRangeQueries.data.forEach((measureDatum) => {
 
-        const areaId = measureDatum.ENTITY_TYPE.split("#")[1];
-        const measureType = measureDatum.GSI5_PK.split("#")[1];
-        const measureDate = measureDatum.GSI5_SK.split("#")[0];
+        const areaId = measureDatum.entityType.split("#")[1];
+        const measureType = measureDatum.gsi5Pk.split("#")[1];
+        const measureDate = measureDatum.gsi5Sk.split("#")[0];
         if (!result[sectionId][measureDate]) result[sectionId][measureDate] = {};
         if (!result[sectionId][measureDate][measureType]) result[sectionId][measureDate][measureType] = {};
         result[sectionId][measureDate][measureType][areaId] = {...measureDatum};
@@ -242,13 +242,13 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
       direction="row"
       wrap="wrap">
       {(item) => (
-        <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
+        <View key={item.entityTypeId} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
           <Area location={location} area={item}
             locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
             resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
             viewType={currentType}
-            measureValue={getLatestIndexValue(measureData ? measureData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
-              isHourly, item.ENTITY_TYPE_ID)}
+            measureValue={getLatestIndexValue(measureData ? measureData[item.entityTypeId.replace("AREA#", "")]: null,
+              isHourly, item.entityTypeId)}
             tenantId={tenantId}
           />
         </View>
@@ -260,7 +260,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
   return measuresForDateRangeQueries.isSuccess ?
     <>
       { getUnorderedCollection(areaData
-          .filter(area => !area.DELETED_AT),
+          .filter(area => !area.deletedAt),
           location,
           sectionMeasurements[sectionId] &&
           sectionMeasurements[sectionId][(measuresDate || defaultMeasurementsDate)] ?

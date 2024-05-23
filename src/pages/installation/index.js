@@ -102,10 +102,10 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
       let newTopNavLocation = "country";
       if (!currentTopNavLocation || currentTopNavLocation == "country") {
 
-        const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
+        const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.defaultLocation) || null;
         if (defaultTopNavLocation) {
 
-          newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
+          newTopNavLocation = defaultTopNavLocation.entityTypeId.replace("LOCATION#", "");
 
         }
         setCurrentTopNavLocation(newTopNavLocation);
@@ -127,28 +127,28 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
     let newTopNavLocation = "country";
     if (!currentTopNavLocation || currentTopNavLocation == "country") {
 
-      const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.DEFAULT_LOCATION) || null;
+      const defaultTopNavLocation = data.topNavLocations?.find(topNavLocation => topNavLocation.defaultLocation) || null;
       if (defaultTopNavLocation) {
 
-        newTopNavLocation = defaultTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
+        newTopNavLocation = defaultTopNavLocation.entityTypeId.replace("LOCATION#", "");
 
       }
 
     }
 
-    const rootLocationId = data.rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "");
+    const rootLocationId = data.rootLocation.entityTypeId.replace("LOCATION#", "");
     let theRoute = "";
 
     let topNavLocationPathLen = 0;
     let childLocationsForTopNavLocation = [];
     const currentTopNavLocationData = data.topNavLocations
-      .find(topNavLocation => topNavLocation.ENTITY_TYPE_ID == `LOCATION#${currentTopNavLocation}`);
+      .find(topNavLocation => topNavLocation.entityTypeId == `LOCATION#${currentTopNavLocation}`);
     if (currentTopNavLocationData) {
 
-      topNavLocationPathLen = currentTopNavLocationData.PATH.split("#").length;
+      topNavLocationPathLen = currentTopNavLocationData.path.split("#").length;
       childLocationsForTopNavLocation = data.locations
-        .filter((location) => location.PATH.startsWith(currentTopNavLocationData.PATH + "#") &&
-          location.PATH.split("#").length == topNavLocationPathLen + 1);
+        .filter((location) => location.path.startsWith(currentTopNavLocationData.path + "#") &&
+          location.path.split("#").length == topNavLocationPathLen + 1);
 
     }
 
@@ -158,11 +158,11 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
       currentTown = childLocationsForTopNavLocation.length > 1 ?
         currentTopNavLocationData
       :
-        childLocationsForTopNavLocation.find(location => location.DEFAULT_LOCATION);
+        childLocationsForTopNavLocation.find(location => location.defaultLocation);
 
     } else {
 
-      currentTown = data.locations.find(location => location.DEFAULT_LOCATION);
+      currentTown = data.locations.find(location => location.defaultLocation);
 
     }
 
@@ -170,14 +170,14 @@ const Installation = ({ alertsViewOnly, tenantId, tId }) => {
 
       theRoute = `/installation/${rootLocationId}/${currentTopNavLocation || newTopNavLocation}${
         (childLocationsForTopNavLocation.length > 1 ? 
-          data.tenantData.CONFIG.header[currentTown.LOCATION_HEADER_KEY].childPath
+          data.tenantData.config.header[currentTown.locationHeaderKey].childPath
         :
-          "/" + currentTown.GSI2_PK.replace("TYPE#", "").toLowerCase()) +
+          "/" + currentTown.gsi2Pk.replace("TYPE#", "").toLowerCase()) +
         "/" + 
         (childLocationsForTopNavLocation.length > 1 ? 
           currentTopNavLocation
         :
-          currentTown.ENTITY_TYPE_ID.replace("LOCATION#", ""))
+          currentTown.entityTypeId.replace("LOCATION#", ""))
       }`;
 
     } else {

@@ -94,10 +94,10 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
 
     returnObject.props["locationPath"] = currentLocationPath;
     returnObject.props["fetchLocationMeasurements"] = (locationType == "areas" ||
-      tenantData.CONFIG?.locations[locationType]?.isAreaContainer) && !!locationId;
+      tenantData.config?.locations[locationType]?.isAreaContainer) && !!locationId;
  
     /* currrentTown = if there is more than one immediate child location for the current top nav location, return the immediate child location of the current top nav location
-        where the current location's PATH starts with the child location's PATH, OR
+        where the current location's path starts with the child location's path, OR
       if there is more than one immediate child location for the current top nav location, return the immediate child location where the entity ID is the entity ID given in the URL, OR
       if there is more than one immediate child location for the current top nav location, return the top nav location where the entity ID is the entity ID given in the URL, OR
       return the immediate child location where the entity ID is the entity ID given in the URL, OR
@@ -106,28 +106,28 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
       return the root location, OR
       return null
     */
-    const topNavLocationPath = topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`)?.PATH || "";
+    const topNavLocationPath = topNavLocationData.find(location => location.entityTypeId == `LOCATION#${topNavLocation}`)?.path || "";
     const topNavLocationPathLen = topNavLocationPath ? topNavLocationPath.split("#").length : 0;
-    const childLocationsForTopNavLocation = locationData.filter((location) => location.PATH.startsWith(topNavLocationPath + "#") && location.PATH.split("#").length == topNavLocationPathLen + 1);
+    const childLocationsForTopNavLocation = locationData.filter((location) => location.path.startsWith(topNavLocationPath + "#") && location.path.split("#").length == topNavLocationPathLen + 1);
 
     let currentTown = null;
     if (childLocationsForTopNavLocation.length) {
 
-      currentTown = childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && currentLocationPath.startsWith(location.PATH + "#"))
-       || childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && location.ENTITY_TYPE_ID == `LOCATION#${locationId}`)
-       || topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`) 
-       || childLocationsForTopNavLocation.find(location => location.ENTITY_TYPE_ID == `LOCATION#${locationId}`)
-       || childLocationsForTopNavLocation.find(location => location.DEFAULT_LOCATION);
+      currentTown = childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && currentLocationPath.startsWith(location.path + "#"))
+       || childLocationsForTopNavLocation.find(location => childLocationsForTopNavLocation.length > 1 && location.entityTypeId == `LOCATION#${locationId}`)
+       || topNavLocationData.find(location => location.entityTypeId == `LOCATION#${topNavLocation}`) 
+       || childLocationsForTopNavLocation.find(location => location.entityTypeId == `LOCATION#${locationId}`)
+       || childLocationsForTopNavLocation.find(location => location.defaultLocation);
 
     }
     if (!currentTown) {
 
-      currentTown = topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`)
+      currentTown = topNavLocationData.find(location => location.entityTypeId == `LOCATION#${topNavLocation}`)
        || rootLocationData;
        
     }
 
-    returnObject.props["currentTownName"] = currentTown ? currentTown.NAME : null;
+    returnObject.props["currentTownName"] = currentTown ? currentTown.name : null;
 
     const breadCrumbData = getLocationBreadcrumbs(
       "/installation/",
@@ -138,7 +138,7 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
       topNavLocation,
       locationData,
       null,
-      tenantData.CONFIG?.header[topNavLocationData.find(location => location.ENTITY_TYPE_ID == `LOCATION#${topNavLocation}`)?.LOCATION_HEADER_KEY || "NONE"]?.childPath || ""
+      tenantData.config?.header[topNavLocationData.find(location => location.entityTypeId == `LOCATION#${topNavLocation}`)?.locationHeaderKey || "NONE"]?.childPath || ""
     );
 
     returnObject.props["locationBreadCrumbPaths"] = breadCrumbData.breadCrumbs;
@@ -266,7 +266,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
 
     if (!areaMeasurementsData || !pageData) return;
 
-    const area = pageData.areas.find(area => area.ENTITY_TYPE_ID == "AREA#" + areaId);
+    const area = pageData.areas.find(area => area.entityTypeId == "AREA#" + areaId);
 
     if (area) {
 
@@ -276,14 +276,14 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
       // get the correct arry for the Details View being displayed in the modal
       const areaBreadCrumbPaths = getLocationBreadcrumbs(
         "/installation/",
-        area.PATH.replace("PATH#", "").split("#"),
+        area.path.replace("PATH#", "").split("#"),
         true,
         false,
         urlPath.split("/")[2],
         pageData.topNavLocations,
         pageData.locations,
         tenantId,
-        pageData.tenantData.CONFIG?.header[pageData.topNavLocations.find(location => location.ENTITY_TYPE_ID == `LOCATION#${currentTopNavLocation}`)?.LOCATION_HEADER_KEY || "NONE"]?.childPath || ""
+        pageData.tenantData.config?.header[pageData.topNavLocations.find(location => location.entityTypeId == `LOCATION#${currentTopNavLocation}`)?.locationHeaderKey || "NONE"]?.childPath || ""
       );
 
       setModalData({
@@ -302,20 +302,20 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
 
   }, [areaMeasurementsData, currentTopNavLocation, router, pageData, tenantId]);
 
-  const defaultPeriod = useMemo(() => Number.parseInt(pageData.tenantData.CONFIG.details.trendlinePeriod, 10) || 48, [pageData.tenantData]);
+  const defaultPeriod = useMemo(() => Number.parseInt(pageData.tenantData.config.details.trendlinePeriod, 10) || 48, [pageData.tenantData]);
 
   const defaultAvailableMeasurements = useMemo(() => {
 
     let result = {};
-    if (pageData.tenantData?.CONFIG?.measurements) {
+    if (pageData.tenantData?.config?.measurements) {
 
-      const enabledMeasurements = Object.keys(pageData.tenantData.CONFIG.measurements || {})
-        .filter((key) => pageData.tenantData.CONFIG.measurements[key].enabled);
+      const enabledMeasurements = Object.keys(pageData.tenantData.config.measurements || {})
+        .filter((key) => pageData.tenantData.config.measurements[key].enabled);
       for (let c = 0, len = enabledMeasurements.length; c < len; c += 1) {
         
         result[enabledMeasurements[c]] = {
-          ...pageData.tenantData.CONFIG.measurements[enabledMeasurements[c]],
-          enabled: pageData.tenantData.CONFIG.measurements[enabledMeasurements[c]].enabled
+          ...pageData.tenantData.config.measurements[enabledMeasurements[c]],
+          enabled: pageData.tenantData.config.measurements[enabledMeasurements[c]].enabled
         };
 
       }
@@ -328,10 +328,10 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
 
   const defaultShow = useMemo(() => {
 
-    const enabledMeasurements = Object.keys(pageData.tenantData.CONFIG.measurements || {})
-        .filter((key) => pageData.tenantData.CONFIG.measurements[key].enabled);
+    const enabledMeasurements = Object.keys(pageData.tenantData.config.measurements || {})
+        .filter((key) => pageData.tenantData.config.measurements[key].enabled);
     return enabledMeasurements
-      .sort((a, b) => orderSort(pageData.tenantData.CONFIG.measurements[a], pageData.tenantData.CONFIG.measurements[b], "asc"))
+      .sort((a, b) => orderSort(pageData.tenantData.config.measurements[a], pageData.tenantData.config.measurements[b], "asc"))
 
   }, [pageData.tenantData]);
 
@@ -339,7 +339,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
 
     if (dateRange[0] && dateRange[1] && dateRange[1].getTime() >= dateRange[0].getTime()) {
 
-      const threshold = Number.parseInt(pageData.tenantData.CONFIG.defaultHourlyDailyDataThreshold, 10) || 72;
+      const threshold = Number.parseInt(pageData.tenantData.config.defaultHourlyDailyDataThreshold, 10) || 72;
       const [from, to] = dateRange;
 
       // from and to dates are set to midnight (as we don't ask for a time)
@@ -399,8 +399,8 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
     if (area) {
 
       // Update from the back-end
-      setShowModal(area.ENTITY_TYPE_ID);
-      setCAId(area.ENTITY_TYPE_ID.replace("AREA#", ""));
+      setShowModal(area.entityTypeId);
+      setCAId(area.entityTypeId.replace("AREA#", ""));
 
     } else {
 
@@ -446,7 +446,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
   return isAreaView ?
     <>
       <Head>
-        <title>{pageData.tenantData.CONFIG.areas.allAreasLabel} View | Dev Community Amplify Fullstack TypeScript Challenge Project</title>
+        <title>{pageData.tenantData.config.areas.allAreasLabel} View | Dev Community Amplify Fullstack TypeScript Challenge Project</title>
       </Head>
 
       <Modal ref={modalRef} initialFocusRef={modalRef} center open={!!showModal} onClose={() => {
@@ -464,7 +464,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
           zones: []
         });
       }} closeIcon={<Image src="/images/close.svg" alt="Close" />}
-        classNames={{ modal: "modal-details-view" + (pageData.tenantData?.CONFIG?.details?.detailsView == "measureimage" ? " view-wide" : "") }}>
+        classNames={{ modal: "modal-details-view" + (pageData.tenantData?.config?.details?.detailsView == "measureimage" ? " view-wide" : "") }}>
         <ModalContent areaData={modalData.area} areasData={modalData.areas}
           scheduleData={modalData.schedule} zoneData={modalData.zones} locationPath={locationPath}
           measurementsData={modalData.measurements} locationData={modalData.locations} tenantData={modalData.tenantData}
@@ -492,13 +492,13 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
       </Head>
 
       <Locations locationData={pageData.locations} rootLocationData={pageData.rootLocation} topNavLocationData={pageData.topNavLocations}
-        areaData={pageData.areas.filter(area => area.PATH.startsWith(locationPath))}
+        areaData={pageData.areas.filter(area => area.path.startsWith(locationPath))}
         scheduleData={scheduleData} townName={currentTownName}
         tenantId={tenantId}
-        currentLocations={pageData.locations.filter(location => location.PATH.startsWith(locationPath + "#")).length == 0 ?
-          pageData.locations.filter(location => location.PATH.startsWith(locationPath))
+        currentLocations={pageData.locations.filter(location => location.path.startsWith(locationPath + "#")).length == 0 ?
+          pageData.locations.filter(location => location.path.startsWith(locationPath))
         :
-          pageData.locations.filter(location => location.PATH.startsWith(locationPath + "#") && location.PATH.split("#").length - 1 === locationPath.split("#").length + 1)
+          pageData.locations.filter(location => location.path.startsWith(locationPath + "#") && location.path.split("#").length - 1 === locationPath.split("#").length + 1)
         }
         tenantData={pageData.tenantData} locationType={locationType} locationPath={locationPath} showModalHandler={doShowModal}
         currentLocation={locationURI[0] + "__" + locationURI[1]} onClickHandler={handleClick}

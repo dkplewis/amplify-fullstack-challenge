@@ -258,8 +258,8 @@ export const getPeriodStartAndEndDate = (schedule, period, isRollingPeriod, isHo
 
   if (period == -1) {
 
-    let scheduleStartDateMs = new Date(schedule.CYCLE_STARTED_AT).setUTCHours(0, 0, 0, 0);
-    let scheduleEndDateMs = new Date(schedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999);
+    let scheduleStartDateMs = new Date(schedule.cycleStartedAt).setUTCHours(0, 0, 0, 0);
+    let scheduleEndDateMs = new Date(schedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999);
 
     return [ 
       scheduleStartDateMs,
@@ -271,8 +271,8 @@ export const getPeriodStartAndEndDate = (schedule, period, isRollingPeriod, isHo
   const nowMs = now.setUTCMinutes(0, 0 ,0);
   const periodMs = period * MINUTES_SECONDS_MS_IN_HOUR;
 
-  const scheduleStartDate = new Date(schedule.CYCLE_STARTED_AT);
-  const scheduleEndDate = new Date(schedule.CYCLE_COMPLETED_AT || schedule.CYCLE_COMPLETING_AT);
+  const scheduleStartDate = new Date(schedule.cycleStartedAt);
+  const scheduleEndDate = new Date(schedule.cycleCompletedAt || schedule.cycleCompletingAt);
 
   if (isRollingPeriod) {
     
@@ -378,7 +378,7 @@ export const getPeriodStartAndEndMs = (schedule, period, hourlyDailyThreshold, i
   const startDate = startDateJSON.split("T")[0];
   const endDate = endDateJSON.split("T")[0];
   const periodMeasurements = measurements.filter(measure => {
-    const [createDate, createTime] = measure.CREATED_AT.split("T");
+    const [createDate, createTime] = measure.createdAt.split("T");
     return createDate >= startDate && createDate <= endDate;
   });
   let isHourly = 0;
@@ -459,8 +459,8 @@ export const getActiveCycleDurationInDays = (schedules) => {
 
   let diff = 0;
   if (activeSchedule) {
-    const cycleStartDateMs = new Date(activeSchedule.CYCLE_STARTED_AT).setUTCHours(0, 0, 0, 0);
-    const cycleEndDateMs = new Date(activeSchedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999);
+    const cycleStartDateMs = new Date(activeSchedule.cycleStartedAt).setUTCHours(0, 0, 0, 0);
+    const cycleEndDateMs = new Date(activeSchedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999);
     diff = getDifferenceInDays(cycleEndDateMs, cycleStartDateMs, false, false, true);
   }
   return diff;
@@ -485,9 +485,9 @@ export const getActiveSchedule = (schedules) => {
 
   // Find the first schedule that has not been marked as completed,
   // where the started at date is in the past and the completing at date is in the future
-  return schedules.find(schedule => !schedule.CYCLE_COMPLETED_AT &&
-    new Date(schedule.CYCLE_STARTED_AT).getTime() <= nowMs &&
-    new Date(schedule.CYCLE_COMPLETING_AT).getTime() >= nowMs);
+  return schedules.find(schedule => !schedule.cycleCompletedAt &&
+    new Date(schedule.cycleStartedAt).getTime() <= nowMs &&
+    new Date(schedule.cycleCompletingAt).getTime() >= nowMs);
 
 };
 
@@ -513,15 +513,15 @@ export const getActiveScheduleStartAndEndDay = (schedules, fmt, tz = "UTC") => {
 
   if (activeSchedule) {
 
-    const activeScheduleStartDate = new Date(activeSchedule.CYCLE_STARTED_AT);
+    const activeScheduleStartDate = new Date(activeSchedule.cycleStartedAt);
     const activeScheduleStartDateMs = activeScheduleStartDate.setUTCHours(activeScheduleStartDate.getUTCHours(), 0, 0, 0);
-    const activeScheduleEndDate = new Date(activeSchedule.CYCLE_COMPLETING_AT);
+    const activeScheduleEndDate = new Date(activeSchedule.cycleCompletingAt);
     const activeScheduleEndDateMs = activeScheduleEndDate.setUTCHours(activeScheduleEndDate.getUTCHours(), 0, 0, 0);
 
-    return (fmt == "JSON" ? activeSchedule.CYCLE_STARTED_AT.substring(0, 13) + ":00:00.000Z" :
+    return (fmt == "JSON" ? activeSchedule.cycleStartedAt.substring(0, 13) + ":00:00.000Z" :
       getFormattedDate(new Date(activeScheduleStartDateMs), fmt ? fmt : "Mmmm DD", tz)) + 
     " - " +
-      (fmt == "JSON" ? activeSchedule.CYCLE_COMPLETING_AT.substring(0, 13) + ":00:00.000Z" : 
+      (fmt == "JSON" ? activeSchedule.cycleCompletingAt.substring(0, 13) + ":00:00.000Z" : 
       getFormattedDate(new Date(activeScheduleEndDateMs), fmt ? fmt : "Mmmm DD", tz));
   
   }
@@ -600,7 +600,7 @@ export const getActiveScheduleStartDate = (schedules, period, isRollingPeriod = 
 
   } else {
 
-    const activeScheduleStartDate = new Date(activeSchedule.CYCLE_STARTED_AT); 
+    const activeScheduleStartDate = new Date(activeSchedule.cycleStartedAt); 
     return new Date(activeScheduleStartDate);
 
   }
@@ -648,10 +648,10 @@ export const getCurrentCyclePoint = (schedules, period, isRollingPeriod = false,
       const cycleDuration = getActiveCycleDurationInDays(schedules);
       const differenceFromNow = isHourly ? 
         getDifferenceInHours((process.env.NEXT_PUBLIC_NOW ? new Date(process.env.NEXT_PUBLIC_NOW) : new Date()),
-        new Date(activeSchedule.CYCLE_STARTED_AT), false, true)
+        new Date(activeSchedule.cycleStartedAt), false, true)
       :
         getDifferenceInDays((process.env.NEXT_PUBLIC_NOW ? new Date(process.env.NEXT_PUBLIC_NOW) : new Date()),
-        new Date(activeSchedule.CYCLE_STARTED_AT), false, true);
+        new Date(activeSchedule.cycleStartedAt), false, true);
       return differenceFromNow > cycleDuration ? cycleDuration : differenceFromNow + 1;
 
     }
@@ -757,12 +757,12 @@ export const getDaysAgoInCycle = (date, schedules) => {
   if (!activeSchedule) {
     // Find the most recently completed schedule
     const latestSchedule = getLatestSchedule(schedules);
-    // Use the latest schedule CYCLE_COMPLETED_AT or CYCLE_COMPLETING_AT date
-    dateMs = new Date(latestSchedule.CYCLE_COMPLETED_AT || latestSchedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999);
-  } else if (getDifferenceInDays(dateMs, new Date(activeSchedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999), false, false) > 0) {
-    // Check if the active schedule has actually expired (now > CYCLE_COMPLETING_AT)
+    // Use the latest schedule cycleCompletedAt or cycleCompletingAt date
+    dateMs = new Date(latestSchedule.cycleCompletedAt || latestSchedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999);
+  } else if (getDifferenceInDays(dateMs, new Date(activeSchedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999), false, false) > 0) {
+    // Check if the active schedule has actually expired (now > cycleCompletingAt)
     // and update the date if it has
-    dateMs = new Date(activeSchedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999);
+    dateMs = new Date(activeSchedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999);
   }
   return getDifferenceInDays(dateMs, new Date(date).setUTCHours(0, 0, 0, 0), false, false);
 
@@ -808,13 +808,13 @@ export const getLatestCompletedCycleDuration = (schedules, isHourly = false) => 
   let diff = 0;
   if (latestCompletedSchedule) {
     const cycleStartDateMs = isHourly ?
-      new Date(latestCompletedSchedule.CYCLE_STARTED_AT).setUTCMinutes(0, 0, 0)
+      new Date(latestCompletedSchedule.cycleStartedAt).setUTCMinutes(0, 0, 0)
     : 
-      new Date(latestCompletedSchedule.CYCLE_STARTED_AT).setUTCHours(0, 0, 0, 0);
+      new Date(latestCompletedSchedule.cycleStartedAt).setUTCHours(0, 0, 0, 0);
     const cycleEndDateMs = isHourly ?
-      new Date(latestCompletedSchedule.CYCLE_COMPLETED_AT || latestCompletedSchedule.CYCLE_COMPLETING_AT).setUTCHours(59, 59, 999)
+      new Date(latestCompletedSchedule.cycleCompletedAt || latestCompletedSchedule.cycleCompletingAt).setUTCHours(59, 59, 999)
     :
-      new Date(latestCompletedSchedule.CYCLE_COMPLETED_AT || latestCompletedSchedule.CYCLE_COMPLETING_AT).setUTCHours(23, 59, 59, 999);
+      new Date(latestCompletedSchedule.cycleCompletedAt || latestCompletedSchedule.cycleCompletingAt).setUTCHours(23, 59, 59, 999);
     diff = isHourly ? 
       getDifferenceInHours(cycleEndDateMs, cycleStartDateMs, false, false)
     :
@@ -841,12 +841,12 @@ export const getLatestSchedule = (schedules) => {
   // Find the latest started at date for the given schedules where the started at date is in the past
   // and the completing date is in the future
   const latestRunningSchedule = schedules.reduce((prev, curr) =>
-    new Date(curr.CYCLE_STARTED_AT).getTime() > new Date(prev.CYCLE_STARTED_AT).getTime() &&
-    new Date(curr.CYCLE_STARTED_AT).getTime() <= nowMs &&
-    new Date(curr.CYCLE_COMPLETING_AT).getTime() >= nowMs ? curr : prev, { CYCLE_STARTED_AT: 0 });
+    new Date(curr.cycleStartedAt).getTime() > new Date(prev.cycleStartedAt).getTime() &&
+    new Date(curr.cycleStartedAt).getTime() <= nowMs &&
+    new Date(curr.cycleCompletingAt).getTime() >= nowMs ? curr : prev, { cycleStartedAt: 0 });
 
   // If a schedule matches these criteria, return it 
-  if (latestRunningSchedule.CYCLE_STARTED_AT != 0) {
+  if (latestRunningSchedule.cycleStartedAt != 0) {
 
     return latestRunningSchedule;
 
@@ -854,9 +854,9 @@ export const getLatestSchedule = (schedules) => {
 
     // Otherwise return the latest schedule where the completing date has passed
     return schedules.reduce((prev, curr) =>
-      new Date(curr.CYCLE_STARTED_AT).getTime() > new Date(prev.CYCLE_STARTED_AT).getTime() &&
-      new Date(curr.CYCLE_STARTED_AT).getTime() <= nowMs &&
-      new Date(curr.CYCLE_COMPLETING_AT).getTime() < nowMs ? curr : prev);
+      new Date(curr.cycleStartedAt).getTime() > new Date(prev.cycleStartedAt).getTime() &&
+      new Date(curr.cycleStartedAt).getTime() <= nowMs &&
+      new Date(curr.cycleCompletingAt).getTime() < nowMs ? curr : prev);
 
   } 
 
@@ -936,7 +936,7 @@ export const getLatestScheduleStartDate = (schedules, period, isRollingPeriod = 
 
   } else {
 
-    const latestScheduleStartDate = new Date(latestSchedule.CYCLE_STARTED_AT); 
+    const latestScheduleStartDate = new Date(latestSchedule.cycleStartedAt); 
     return new Date(latestScheduleStartDate);
 
   }
@@ -1048,16 +1048,16 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
   const [today, now] = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T");
 
   measurements
-    .filter(measure => measurementsKeys.includes(measure.GSI5_SK.split("#")[0]))
+    .filter(measure => measurementsKeys.includes(measure.gsi5Sk.split("#")[0]))
     .map(measure => {
-      const measureType = measure.GSI5_PK.indexOf("#SUPPLY#") > -1 ?
+      const measureType = measure.gsi5Pk.indexOf("#SUPPLY#") > -1 ?
         "supply"
-      : measure.GSI5_PK.indexOf("#DEMAND#") > -1 ?
+      : measure.gsi5Pk.indexOf("#DEMAND#") > -1 ?
         "demand"
       : "ign";
-      const [createDate, createTime] = measure.CREATED_AT.split("T");
+      const [createDate, createTime] = measure.createdAt.split("T");
       if (isHourly) {
-        const measureHistory = measure.INDEX_HISTORY ? JSON.parse(measure.INDEX_HISTORY) : {};
+        const measureHistory = measure.indexHistory ? JSON.parse(measure.indexHistory) : {};
         const measureHistoryKeys = Object.keys(measureHistory);
         for (let c = 0, len = measureHistoryKeys.length; c < len; c += 1) {
           let currKey = measureHistoryKeys[c];
@@ -1075,12 +1075,12 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
               measureValue = Number.isNaN(Number.parseInt(rawIndexValue, 10)) ? 0 : Number.parseInt(rawIndexValue, 10); 
             }
             if (measureValue) data[dateTimeKey].hasData = true;
-            data[dateTimeKey].createDate = measure.CREATED_AT;
+            data[dateTimeKey].createDate = measure.createdAt;
             data[dateTimeKey].displayDate = createDate +
               "T" + currKey + ":00:00" + ".000Z";
             data[dateTimeKey].isHourly = isHourly;
             if (byCAID) {
-              data[dateTimeKey][measure.ENTITY_TYPE.replace("MEASUREMENTBYAREA#", "")] = measureValue;
+              data[dateTimeKey][measure.entityType.replace("MEASUREMENTBYAREA#", "")] = measureValue;
             } else {
               data[dateTimeKey][measureType] = measureValue;
             }
@@ -1091,12 +1091,12 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
         // We don't *have* to check whether the measure's create date is today, 
         // but test data can exist for days after "today"
         if (data[dateKey] && createDate <= today) {
-          data[dateKey].createDate = measure.CREATED_AT;
+          data[dateKey].createDate = measure.createdAt;
           data[dateKey].displayDate = createDate + "T00:00:00.000Z";
           if (byCAID) {
-            data[dateKey][measure.ENTITY_TYPE.replace("MEASUREMENTBYAREA#", "")] = measure.INDEX_AVG;
+            data[dateKey][measure.entityType.replace("MEASUREMENTBYAREA#", "")] = measure.indexAvg;
           } else {
-            data[dateKey][measureType] = measure.INDEX_AVG;
+            data[dateKey][measureType] = measure.indexAvg;
           }
           data[dateKey].hasData = true;
           data[dateKey].isHourly = false;
@@ -1142,19 +1142,19 @@ export const getLatestIndexDateForAreas = (measurements, area, tz) => {
  */
 export const getLatestIndexValue = (latestIndex, isHourly, areaId) => {
 
-  if (!latestIndex || latestIndex.ENTITY_TYPE !== "MEASUREMENTBY" + areaId) return null;
+  if (!latestIndex || latestIndex.entityType !== "MEASUREMENTBY" + areaId) return null;
 
-  const measureAvgValue = latestIndex.INDEX_AVG;
-  let measureLatestValue = latestIndex.INDEX_LATEST;
+  const measureAvgValue = latestIndex.indexAvg;
+  let measureLatestValue = latestIndex.indexLatest;
 
   const hhmm = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T")[1].split(":")[0];
 
   let currentHourValue = null;
-  if (latestIndex.INDEX_HISTORY) {
+  if (latestIndex.indexHistory) {
 
     try {
     
-      const measureHistory = JSON.parse(latestIndex.INDEX_HISTORY);
+      const measureHistory = JSON.parse(latestIndex.indexHistory);
       currentHourValue = measureHistory[hhmm];
       measureLatestValue = currentHourValue && currentHourValue != measureLatestValue ? currentHourValue : measureLatestValue;
       
@@ -1206,8 +1206,8 @@ export const hasInsufficientHourlyData = (measurements) => {
   if (!measurements || !measurements.length) return true;
 
   // DL-2023-12-13 Support granularity down to one hour rather than 8
-  return measurements.reduce((acc, curr) => curr.INDEX_HISTORY && curr.INDEX_HISTORY != "null" ?
-    acc += curr.GSI5_PK.indexOf("#SUPPLY#") == -1 ? 0 : Object.keys(JSON.parse(curr.INDEX_HISTORY)).length
+  return measurements.reduce((acc, curr) => curr.indexHistory && curr.indexHistory != "null" ?
+    acc += curr.gsi5Pk.indexOf("#SUPPLY#") == -1 ? 0 : Object.keys(JSON.parse(curr.indexHistory)).length
   :
     acc += curr.isHourly ? 1 : 0, 0) == 0;
 

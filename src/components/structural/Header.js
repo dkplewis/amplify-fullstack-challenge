@@ -17,42 +17,42 @@ const Header = (props) => {
   const router = useRouter();
   const currentRoute = router.asPath;
 
-  const topNavLocation = useMemo(() => topNavLocations.find(tnl => tnl.ENTITY_TYPE_ID == "LOCATION#" + currentLocation[1]), [topNavLocations, currentLocation]);
+  const topNavLocation = useMemo(() => topNavLocations.find(tnl => tnl.entityTypeId == "LOCATION#" + currentLocation[1]), [topNavLocations, currentLocation]);
 
   const defaultLocation = useMemo(() => {
 
     const childLocationsForTopNav = (!topNavLocation || locations.length == 0) ?
       []
     :
-      locations.filter((location) => location.PATH.startsWith(topNavLocation.PATH + "#") &&
-        location.PATH.split("#").length == topNavLocation.PATH.split("#").length + 1);
+      locations.filter((location) => location.path.startsWith(topNavLocation.path + "#") &&
+        location.path.split("#").length == topNavLocation.path.split("#").length + 1);
 
     return childLocationsForTopNav.length > 0 ?
-      childLocationsForTopNav.find((location) => location.DEFAULT_LOCATION)
+      childLocationsForTopNav.find((location) => location.defaultLocation)
     :
-      locations.find(location => location.DEFAULT_LOCATION);
+      locations.find(location => location.defaultLocation);
 
   }, [topNavLocation, locations]);
 
   return tenantHeaderConfig && <header className={styles.dHeaderContainer}>
     <Link href={"/installation/" +
-      rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "") + 
+      rootLocation.entityTypeId.replace("LOCATION#", "") + 
       "/" +
       currentLocation[1] +
-      (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
-        tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY || ""]?.childPath || ""
+      (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+        tenantHeaderConfig[topNavLocation.locationHeaderKey || ""]?.childPath || ""
       : defaultLocation ?
-        "/" + (defaultLocation?.GSI2_PK || "").replace("TYPE#", "").toLowerCase()
+        "/" + (defaultLocation?.gsi2Pk || "").replace("TYPE#", "").toLowerCase()
       :
         "/town"
       ) +
       "/" +
-      (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
-        topNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+      (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+        topNavLocation.entityTypeId.replace("LOCATION#", "")
       : defaultLocation ?
-        defaultLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+        defaultLocation.entityTypeId.replace("LOCATION#", "")
       :
-        rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+        rootLocation.entityTypeId.replace("LOCATION#", "")
       )
     } className={styles.dLogoLink}>
       <MdElectricCar size={24} />
@@ -61,23 +61,23 @@ const Header = (props) => {
     <View className={styles.dHeader}>
       { !alertsViewOnly && <>
         <Link href={"/installation/" + 
-          rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "") + 
+          rootLocation.entityTypeId.replace("LOCATION#", "") + 
           "/" +
           currentLocation[1] +
-          (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
-            tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY || ""]?.childPath || ""
+          (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+            tenantHeaderConfig[topNavLocation.locationHeaderKey || ""]?.childPath || ""
           : defaultLocation ?
-            "/" + (defaultLocation?.GSI2_PK || "").replace("TYPE#", "").toLowerCase()
+            "/" + (defaultLocation?.gsi2Pk || "").replace("TYPE#", "").toLowerCase()
           :
             "/town"
           ) +
           "/" +
-          (topNavLocation && tenantHeaderConfig[topNavLocation.LOCATION_HEADER_KEY]?.childPath ? 
-            topNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+          (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+            topNavLocation.entityTypeId.replace("LOCATION#", "")
           : defaultLocation ?
-            defaultLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+            defaultLocation.entityTypeId.replace("LOCATION#", "")
           :
-            rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+            rootLocation.entityTypeId.replace("LOCATION#", "")
           )
         } passHref className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
           { tenantHeaderConfig && <>

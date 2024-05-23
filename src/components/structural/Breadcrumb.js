@@ -16,13 +16,13 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         key="breadCrumb_tenant"
       >
         <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" width={24} height={24} />
-        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
-          locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
+        <View as="span">{locations.filter(location => location.gsi2Pk == "TYPE#TOWN").length > 1 ?
+          locations.filter(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path)).length > 1 ?
             tenantName
           :
-            locations.find(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
+            locations.find(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path))?.name || tenantName
         :
-          locations.find(location => location.GSI2_PK == "TYPE#TOWN")?.NAME || tenantName
+          locations.find(location => location.gsi2Pk == "TYPE#TOWN")?.name || tenantName
         }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
       </Heading>
     :
@@ -32,13 +32,13 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         key="breadCrumb_town"
       >
         <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" width={24} height={24} />
-        <View as="span">{locations.filter(location => location.GSI2_PK == "TYPE#TOWN").length > 1 ?
-          locations.filter(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH)).length > 1 ?
+        <View as="span">{locations.filter(location => location.gsi2Pk == "TYPE#TOWN").length > 1 ?
+          locations.filter(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path)).length > 1 ?
             tenantName
           :
-            locations.find(location => location.GSI2_PK == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.PATH))?.NAME || tenantName
+            locations.find(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path))?.name || tenantName
         :
-          locations.find(location => location.GSI2_PK == "TYPE#TOWN")?.NAME || tenantName
+          locations.find(location => location.gsi2Pk == "TYPE#TOWN")?.name || tenantName
         }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
       </Heading>
     }
@@ -55,10 +55,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
       <Fragment key="breadCrumb_locations">
         {(locationPath.split("#") || []).slice(0, -1).map((locId, idx, arr) => {
 
-          const locationData = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locId);
+          const locationData = locations.find(location => location.entityTypeId == "LOCATION#" + locId);
           if (locationData) {
 
-            const locationType = locationData.GSI2_PK.replace("TYPE#", "").toLowerCase();
+            const locationType = locationData.gsi2Pk.replace("TYPE#", "").toLowerCase();
             const locationConfig = locationConfigs[locationType];
             const locationUrl = locationBreadCrumbPaths.find(path => path.indexOf("/" + locationType + "/" + locId) != -1);
 
@@ -74,10 +74,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
                     <AmplifyLink>
                       { locationConfig?.breadCrumbLabel.indexOf("{") != -1 ?
                         locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
-                        locationData.NAME + 
+                        locationData.name + 
                         locationConfig.breadCrumbLabel.substring(locationConfig.breadCrumbLabel.indexOf("}") + 1)
                       :
-                        locationConfig?.breadCrumbLabel || locationData.NAME
+                        locationConfig?.breadCrumbLabel || locationData.name
                       }
                     </AmplifyLink>
                   </Link>
@@ -89,10 +89,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
                 <View as="span">
                   { locationConfig?.breadCrumbLabel.indexOf("{") != -1 ?
                     locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
-                    locationData.NAME + 
+                    locationData.name + 
                     locationConfig.breadCrumbLabel.substring(locationConfig.breadCrumbLabel.indexOf("}") + 1)
                   :
-                    locationConfig?.breadCrumbLabel || locationData.NAME
+                    locationConfig?.breadCrumbLabel || locationData.name
                   }
                   &nbsp;-&nbsp;
                 </View>
@@ -108,10 +108,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         })}
         {(locationPath.split("#") || []).slice(-1).map((locId) => {
 
-          const locationData = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locId);
+          const locationData = locations.find(location => location.entityTypeId == "LOCATION#" + locId);
           if (locationData) {
 
-            const locationConfig = locationConfigs[locationData.GSI2_PK.replace("TYPE#", "").toLowerCase()];
+            const locationConfig = locationConfigs[locationData.gsi2Pk.replace("TYPE#", "").toLowerCase()];
             
             return <Heading
               className={genericStyles.h1Heading}
@@ -122,10 +122,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
               <View as="span">
                 All {label} in { locationConfig?.breadCrumbLabel.indexOf("{") != -1 ?
                   locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
-                  locationData.NAME + 
+                  locationData.name + 
                   locationConfig.breadCrumbLabel.substring(locationConfig.breadCrumbLabel.indexOf("}") + 1)
                 :
-                  locationConfig?.breadCrumbLabel || locationData.NAME
+                  locationConfig?.breadCrumbLabel || locationData.name
                 }
               </View>
             </Heading>;
@@ -138,12 +138,12 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
       </Fragment>
     : viewType == "details" ?
       <Fragment key="breadCrumb_locations">
-        {(area?.PATH?.split("#") || []).map((locId, idx, arr) => {
+        {(area?.path?.split("#") || []).map((locId, idx, arr) => {
 
-          const locationData = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locId);
-          if (locationData && locationData.GSI2_PK != "TYPE#TOWN") {
+          const locationData = locations.find(location => location.entityTypeId == "LOCATION#" + locId);
+          if (locationData && locationData.gsi2Pk != "TYPE#TOWN") {
 
-            const locationConfig = locationConfigs[locationData.GSI2_PK.replace("TYPE#", "").toLowerCase()];
+            const locationConfig = locationConfigs[locationData.gsi2Pk.replace("TYPE#", "").toLowerCase()];
 
             return <Heading
               className={genericStyles.h2Heading}
@@ -154,10 +154,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
               <View as="span">
               { (locationConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
                 locationConfig.breadCrumbLabel.substring(0, locationConfig.breadCrumbLabel.indexOf("{")) +
-                locationData.NAME + 
+                locationData.name + 
                 locationConfig.breadCrumbLabel.substring(locationConfig.breadCrumbLabel.indexOf("}") + 1)
               :
-                locationConfig?.breadCrumbLabel || locationData.NAME
+                locationConfig?.breadCrumbLabel || locationData.name
               }
               { idx + 1 < arr.length && <>&nbsp;&nbsp;-&nbsp;</> }
               </View>
@@ -179,10 +179,10 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
           <View as="span">
             { (areaConfig?.breadCrumbLabel || "").indexOf("{") != -1 ?
               areaConfig.breadCrumbLabel.substring(0, areaConfig.breadCrumbLabel.indexOf("{")) +
-              (area?.NAME || "") + 
+              (area?.name || "") + 
               areaConfig.breadCrumbLabel.substring(areaConfig.breadCrumbLabel.indexOf("}") + 1)
             :
-              areaConfig?.breadCrumbLabel || (area?.NAME || "")
+              areaConfig?.breadCrumbLabel || (area?.name || "")
             }
             &nbsp;&nbsp;-
           </View>

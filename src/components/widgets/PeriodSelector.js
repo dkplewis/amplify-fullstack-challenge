@@ -224,7 +224,7 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
         <DatePicker ref={datesCalRef} isClearable={true} shouldCloseOnSelect={true}
           className={`amplify-input amplify-field-group__control ${styles.inputRange}`} dateFormat="MMM dd" enableTabLoop={false}
           onChange={(dates) => setDateRangeHandler(dates)} allowSameDay={true} maxDate={(process.env.NEXT_PUBLIC_NOW ? new Date(process.env.NEXT_PUBLIC_NOW) : new Date())}
-          minDate={schedule ? new Date(schedule.CYCLE_STARTED_AT) : null}
+          minDate={schedule ? new Date(schedule.cycleStartedAt) : null}
           selectsRange={true} startDate={dateRange[0]} endDate={dateRange[1]}
           renderCustomHeader={({
             date,

@@ -22,23 +22,23 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
 
   const clickHandler = useCallback((evt, type, detail) => {
 
-    const childPath = detail.ENTITY_TYPE == "AREA" ?
-      tenantData.CONFIG?.details.childPath
+    const childPath = detail.entityType == "AREA" ?
+      tenantData.config?.details.childPath
     : 
-      tenantData.CONFIG?.locations[detail.GSI2_PK.replace("TYPE#", "").toLowerCase()].childPath;
+      tenantData.config?.locations[detail.gsi2Pk.replace("TYPE#", "").toLowerCase()].childPath;
 
     if (evt.button != 0) return;
     
-    if (detail.ENTITY_TYPE == "AREA") {
+    if (detail.entityType == "AREA") {
 
       showModalHandler(detail, locationData, topNavLocationData,
-        currentLocation.split("__")[1], tenantData.CONFIG.town, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
-        tenantData.CONFIG.header, tenantData.CONFIG.enableHeatmap);
+        currentLocation.split("__")[1], tenantData.config.town, tenantData.entityTypeId.replace("TENANT#", ""),
+        tenantData.config.header, tenantData.config.enableHeatmap);
 
     } else {
 
-      onClickHandler(detail.ENTITY_TYPE_ID, tenantData.CONFIG.useAreasView ? "/areas" : childPath, false, true,
-        rootLocationData.ENTITY_TYPE_ID.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
+      onClickHandler(detail.entityTypeId, tenantData.config.useAreasView ? "/areas" : childPath, false, true,
+        rootLocationData.entityTypeId.replace("LOCATION#", ""), currentLocation.split("__")[1], tId);
 
     }
 
@@ -64,23 +64,23 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
       direction="row"
       wrap="wrap">
       {(item) => (
-          tenantData.CONFIG?.locations[locationType]?.isAreaContainer ?      
-            <View key={item.ENTITY_TYPE_ID} role="listitem"
+          tenantData.config?.locations[locationType]?.isAreaContainer ?      
+            <View key={item.entityTypeId} role="listitem"
               className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-              <Area location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
-                resourcesBucket={tenantData.CONFIG.resources}
+              <Area location={currentLocations[0]} locationTypeConfig={tenantData.config.details}
+                resourcesBucket={tenantData.config.resources}
                 area={item} onClickHandler={clickHandler}
                 viewType={measureType}
-                measureValue={(measures || []).find(measure => measure.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
+                measureValue={(measures || []).find(measure => measure.entityType == "INDEXBY" + item.entityTypeId)?.indexAvg}
                 tenantId={tenantId}
               />
             </View>
           :
-          <View key={item.ENTITY_TYPE_ID} role="listitem"
+          <View key={item.entityTypeId} role="listitem"
             className={`locationCollectionTile ${styles.dLocationCollectionTile}`}>
             <Location location={item}
-              locationTypeConfig={tenantData.CONFIG?.locations[item.GSI2_PK.replace("TYPE#", "").toLowerCase()]}
-              resourcesBucket={tenantData.CONFIG?.resources} measurements={tenantData.CONFIG?.measurements} onClickHandler={clickHandler}
+              locationTypeConfig={tenantData.config?.locations[item.gsi2Pk.replace("TYPE#", "").toLowerCase()]}
+              resourcesBucket={tenantData.config?.resources} measurements={tenantData.config?.measurements} onClickHandler={clickHandler}
               animation="immediate" tenantId={tenantId} />
           </View>
       )}
@@ -97,13 +97,13 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
       <ContentWellHeader
         townName={townName}
       >
-        <Breadcrumb viewType={tenantData.CONFIG?.useAreasView ? "locations" : "location"}
-          resourcesPath={tenantData.CONFIG?.resources || "gardin"} tenantName={tenantData.NAME}
-          label={tenantData.CONFIG?.useAreasView ? tenantData.CONFIG?.locations[locationType]?.label || "" :  tenantData.CONFIG?.locations[locationType]?.rangeLabel || ""}
-          icon={tenantData.CONFIG?.locations[locationType]?.icon || ""}
+        <Breadcrumb viewType={tenantData.config?.useAreasView ? "locations" : "location"}
+          resourcesPath={tenantData.config?.resources || "gardin"} tenantName={tenantData.name}
+          label={tenantData.config?.useAreasView ? tenantData.config?.locations[locationType]?.label || "" :  tenantData.config?.locations[locationType]?.rangeLabel || ""}
+          icon={tenantData.config?.locations[locationType]?.icon || ""}
           locationPath={locationPath}
           locations={locationData}
-          locationConfigs={tenantData.CONFIG?.locations}
+          locationConfigs={tenantData.config?.locations}
           locationBreadCrumbPaths={locationBreadCrumbPaths}
         />
       </ContentWellHeader>
@@ -113,7 +113,7 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
           <View className="amplify-accordion">
             <View as="details" className={`amplify-accordion__item ${genericStyles.expanderItem}`} open>
               <View as="summary" className="amplify-accordion__item__trigger">
-                {getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel)}
+                {getLocationTitle(tenantData.config?.locations[locationType]?.rangeLabel)}
               </View>
               <View className="amplify-accordion__item__content">
                   { getUnorderedCollection(currentLocations, null, "SUPPLY", tenantId) }

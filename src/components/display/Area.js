@@ -15,13 +15,13 @@ const Area = ({ location, area, locationTypeConfig, resourcesBucket, onClickHand
 
   return <>
     <Card className={`areaTile ${styles.locationTile}`} backgroundImage={"url('" + tileBg + "')"} title="Go to this area"
-      id={`area-${location.NAME}-${area.NAME}_tenantId-${tenantId}`}
+      id={`area-${location.name}-${area.name}_tenantId-${tenantId}`}
       onClick={(evt) => onClickHandler(evt, "immediate", area)}
     >
     </Card>
     <View className={styles.dTileLocationIdContainer}>
       <Text className={`locationText ${styles.locationText}`}>
-        <strong>{area.NAME}</strong>
+        <strong>{area.name}</strong>
       </Text>
     </View>
     </>;

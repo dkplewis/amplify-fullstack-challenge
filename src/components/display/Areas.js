@@ -24,10 +24,10 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
 
   const currentLocations = useMemo(() => {
 
-    const childLocations = locationData.filter(location => location.PATH.startsWith(`PATH#${currentLocation.replace("__country", "#").replace("__", "#")}`));
+    const childLocations = locationData.filter(location => location.path.startsWith(`PATH#${currentLocation.replace("__country", "#").replace("__", "#")}`));
     return childLocations
       .filter(childLocation =>
-        tenantData.CONFIG.areas.expandableLocations.includes(childLocation.GSI2_PK.replace("TYPE#", "").toLowerCase())
+        tenantData.config.areas.expandableLocations.includes(childLocation.gsi2Pk.replace("TYPE#", "").toLowerCase())
       )
       .sort((a, b) => hierarchySort(a, b, "asc", locationData, tenantData));
 
@@ -42,7 +42,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       let selectedLocationPath;
       if (selectedLocationId) {
 
-        selectedLocationPath = locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + selectedLocationId)?.PATH || null;
+        selectedLocationPath = locationData.find(location => location.entityTypeId == "LOCATION#" + selectedLocationId)?.path || null;
 
       }
 
@@ -50,22 +50,22 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
 
       result = currentLocations.map((currentLocation, index) => {
 
-        if (selectedLocationId && currentLocation.ENTITY_TYPE_ID == "LOCATION#" + selectedLocationId) {
+        if (selectedLocationId && currentLocation.entityTypeId == "LOCATION#" + selectedLocationId) {
 
           // If the selected location matches a Control Area Container Location, expand it
-          return "item_" + currentLocation.ENTITY_TYPE_ID + "_" + index;
+          return "item_" + currentLocation.entityTypeId + "_" + index;
 
-        } else if (selectedLocationId && currentLocation.PATH.startsWith(selectedLocationPath) && !isFirstMatchedLocationExpanded) {
+        } else if (selectedLocationId && currentLocation.path.startsWith(selectedLocationPath) && !isFirstMatchedLocationExpanded) {
 
-          // If the selected location's PATH references a Control Area Container Location, expand it
+          // If the selected location's path references a Control Area Container Location, expand it
           isFirstMatchedLocationExpanded = true;
           
-          return "item_" + currentLocation.ENTITY_TYPE_ID + "_" + index;
+          return "item_" + currentLocation.entityTypeId + "_" + index;
 
         } else if (!selectedLocationId && index == 0) {
 
           // If none of the conditions are met, display the first Control Area Container Location
-          return "item_" + currentLocation.ENTITY_TYPE_ID + "_" + index;
+          return "item_" + currentLocation.entityTypeId + "_" + index;
 
         }
 
@@ -102,22 +102,22 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       } else {
 
         const expandableLocations = currentLocations.filter(location => locationData
-          .filter(loc => loc.PATH.startsWith(location.PATH + "#")));
+          .filter(loc => loc.path.startsWith(location.path + "#")));
         let caclLocations = expandableLocations
-          .map(loc => tenantData.CONFIG.locations[loc.GSI2_PK.replace("TYPE#", "").toLowerCase()].isAreaContainer ?
+          .map(loc => tenantData.config.locations[loc.gsi2Pk.replace("TYPE#", "").toLowerCase()].isAreaContainer ?
             loc
           :
             null    
           )
-          .map((loc, idx) => loc ? "item_" + loc.ENTITY_TYPE_ID + "_" + idx : "")
+          .map((loc, idx) => loc ? "item_" + loc.entityTypeId + "_" + idx : "")
           .filter(loc => loc != "");
         let parentLocations = expandableLocations.filter(loc => !caclLocations.includes(loc));
         for (let c = 0, len = parentLocations.length; c < len; c += 1) {
 
           caclLocations = caclLocations.concat(locationData
-            .filter(loc => loc.PATH.startsWith(parentLocations[c].PATH + "#"))
-            .filter(loc => tenantData.CONFIG.locations[loc.GSI2_PK.replace("TYPE#", "").toLowerCase()].isAreaContainer)
-            .map((loc, idx) => "item_" + loc.ENTITY_TYPE_ID + "_" + idx));
+            .filter(loc => loc.path.startsWith(parentLocations[c].path + "#"))
+            .filter(loc => tenantData.config.locations[loc.gsi2Pk.replace("TYPE#", "").toLowerCase()].isAreaContainer)
+            .map((loc, idx) => "item_" + loc.entityTypeId + "_" + idx));
           
         }
 
@@ -138,8 +138,8 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
     if (evt.button != 0) return;
     
     showModalHandler(detail, locationData, topNavLocationData,
-      currentLocation.split("__")[1], tenantData.CONFIG.town, tenantData.ENTITY_TYPE_ID.replace("TENANT#", ""),
-      tenantData.CONFIG.header, tenantData.CONFIG.enableHeatmap);
+      currentLocation.split("__")[1], tenantData.config.town, tenantData.entityTypeId.replace("TENANT#", ""),
+      tenantData.config.header, tenantData.config.enableHeatmap);
   
   }, [currentLocation, locationData, onClickHandler, rootLocationData, showModalHandler, townName, tenantData, topNavLocationData]);
 
@@ -148,9 +148,9 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
     <ContentWellHeader
       townName={townName}
     >
-      <Breadcrumb viewType="areas" resourcesPath={tenantData.CONFIG.resources} tenantName={tenantData.NAME}
-        label={tenantData.CONFIG.areas.breadCrumbLabel}
-        icon={tenantData.CONFIG.details.icon}
+      <Breadcrumb viewType="areas" resourcesPath={tenantData.config.resources} tenantName={tenantData.name}
+        label={tenantData.config.areas.breadCrumbLabel}
+        icon={tenantData.config.details.icon}
         locationPath={locationPath}
         locations={locationData}
       />
@@ -171,22 +171,22 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       <View className={`contentWellContainer ${genericStyles.contentWellContainer}`}>
       { currentLocations.map((location, locationIndex) => {
 
-        if (tenantData.CONFIG.locations[location.GSI2_PK.replace("TYPE#", "").toLowerCase()].isAreaContainer) {
+        if (tenantData.config.locations[location.gsi2Pk.replace("TYPE#", "").toLowerCase()].isAreaContainer) {
 
           let locationTypes = [];
-          const currentLocationParts = location.PATH.split("#");
+          const currentLocationParts = location.path.split("#");
           for (let c = 2, len = currentLocationParts.length; c < len; c += 1) {
-            const currentLocation = locationData.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + currentLocationParts[c]);
+            const currentLocation = locationData.find(location => location.entityTypeId == "LOCATION#" + currentLocationParts[c]);
             if (currentLocation) {
-              locationTypes.push(currentLocation.NAME.length < 5 ?
-                `${tenantData.CONFIG.locations[currentLocation.GSI2_PK.replace("TYPE#", "").toLowerCase()].searchResultLabel} ${currentLocation.NAME}`
+              locationTypes.push(currentLocation.name.length < 5 ?
+                `${tenantData.config.locations[currentLocation.gsi2Pk.replace("TYPE#", "").toLowerCase()].searchResultLabel} ${currentLocation.name}`
               :
-                currentLocation.NAME);
+                currentLocation.name);
             }
           }
 
-          const areasForLocation = areaData?.filter(ca => ca.PATH.startsWith(location.PATH)) || [];
-          const locationKey = "item_" + location.ENTITY_TYPE_ID + "_" + locationIndex;
+          const areasForLocation = areaData?.filter(ca => ca.path.startsWith(location.path)) || [];
+          const locationKey = "item_" + location.entityTypeId + "_" + locationIndex;
 
           return <Accordion.Container allowMultiple value={expandedSection || defaultExpandedSection}
             key={locationKey}
@@ -205,9 +205,9 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
                 <AreasSection
                   sectionId={locationKey}
                   areaData={areasForLocation}
-                  scheduleData={scheduleData.filter(schedule => schedule.GSI2_PK == location.ENTITY_TYPE_ID)}
+                  scheduleData={scheduleData.filter(schedule => schedule.gsi2Pk == location.entityTypeId)}
                   tenantId={tenantId}
-                  tenantConfig={tenantData?.CONFIG}
+                  tenantConfig={tenantData?.config}
                   location={location}
                   clickHandler={clickHandler}
                   viewToggle={viewToggle}
@@ -221,18 +221,18 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
         } else {
 
           const childLocations = locationData
-            .filter(loc => loc.PATH.startsWith(location.PATH + "#"))
-            .filter(loc => tenantData.CONFIG.locations[loc.GSI2_PK.replace("TYPE#", "").toLowerCase()].isAreaContainer);
-          const locationKey = "item_" + location.ENTITY_TYPE_ID + "_" + locationIndex;
+            .filter(loc => loc.path.startsWith(location.path + "#"))
+            .filter(loc => tenantData.config.locations[loc.gsi2Pk.replace("TYPE#", "").toLowerCase()].isAreaContainer);
+          const locationKey = "item_" + location.entityTypeId + "_" + locationIndex;
 
           return <Fragment key={locationKey}>
-            <Heading className={genericStyles.h2Heading} level={2}>{location.NAME}</Heading>
+            <Heading className={genericStyles.h2Heading} level={2}>{location.name}</Heading>
             <Accordion.Container allowMultiple value={(expandedSection || defaultExpandedSection)}
               onValueChange={onChangeHandler} className={genericStyles.expander}>
               { childLocations.map((childLocation, iLocationIndex) => {
 
-                const areasForLocation = areaData?.filter(ca => ca.PATH.startsWith(childLocation.PATH + "#")) || [];
-                const childLocationKey = "item_" + childLocation.ENTITY_TYPE_ID + "_" + iLocationIndex;
+                const areasForLocation = areaData?.filter(ca => ca.path.startsWith(childLocation.path + "#")) || [];
+                const childLocationKey = "item_" + childLocation.entityTypeId + "_" + iLocationIndex;
 
                 return <Accordion.Item
                   key={childLocationKey}
@@ -240,7 +240,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
                   className={genericStyles.expanderItem}
                 >
                   <Accordion.Trigger>
-                    {childLocation.NAME}
+                    {childLocation.name}
                     <Accordion.Icon />
                   </Accordion.Trigger>
                   <Accordion.Content>
@@ -248,9 +248,9 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
                     <AreasSection
                       sectionId={childLocationKey}
                       areaData={areasForLocation}
-                      scheduleData={scheduleData.filter(schedule => schedule.GSI2_PK == childLocation.ENTITY_TYPE_ID)}
+                      scheduleData={scheduleData.filter(schedule => schedule.gsi2Pk == childLocation.entityTypeId)}
                       tenantId={tenantId}
-                      tenantConfig={tenantData?.CONFIG}
+                      tenantConfig={tenantData?.config}
                       location={childLocation}
                       clickHandler={clickHandler}
                       viewToggle={viewToggle}

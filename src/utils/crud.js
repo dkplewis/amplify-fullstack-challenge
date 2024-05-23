@@ -2,8 +2,9 @@
 
 //import { generateClient } from 'aws-amplify/data';
 //import { getMeasurementsByArea, getMeasurementsOfTypeByLocationForDate, getMeasurementsOfTypeByLocationForDates } from '@/graphql/queries';
+import { getUrl } from 'aws-amplify/storage';
 import { getActiveSchedule, getLatestSchedule } from '@/utils/datetime';
-import { nameSort, timeSort } from '@/utils/sort';
+import { nameSort } from '@/utils/sort';
 import { AREA_ENTITIES, SCHEDULE_ENTITIES, MEASUREMENTS_ENTITIES,
   LOCATION_ENTITIES, TENANT_ENTITY, ZONE_ENTITIES } from '@/utils/demoData';
 
@@ -16,6 +17,7 @@ const SUPPORTED_INDICES = ["SUPPLY", "DEMAND"];
 
 /**
  * Custom types
+ * @typedef {(Object)} StorageGetUrlOutput
  * @typedef {(Object)} AmplifyClass
  * @typedef {(Object)} Alert
  * @typedef {(Object)} CognitoUser
@@ -53,15 +55,15 @@ export const getLocationData = async (tenantId, ssr) => {
     locationData = LOCATION_ENTITIES;
 
     data.rootLocation = locationData
-      .filter(location => !location.DELETED_AT)
-      .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
+      .filter(location => !location.deletedAt)
+      .find(location => location.gsi2Pk == "TYPE#ROOT_LOCATION");
     data.topNavLocations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
+      .filter(location => !location.deletedAt)
+      .filter(location => location.gsi2Pk == "TYPE#TOP_NAV_LOCATION")
       .sort((a, b) => nameSort(a, b, "asc"));
     data.locations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
+      .filter(location => !location.deletedAt)
+      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.gsi2Pk))
       .sort((a, b) => nameSort(a, b, "asc"));
 
   } catch (errors) {
@@ -101,19 +103,19 @@ export const getLocationDataAndTenant = async (tenantId) => {
 
     // Set the root location data. This determines the container location for all other locations
     data.rootLocation = locationData
-      .filter(location => !location.DELETED_AT)
-      .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
-    // Parse the location data into root locations (those with a LOCATION_HEADER_KEY)
-    // and visible locations (no LOCATION_HEADER_KEY and not the root location)
+      .filter(location => !location.deletedAt)
+      .find(location => location.gsi2Pk == "TYPE#ROOT_LOCATION");
+    // Parse the location data into root locations (those with a locationHeaderKey)
+    // and visible locations (no locationHeaderKey and not the root location)
     data.topNavLocations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
+      .filter(location => !location.deletedAt)
+      .filter(location => location.gsi2Pk == "TYPE#TOP_NAV_LOCATION")
       .sort((a, b) => nameSort(a, b, "asc"));
     data.locations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
+      .filter(location => !location.deletedAt)
+      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.gsi2Pk))
       .sort((a, b) => nameSort(a, b, "asc"));
-    // Set the tenant data and parse the CONFIG string into JSON
+    // Set the tenant data and parse the config string into JSON
     data.tenantData = tenantData;
 
     return new Promise((resolve) => resolve(data));
@@ -134,9 +136,7 @@ export const getLocationDataAndTenant = async (tenantId) => {
  * 
  * @async
  * @param {string} tenantId - The tenant ID to indicate which customer we are querying
- * @param {string} [areaId] - The ID of the area to fetch, if the request is made from the Details View *page*
  * @param {string} [locId] - The ID of the location to fetch, if the request is made from the Installation page
- * @param {string} [baseLocId] - The ID of the parent location whose locations we want to fetch, if the request is made from
  *  the All Areas View page
  * @returns {Promise<AreaLocationTenantZonesData>} The tenant entity or an error object,
  *  if an error was caught client-side
@@ -154,14 +154,14 @@ export const getLocationDataTenantDataAndArea = async (tenantId, locId) => {
 
     if (locId) {
 
-      currentLocation = LOCATION_ENTITIES.find(loc => loc.ENTITY_TYPE_ID == "LOCATION#" + locId);
-      path = currentLocation.PATH;
+      currentLocation = LOCATION_ENTITIES.find(loc => loc.entityTypeId == "LOCATION#" + locId);
+      path = currentLocation.path;
         
     } else {
 
       // If the request does  not contain a location ID, retrieve the root Location
-      currentLocation = LOCATION_ENTITIES.find(loc => loc.GSI2_PK == "TYPE#ROOT_LOCATION");
-      path = currentLocation.PATH;
+      currentLocation = LOCATION_ENTITIES.find(loc => loc.gsi2Pk == "TYPE#ROOT_LOCATION");
+      path = currentLocation.path;
 
     }
 
@@ -174,28 +174,28 @@ export const getLocationDataTenantDataAndArea = async (tenantId, locId) => {
     // Set the area data (may be empty if the Control Areas  has been deleted)
     // Control Areas are sorted by name
     data.areas = areaData
-      .filter(area => area.PATH.startsWith(path))
-      .filter(area => !area.DELETED_AT)
+      .filter(area => area.path.startsWith(path))
+      .filter(area => !area.deletedAt)
       .sort((a, b) => nameSort(a, b, "asc"));
     // Set the current location for breadcrumb processing
-    data.currentLocationPath = currentLocation?.PATH || "";
+    data.currentLocationPath = currentLocation?.path || "";
     // Set the root location data. This determines the container location for all other locations
     data.rootLocation = locationData
-      .filter(location => !location.DELETED_AT)
-      .find(location => location.GSI2_PK == "TYPE#ROOT_LOCATION");
-    // Parse the location data into root locations (those with a LOCATION_HEADER_KEY)
-    // and visible locations (no LOCATION_HEADER_KEY and not the root location)
+      .filter(location => !location.deletedAt)
+      .find(location => location.gsi2Pk == "TYPE#ROOT_LOCATION");
+    // Parse the location data into root locations (those with a locationHeaderKey)
+    // and visible locations (no locationHeaderKey and not the root location)
     data.topNavLocations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => location.GSI2_PK == "TYPE#TOP_NAV_LOCATION")
+      .filter(location => !location.deletedAt)
+      .filter(location => location.gsi2Pk == "TYPE#TOP_NAV_LOCATION")
       .sort((a, b) => nameSort(a, b, "asc"));
     data.locations = locationData
-      .filter(location => !location.DELETED_AT)
-      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.GSI2_PK))
+      .filter(location => !location.deletedAt)
+      .filter(location => !["TYPE#ROOT_LOCATION", "TYPE#TOP_NAV_LOCATION"].includes(location.gsi2Pk))
       .sort((a, b) => nameSort(a, b, "asc"));
-    // Set the tenant data and parse the CONFIG string into JSON
+    // Set the tenant data and parse the config string into JSON
     data.tenantData = tenantData;
-    data.zones = zoneData.filter(zone => !zone.DELETED_AT);
+    data.zones = zoneData.filter(zone => !zone.deletedAt);
 
     return new Promise((resolve) => resolve(data));
 
@@ -227,7 +227,7 @@ export const getScheduleData = async (tenantId, ssr) => {
 
     scheduleData = SCHEDULE_ENTITIES;
 
-    data = scheduleData.filter(schedule => !schedule.DELETED_AT);
+    data = scheduleData.filter(schedule => !schedule.deletedAt);
 
     return new Promise((resolve) => resolve(data));
 
@@ -267,11 +267,11 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
     if (scheduleData) {
 
-      let querySchedule = getActiveSchedule(scheduleData.filter(schedule => !schedule.DELETED_AT));
+      let querySchedule = getActiveSchedule(scheduleData.filter(schedule => !schedule.deletedAt));
 
       if (!querySchedule) {
 
-        querySchedule = getLatestSchedule(scheduleData.filter(schedule => !schedule.DELETED_AT));
+        querySchedule = getLatestSchedule(scheduleData.filter(schedule => !schedule.deletedAt));
       
       }
 
@@ -281,7 +281,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
         // Set the measurements array
         data.measurements = measurementsData
-          .filter(measure => !measure.DELETED_AT);
+          .filter(measure => !measure.deletedAt);
 
         // Set the schedule array
         data.schedules = [querySchedule];
@@ -374,11 +374,11 @@ export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom,
  * 
  * @async
  * @param {string} itemKey - The S3 key of the item for which we want a pre-signed URL
- * @returns {Promise<string>} The pre-signed URL of the item
+ * @returns {Promise<StorageGetUrlOutput>} The pre-signed URL of the item
  */
 export const getStorageItem = async (itemKey) => {
 
-  return null //Storage.get(itemKey);
+  return getUrl({ path: itemKey });
 
 };
 
@@ -413,7 +413,7 @@ export const getStorageItems = async (scheduleId, zones) => {
 
         zoneFileList.results.forEach(zoneFile => {
 
-          if (zoneFile.key.endsWith(".png")) {
+          if (zoneFile.key.endsWith(".jpg")) {
 
             promiseArray.push(getStorageItem(zoneFile.key));
             metaData[zoneFile.key] = { lastModified: zoneFile.lastModified };
@@ -433,7 +433,7 @@ export const getStorageItems = async (scheduleId, zones) => {
         
         const metaDataKey = Object.keys(metaData).find(datum => res[c].substring(datum) != -1);
         data.push({
-          src: res[c],
+          src: res[c].url,
           metaData: metaData[metaDataKey]
         })
       }

@@ -13,13 +13,13 @@ const Location = ({ location, locationTypeConfig, resourcesBucket, onClickHandle
   }`, [resourcesBucket, locationTypeConfig]);
 
   return <View title="Go to this location"
-    id={`location-${location.NAME}_tenantId-${tenantId}`}
+    id={`location-${location.name}_tenantId-${tenantId}`}
     onClick={(evt) => onClickHandler(evt, "immediate", location)}>
     <Card className={`locationTile ${styles.locationTile}`} backgroundImage={"url('" + tileBg + "')"}>
     </Card>
     <View className={styles.dTileLocationIdContainer}>
       <Text className={`locationText ${styles.locationText}`}>
-        <strong>{location.NAME}</strong>
+        <strong>{location.name}</strong>
       </Text>
     </View>
   </View>;

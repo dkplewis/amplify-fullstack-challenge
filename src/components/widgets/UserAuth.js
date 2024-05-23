@@ -74,45 +74,45 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownN
       }>
         { rootLocation && topNavLocations?.length > 1 && topNavLocations.map((topLevelLocation) => {
 
-          const topNavLocationPathLen = topLevelLocation.PATH.split("#").length;
+          const topNavLocationPathLen = topLevelLocation.path.split("#").length;
           const childLocationsForTopNavLocation = locations?.length > 0 ?
-            locations.filter((location) => location.PATH.startsWith(topLevelLocation.PATH + "#") && location.PATH.split("#").length == topNavLocationPathLen + 1)
+            locations.filter((location) => location.path.startsWith(topLevelLocation.path + "#") && location.path.split("#").length == topNavLocationPathLen + 1)
           : [];
           const defaultLocationForTopNavLocation = childLocationsForTopNavLocation.length > 1 ?
             topLevelLocation
           :
-            childLocationsForTopNavLocation.find((location) => location.DEFAULT_LOCATION);
+            childLocationsForTopNavLocation.find((location) => location.defaultLocation);
 
-          return <MenuItem key={topLevelLocation.LOCATION_HEADER_KEY + "_" + measure}
-            className={currentRoute.includes(`/${topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")}`) ? styles.menuItemActive : styles.menuItem}
+          return <MenuItem key={topLevelLocation.locationHeaderKey + "_" + measure}
+            className={currentRoute.includes(`/${topLevelLocation.entityTypeId.replace("LOCATION#", "")}`) ? styles.menuItemActive : styles.menuItem}
           >
-            { tenantHeaderConfig[topLevelLocation.LOCATION_HEADER_KEY] ?
+            { tenantHeaderConfig[topLevelLocation.locationHeaderKey] ?
               <>
                 { defaultLocationForTopNavLocation ?
                   <Link
                     href={"/installation/" +
-                      rootLocation.ENTITY_TYPE_ID.replace("LOCATION#", "") + 
+                      rootLocation.entityTypeId.replace("LOCATION#", "") + 
                       "/" +
-                      topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", "") + 
+                      topLevelLocation.entityTypeId.replace("LOCATION#", "") + 
                       
                       (childLocationsForTopNavLocation.length > 1 ? 
-                        tenantHeaderConfig[topLevelLocation.LOCATION_HEADER_KEY].childPath
+                        tenantHeaderConfig[topLevelLocation.locationHeaderKey].childPath
                       :
-                        "/" + defaultLocationForTopNavLocation.GSI2_PK.replace("TYPE#", "").toLowerCase()
+                        "/" + defaultLocationForTopNavLocation.gsi2Pk.replace("TYPE#", "").toLowerCase()
                       ) +
                       "/" +
                       (childLocationsForTopNavLocation.length > 1 ? 
-                        topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+                        topLevelLocation.entityTypeId.replace("LOCATION#", "")
                       :
-                        defaultLocationForTopNavLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")
+                        defaultLocationForTopNavLocation.entityTypeId.replace("LOCATION#", "")
                       )
                     } passHref>
                     <AmplifyLink onClick={() => {
                       setIsOpen(false);
-                      setCurrentTopNavLocation(topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", ""));
+                      setCurrentTopNavLocation(topLevelLocation.entityTypeId.replace("LOCATION#", ""));
                     }}>
                       <Text className={styles.linkText}>
-                        {topLevelLocation.NAME}
+                        {topLevelLocation.name}
                       </Text>
                     </AmplifyLink>
                   </Link>
@@ -120,7 +120,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownN
                   <View>
                     <View as="span">
                       <Text className={styles.linkText}>
-                        {topLevelLocation.NAME}
+                        {topLevelLocation.name}
                       </Text>
                     </View>
                   </View>

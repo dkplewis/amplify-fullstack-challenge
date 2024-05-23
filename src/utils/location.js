@@ -19,25 +19,25 @@
 export const getMeasurementsZones = (area, zones) => {
 
   // Input: A area and an array of zones
-  // Output: An array of unique zone ENTITY_TYPE_IDs related to the area
+  // Output: An array of unique zone entityTypeIds related to the area
   // or an empty array if no area has been given or no zones have been given
   if (!area || !zones || !zones.length) return [];
 
-  const pathParts = area.PATH.split("#").slice(0, -1);
+  const pathParts = area.path.split("#").slice(0, -1);
 
   // Check for Control Area-specific Zones
-  let areaZones = zones.filter(zone => !zone.DELETED_AT && area.PATH == zone.PATH);
+  let areaZones = zones.filter(zone => !zone.deletedAt && area.path == zone.path);
   if (!areaZones.length) {
 
     // Check for Location-specific Zones, from deepest to shallowest
     // and return the first matching location, or the default (root location) Zones
     let pathLen = pathParts.length;
     let pathCounter = 1;
-    areaZones = zones.filter(zone => !zone.DELETED_AT && zone.PATH == pathParts.join("#"));
+    areaZones = zones.filter(zone => !zone.deletedAt && zone.path == pathParts.join("#"));
     while (areaZones.length == 0 && pathCounter < pathLen) {
 
       const currPath = pathParts.slice(0, pathCounter * -1).join("#");
-      areaZones = zones.filter(zone => !zone.DELETED_AT && zone.PATH == currPath);
+      areaZones = zones.filter(zone => !zone.deletedAt && zone.path == currPath);
       pathCounter += 1;
 
     } 
@@ -70,7 +70,7 @@ export const getLocationBreadcrumbs = (breadCrumbRootPath = "", locationPathPart
   
   breadCrumbRootPath += rootLocation + (topNavLocation ? "/" + topNavLocation : "");
 
-  if (locations.length > 0 && locations.filter(location => location.PATH.split("#").slice(0, -1).join("#") == `PATH#${locationPathParts.slice(0, -1).join("#")}`).length > 1 &&
+  if (locations.length > 0 && locations.filter(location => location.path.split("#").slice(0, -1).join("#") == `PATH#${locationPathParts.slice(0, -1).join("#")}`).length > 1 &&
     topNavLocation != "country") {
 
     // Special case if the top-nav location has multiple child locations (e.g. France -> Paris & Marseille)
@@ -91,11 +91,11 @@ export const getLocationBreadcrumbs = (breadCrumbRootPath = "", locationPathPart
   // Ignoring the root location and top-nav location, process each Location ID into a breadcrumb
   for (let c = 2, len = locationPathParts.length; c < len; c += 1) {
 
-    const currLoc = locations.find(location => location.ENTITY_TYPE_ID == "LOCATION#" + locationPathParts[c]);
+    const currLoc = locations.find(location => location.entityTypeId == "LOCATION#" + locationPathParts[c]);
 
     if (currLoc) {
 
-      const currLocType = currLoc.GSI2_PK.replace("TYPE#", "").toLowerCase();
+      const currLocType = currLoc.gsi2Pk.replace("TYPE#", "").toLowerCase();
       const breadCrumb = breadCrumbRootPath + "/" + currLocType + "/" + locationPathParts[c];
       breadCrumbPaths.push(breadCrumb);
 

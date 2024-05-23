@@ -26,10 +26,10 @@ const Layout = ({ currentLocation, setLoading, townNameHandler, children }) => {
   </View>;
 
   return <View className="isDesktop">
-    { data?.tenantData?.CONFIG?.header && <Header type="desktop" rootLocation={data.rootLocation}
+    { data?.tenantData?.config?.header && <Header type="desktop" rootLocation={data.rootLocation}
       topNavLocations={data.topNavLocations} locations={data.locations}
-      currentLocation={currentLocation} tenantHeaderConfig={data.tenantData?.CONFIG?.header || null}
-      resourcesConfig={data.tenantData?.CONFIG?.resources || null}
+      currentLocation={currentLocation} tenantHeaderConfig={data.tenantData?.config?.header || null}
+      resourcesConfig={data.tenantData?.config?.resources || null}
       setTownName={townNameHandler} /> }
     <View as="main" className={styles.dMain}>
       { cloneElement(children, { setLoading: setLoading }) }
