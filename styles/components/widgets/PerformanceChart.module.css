@@ -97,7 +97,7 @@ p.progressLabel {
 }
 
 p.healthPerformanceChartHeaderText,
-p.indicesPerformanceChartLabelText,
+p.measuresPerformanceChartLabelText,
 .chartYAxis p,
 .chartXAxis p,
 .chartYAxisFloating p,
@@ -127,15 +127,9 @@ p.healthPerformanceChartHeaderText,
   position: absolute;
 }
 
-p.indicesPerformanceChartLabelText,
-p.healthPerformanceChartHeaderText:hover {
-  color: #f2f2f7;
-}
-
 
 .latestDataPoint {
   position: absolute;
-  color: #f2f2f7;
 }
 
 p.healthPerformanceChartHeaderText {
@@ -159,13 +153,13 @@ p.chartYAxis0 {
   margin-top: 4.9rem;
 }
 
-.indicesChartLabelContent {
+.measuresChartLabelContent {
   justify-content: center;
   gap: 0.25rem 0.5rem;
   flex-wrap: wrap;
 }
 
-.indicesPerformanceChartLabelContainer {
+.measuresPerformanceChartLabelContainer {
   padding: 0 1rem;
   opacity: 0.95;
   border: 1px solid #1c1c1e;
@@ -173,19 +167,19 @@ p.chartYAxis0 {
   cursor: pointer;
 }
 
-.indicesPerformanceChartLabelContainer:hover {
-  border: 1px solid #f2f2f7;
+.measuresPerformanceChartLabelContainer:hover {
+  border: 1px solid #000;
 }
 
-.indicesPerformanceChartLabelContainerFocus {
+.measuresPerformanceChartLabelContainerFocus {
   padding: 0 1rem;
   opacity: 0.95;
-  border: 1px solid #f2f2f7;
+  border: 1px solid #000;
   border-radius: 3px;
   cursor: pointer;
 }
 
-.indicesPerformanceChartLabelContainerActive {
+.measuresPerformanceChartLabelContainerActive {
   padding: 0 1rem;
   background-color: #3a3a3c;
   opacity: 0.95;
@@ -194,18 +188,17 @@ p.chartYAxis0 {
   cursor: pointer;
 }
 
-.indicesPerformanceChartLabel {
+.measuresPerformanceChartLabel {
   gap: 0.5rem;
-  color: #f2f2f7;
   align-items: center;
 }
 
-.indicesPerformanceChartLabelIcon {
+.measuresPerformanceChartLabelIcon {
   width: 14px;
   filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
 }
 
-.indicesPerformanceChartLabelIconNarrow {
+.measuresPerformanceChartLabelIconNarrow {
   width: 10px;
   filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
 }
@@ -214,21 +207,21 @@ p.chartYAxis0 {
   width: 24px;
 }
 
-p.indicesPerformanceChartLabelText {
+p.measuresPerformanceChartLabelText {
   text-wrap: nowrap;
 }
 
-.indicesPerformanceChartLabelIndicator {
+.measuresPerformanceChartLabelIndicator {
   align-items: center;
   gap: 0.5rem;
 }
 
-.indicesPerformanceChartLabelTick svg {
+.measuresPerformanceChartLabelTick svg {
   margin-top: 7px;
 }
 
 .periodProgressUnderContainer {
-  width: 71rem;
+  width: 68rem;
 }
 
 .periodProgressUnderContainer {
@@ -240,7 +233,7 @@ p.indicesPerformanceChartLabelText {
   padding: 0 2rem;
 }
 
-.indexSelectorTitle {
+.measureSelectorTitle {
   font-size: 0.67rem;
   font-weight: 700;
   color: #fff;
@@ -265,7 +258,7 @@ p.indicesPerformanceChartLabelText {
   width: 90%;
 }
 
-.indexSelectorOptionLabel {
+.measureSelectorOptionLabel {
   font-size: 0.67rem;
   font-weight: 400;
   color: #fff;
@@ -276,7 +269,7 @@ p.indicesPerformanceChartLabelText {
   letter-spacing: 0.15em;
 }
 
-.indexSelectorButtons {
+.measureSelectorButtons {
   justify-content: center;
   gap: 2.5rem;
   margin-top: 0.5rem;
@@ -293,153 +286,4 @@ p.indicesPerformanceChartLabelText {
 
 .headingContainer > div {
   width: 63.25%;
-}
-
-.areaHeading {
-  align-items: center;
-  padding-bottom: 0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.tabsNavContainer {
-  position: relative;
-}
-
-.tabList {
-  gap: 0;
-  padding-bottom: 1px;
-  margin-bottom: 0.4rem;
-  border-width: 0;
-  width: fit-content;
-  min-width: 837px;
-  justify-content: flex-start;
-}
-
-button.tabItem {
-  padding: 0;
-  transition: none;
-  border-width: 0;
-  border-style: none;
-  border-color: transparent;
-}
-
-button.tabItem[data-state="active"] {
-  border-width: 0;
-}
-
-button.tabItem .tabContainer {
-  display: flex;
-}
-
-button.tabItem .tabContent {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 6px;
-  padding-bottom: 5px;
-  background: url('/images/tab-border.png') no-repeat bottom;
-}
-
-button.tabItem .tabContent .tabLabel {
-  display: flex;
-  gap: 0.67rem;
-  font-weight: 700;
-  font-size: 0.67rem;
-  text-align: left;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #f2f2f7;
-  opacity: 0.35;
-  text-wrap: nowrap;
-}
-
-button.tabItem[data-state="active"] .tabContent,
-button.tabItem:hover .tabContent {
-  background: url('/images/tab-border.png') no-repeat top;
-}
-
-button.tabItem[data-state="active"] .tabContent,
-button.tabItem:hover .tabContent {
-  opacity: 1;
-}
-
-button.tabItem .before,
-button.tabItem .after,
-.spacer {
-  background: url('/images/tab-border.png') no-repeat bottom;
-}
-
-button.tabItem .before,
-button.tabItem .after {
-  width: 30px;
-  height: 30px;
-}
-
-.spacer {
-  height: 30px;
-  flex: 1;
-}
-
-button.tabItem[data-state="active"] .before,
-button.tabItem:hover .before {
-  background: url('/images/tab-border-active-left.png') no-repeat bottom;
-}
-
-button.tabItem[data-state="active"] .after,
-button.tabItem:hover .after {
-  background: url('/images/tab-border-active-right.png') no-repeat bottom;
-}
-
-button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .before,
-button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .tabContent,
-button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .after,
-button.tabItem:hover + button.tabItem[data-state="active"] .before,
-button.tabItem:hover + button.tabItem[data-state="active"] .tabContent,
-button.tabItem:hover + button.tabItem[data-state="active"] .after {
-  background: url('/images/tab-border.png') no-repeat bottom;
-}
-
-button.tabItem[data-state="active"]:has(+ button.tabItem:is(:hover)) .tabLabel,
-button.tabItem:hover + button.tabItem[data-state="active"] .tabLabel {
-  opacity: 0.35;
-}
-
-button.tabItem img {
-  width: 16px;
-  height: 16px;
-  filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
-}
-
-@media screen and (max-width: 1425px) {
-
-  .tabList {
-    border-width: 0 0 1px 0;
-  }
-
-  button.tabItem .tabContainer {
-    border-width: 0 0 1px 0;
-  }
-
-  .tabList {
-    border-width: 0 0 1px 0;
-  }
-
-  button.tabItem[data-state="active"] .tabContainer {
-    padding-bottom: 5px;
-    border-width: 1px 0 1px 0;
-  }
-
-  button.tabItem[data-state="active"] .before {
-    height: 3px;
-    bottom: -3px;
-  }
-
-}
-
-@media screen and (max-width: 1194px) {
-
-  button.tabItem[data-state="active"] .tabContainer {
-    padding-bottom: 6px;
-    border-width: 1px 0 1px 0;
-  }
-
 }

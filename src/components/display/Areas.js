@@ -156,7 +156,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       />
     </ContentWellHeader>
     { currentLocations.length > 1 && <View className={genericStyles.expandCollapseButton}>
-      <Button className="standard-button"
+      <Button className="standard-button" style={{ width: "10.5rem" }}
         onClick={(evt) => (expandedSection && expandedSection.length == 0) || !expandedSection ? 
           onChangeHandler("expand")
         :
@@ -279,7 +279,7 @@ const Areas = ({ areaData, scheduleData, tenantData, locationData, rootLocationD
       <></>
     }
     { currentLocations.length > 1 && <View className={genericStyles.expandCollapseButton}>
-      <Button className="standard-button"
+      <Button className="standard-button" style={{ width: "10.5rem" }}
         onClick={(evt) => (expandedSection && expandedSection.length == 0) || !expandedSection ? 
           onChangeHandler("expand")
         :

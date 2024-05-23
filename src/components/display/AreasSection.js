@@ -1,21 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Collection, Flex, Loader, View } from '@aws-amplify/ui-react';
+import { Collection, Loader, View } from '@aws-amplify/ui-react';
 import { useQueries } from '@tanstack/react-query';
 import Area from '@/components/display/Area';
 import { getLocationMeasurementsDataByDatesAndType } from '@/utils/crud';
 import { getActiveSchedulePeriodStartAndEndDay, getActiveScheduleStartDate, getDifferenceInHours,
   getLatestSchedulePeriodStartAndEndDay, getLatestScheduleStartDate, getLatestIndexValue,
   hasInsufficientHourlyData,isHourlyDataPointThresholdTriggered } from '@/utils/datetime';
-import { caDimSort } from '@/utils/sort';
 
 import styles from '@/component-styles/display/Areas.module.css';
 
 const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
   tenantId, tenantConfig, location, clickHandler, pageNo }) => {
 
-  const [indicesDate, setMeasurementsDate] = useState(null);
-  const [indicesType, setMeasurementsType] = useState("SUPPLY");
+  const [measuresDate, setMeasurementsDate] = useState(null);
+  const [measuresType, setMeasurementsType] = useState("SUPPLY");
 
   const [fromDate, toDate] = useMemo(() => {
 
@@ -48,7 +47,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
       }
 
-      console.debug("Showing indices data from " + from +
+      console.debug("Showing measures data from " + from +
         (from.indexOf("T") == 10 ? from.lastIndexOf(":") != 16 ? ":00" : "" : ":00") +
         " to " + to + " for " + location.NAME + "...");
 
@@ -79,7 +78,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
         }
 
-        console.debug("Showing historic indices data from " + from +
+        console.debug("Showing historic measures data from " + from +
           (from.indexOf("T") == 10 ? from.lastIndexOf(":") != 16 ? ":00" : "" : ":00") +
           " to " + to + " for " + location.NAME + "...");
 
@@ -89,12 +88,12 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
     return [from, to];
 
-  }, [scheduleData, location, tenantConfig, indicesDate]);
+  }, [scheduleData, location, tenantConfig, measuresDate]);
 
-  const indicesForDateRangeQueries = useQueries({
+  const measuresForDateRangeQueries = useQueries({
     queries: !fromDate && !toDate ? [] : Object.keys(tenantConfig.measurements || {})
       .filter(measurement => tenantConfig.measurements[measurement].enabled)
-      .map((indexType) => {
+      .map((measureType) => {
         return {
           queryKey: [
             "locationMeasurementsByDatesAndType",
@@ -102,7 +101,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
             (sectionId?.split("_")[1] || "").replace("LOCATION#", ""),
             fromDate,
             toDate,
-            indexType,
+            measureType,
             areaData.length
           ],
           queryFn: ({ queryKey }) => getLocationMeasurementsDataByDatesAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[5], queryKey[6], queryKey[1]),
@@ -128,26 +127,26 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
   useEffect(() => {
 
-    if (indicesForDateRangeQueries.isRefetching) setMeasurementsDate(new Date().toJSON().substring(0, 16) + ":00");
+    if (measuresForDateRangeQueries.isRefetching) setMeasurementsDate(new Date().toJSON().substring(0, 16) + ":00");
 
-  }, [indicesForDateRangeQueries.isRefetching]);
+  }, [measuresForDateRangeQueries.isRefetching]);
   
   const sectionMeasurements = useMemo(() => {
 
     let result = {};
 
-    if (indicesForDateRangeQueries.isSuccess) {
+    if (measuresForDateRangeQueries.isSuccess) {
 
       result[sectionId] = {};
 
-      indicesForDateRangeQueries.data.forEach((indexDatum) => {
+      measuresForDateRangeQueries.data.forEach((measureDatum) => {
 
-        const areaId = indexDatum.ENTITY_TYPE.split("#")[1];
-        const indexType = indexDatum.GSI5_PK.split("#")[1];
-        const indexDate = indexDatum.GSI5_SK.split("#")[0];
-        if (!result[sectionId][indexDate]) result[sectionId][indexDate] = {};
-        if (!result[sectionId][indexDate][indexType]) result[sectionId][indexDate][indexType] = {};
-        result[sectionId][indexDate][indexType][areaId] = {...indexDatum};
+        const areaId = measureDatum.ENTITY_TYPE.split("#")[1];
+        const measureType = measureDatum.GSI5_PK.split("#")[1];
+        const measureDate = measureDatum.GSI5_SK.split("#")[0];
+        if (!result[sectionId][measureDate]) result[sectionId][measureDate] = {};
+        if (!result[sectionId][measureDate][measureType]) result[sectionId][measureDate][measureType] = {};
+        result[sectionId][measureDate][measureType][areaId] = {...measureDatum};
     
       })
 
@@ -155,7 +154,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
     return result;
 
-  }, [indicesForDateRangeQueries, sectionId]);
+  }, [measuresForDateRangeQueries, sectionId]);
 
   const defaultMeasurementsDate = useMemo(() => {
 
@@ -217,7 +216,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
   
   }, []);
 
-  const getUnorderedCollection = useCallback((collectionItems, location, indexData, currentType, tenantId,
+  const getUnorderedCollection = useCallback((collectionItems, location, measureData, currentType, tenantId,
     schedule, initialPeriod, threshold, isRolling) => {
 
     let isHourly = false;
@@ -234,7 +233,7 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
       const endDateMs = new Date(initialPeriodEndDate).getTime();
 
       isHourly = isHourlyDataPointThresholdTriggered(startDateMs, endDateMs, threshold,
-        hasInsufficientHourlyData(Object.values(indexData ?? {})));
+        hasInsufficientHourlyData(Object.values(measureData ?? {})));
 
     }
 
@@ -242,13 +241,13 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
       items={collectionItems}
       direction="row"
       wrap="wrap">
-      {(item, index) => (
+      {(item) => (
         <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
           <Area location={location} area={item}
             locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
             resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
             viewType={currentType}
-            indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
+            measureValue={getLatestIndexValue(measureData ? measureData[item.ENTITY_TYPE_ID.replace("AREA#", "")]: null,
               isHourly, item.ENTITY_TYPE_ID)}
             tenantId={tenantId}
           />
@@ -258,176 +257,16 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
 
   }, [clickHandler, scheduleData, tenantConfig, pageNo]);
 
-  const getOrderedCollection = useCallback((collectionItems, location, indexData, currentType, tenantId,
-    schedule, initialPeriod, threshold, isRolling) => {
-
-    let isHourly = false;
-
-    const [initialPeriodStartDate, initialPeriodEndDate] = (getActiveSchedulePeriodStartAndEndDay(schedule, initialPeriod,
-      "JSON", isRolling, "UTC", false, false)
-    ||
-      getLatestSchedulePeriodStartAndEndDay(schedule, initialPeriod, "JSON", isRolling, "UTC", false, false)
-    ).split(" - ");
-
-    if (initialPeriodStartDate && initialPeriodEndDate) {
-
-      const startDateMs = new Date(initialPeriodStartDate).getTime();
-      const endDateMs = new Date(initialPeriodEndDate).getTime();
-      isHourly = isHourlyDataPointThresholdTriggered(startDateMs, endDateMs, threshold,
-        hasInsufficientHourlyData(Object.values(indexData ?? {})));
-
-    }
-    
-    let collectionItemsByRow = {
-      row_0: []
-    };
-
-    const maxRow = collectionItems.reduce((max, curr) => curr.CA_DIMENSIONS[1] + 1 > max ? curr.CA_DIMENSIONS[1] + 1 : max, 1);
-
-    // Create an 8 x 8 grid of Control Areas and spacers
-    for (let c = 0, len = maxRow * 8; c < len; c += 1) {
-
-      const currTile = [c % 8, Math.floor(c / 8)];
-
-      if (collectionItemsByRow["row_" + currTile[1]] === undefined) collectionItemsByRow["row_" + currTile[1]] = [];
-
-      const currCollectionItem = collectionItems.find(collectionItem => collectionItem.CA_DIMENSIONS.length == currTile.length &&
-        collectionItem.CA_DIMENSIONS.every(( item, idx) => item === currTile[idx]));
-
-      collectionItemsByRow["row_" + currTile[1]].push(currCollectionItem ? currCollectionItem : { isSpacer: true });
-
-    }
-
-    return Object.values(collectionItemsByRow).map((items, idx) => {
-
-      return <Collection key={"row_" + idx} type="list" role="list" className="locationCollection"
-        items={items}
-        direction="row"
-        gap="1rem"
-        wrap="wrap">
-        {(item, index) => (
-          item.isSpacer ? 
-            <View key={"space_" + index} role="listitem" className={styles.dAreaCollectionTile}></View>
-          : 
-            <View key={item.ENTITY_TYPE_ID} role="listitem" className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-              <Area location={location} area={item}
-                locationTypeConfig={getLocationTypeConfig(tenantConfig)} 
-                resourcesBucket={tenantConfig.resources} onClickHandler={clickHandler}
-                viewType={currentType}
-                indexValue={getLatestIndexValue(indexData ? indexData[item.ENTITY_TYPE_ID.replace("AREA#", "")] : null,
-                  isHourly, item.ENTITY_TYPE_ID)}
-                tenantId={tenantId}
-              />
-            </View>
-        )}
-      </Collection>;
-
-    });
-
-  }, [clickHandler, scheduleData, tenantConfig, pageNo]);
-
-  const getDurationLabel = useCallback((schedules, initialPeriod, isRolling, tz) => {
-
-    const [durationStartDate, durationEndDate] = (
-      getActiveSchedulePeriodStartAndEndDay(schedules, initialPeriod, "Mmmm DD", isRolling, tz || "UTC", false, false)
-      ||
-      getLatestSchedulePeriodStartAndEndDay(schedules, initialPeriod, "Mmmm DD", isRolling, tz || "UTC", false, false)
-    ).split(" - ");
-
-    return durationStartDate == durationEndDate ? durationEndDate : durationStartDate + " - " + durationEndDate;
-
-  }, []);
-
-  const getTimePeriodLabel = useCallback((schedules, initialPeriod, threshold, isRolling, indices, section, date, type) => {
-
-    if (!schedules || !schedules.length) return "";
-
-    let initialScheduleDates = getActiveSchedulePeriodStartAndEndDay(schedules, initialPeriod, "JSON", isRolling, "UTC", false, false);
-
-    if (!initialScheduleDates) {
-
-      initialScheduleDates = getLatestSchedulePeriodStartAndEndDay(schedules, initialPeriod, "JSON", isRolling, "UTC", false, false);
-
-    }
-
-    if (!initialScheduleDates) return "";
-
-    const [initialPeriodStartDate, initialPeriodEndDate] = initialScheduleDates.split(" - ");
-
-    if (initialPeriodStartDate && initialPeriodEndDate) {
-
-      date += date.indexOf(":") != -1 || date.indexOf("T") == 10 ? ":00" : ""; 
-
-      const isHourly = date.indexOf("T") == 10 || isHourlyDataPointThresholdTriggered(
-        new Date(initialPeriodStartDate).getTime(),
-        new Date(initialPeriodEndDate).getTime(),
-        threshold,
-        hasInsufficientHourlyData(Object.values(indices && indices[section] && indices[section][date] && indices[section][date][type] ?
-          indices[section][date][type]
-        :
-          {})
-      ));
-
-      let scheduleDates = getActiveSchedulePeriodStartAndEndDay(schedules, initialPeriod, "JSON", isRolling, "UTC", isHourly, false);
-
-      if (!scheduleDates) {
-
-        scheduleDates = getLatestSchedulePeriodStartAndEndDay(schedules, initialPeriod, "JSON", isRolling, "UTC", isHourly, false);
-
-      }
-
-      if (!scheduleDates) return "";
-
-      const [periodStartDate, periodEndDate] = scheduleDates.split(" - ");
-
-      const startDateMs = new Date(periodStartDate).getTime();
-      const endDateMs = new Date(periodEndDate).getTime();
-
-      const periodLength = isHourly ?
-        (Math.floor((endDateMs - startDateMs) / 1000 / 60 / 60) + 1)
-      :
-        Math.floor((endDateMs - startDateMs) / 1000 / 60 / 60 / 24);
-
-      return isRolling ?
-        `Last ${periodLength} ${isHourly ? "Hour" : "Day"}${periodLength > 1 ? "s" : ""}`
-      :
-        `Current ${periodLength} ${isHourly ? "Hour" : "Day"}${periodLength > 1 ? "s" : ""} Period`;
-
-    } else {
-
-      return "";
-
-    }
-    
-  }, []);
-
-  return indicesForDateRangeQueries.isSuccess ?
+  return measuresForDateRangeQueries.isSuccess ?
     <>
-      { areaData.find(area => area.CA_DIMENSIONS) &&
-        getOrderedCollection(areaData
-          .filter(area => !area.DELETED_AT && area.CA_DIMENSIONS)
-          .sort((a, b) => caDimSort(a, b, "asc")),
-          location,
-          sectionMeasurements[sectionId] &&
-          sectionMeasurements[sectionId][(indicesDate || defaultMeasurementsDate)] ?
-            sectionMeasurements[sectionId][(indicesDate || defaultMeasurementsDate)][indicesType]
-          : {},
-          indicesType,
-          tenantId,
-          scheduleData,
-          Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),
-          Number.parseInt(tenantConfig.defaultHourlyDailyDataThreshold || "72", 10),
-          tenantConfig.details.rollingTrendlinePeriod
-        )
-      }
       { getUnorderedCollection(areaData
-          .filter(area => !area.DELETED_AT && !area.CA_DIMENSIONS),
+          .filter(area => !area.DELETED_AT),
           location,
           sectionMeasurements[sectionId] &&
-          sectionMeasurements[sectionId][(indicesDate || defaultMeasurementsDate)] ?
-            sectionMeasurements[sectionId][(indicesDate || defaultMeasurementsDate)][indicesType]
+          sectionMeasurements[sectionId][(measuresDate || defaultMeasurementsDate)] ?
+            sectionMeasurements[sectionId][(measuresDate || defaultMeasurementsDate)][measuresType]
           : {},
-          indicesType,
+          measuresType,
           tenantId,
           scheduleData,
           Number.parseInt(tenantConfig.details.trendlinePeriod || "48", 10),

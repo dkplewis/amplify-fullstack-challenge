@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
-import { Analytics } from 'aws-amplify';
 import { Button, Flex, Image, Input, Label, View } from '@aws-amplify/ui-react';
 import { components } from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -31,10 +30,6 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
     }),
     dropdownIndicator: (defaultStyles, state) => ({
       ...defaultStyles,
-      color: "#fff",
-      "&:hover": {
-        color: "#fff",
-      },
       "svg": {
         width: "0.8rem"
       }
@@ -46,11 +41,11 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
     }),
     menu: (defaultStyles) => ({
       ...defaultStyles,
-      backgroundColor: "#3a3a3c",
-      border: "1px solid #f2f2f7",
+      backgroundColor: "#f2f2f7",
+      border: "1px solid #3a3a3c",
       borderRadius: "3px",
       marginTop: 0,
-      width: "10rem",
+      width: "12rem",
       zIndex: 1002
     }),
     menuList: (defaultStyles) => ({
@@ -59,12 +54,9 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
     }),
     option: (defaultStyles, state) => ({
       ...defaultStyles,
-      color: "#fff",
+      color: "#000",
       opacity: state.isSelected ? 1 : 0.35,
       backgroundColor: "transparent",
-      fontSize: "0.675rem",
-      fontWeight: 400,
-      letterSpacing: "0.05em",
       textTransform: "uppercase",
       textAlign: "left",
       cursor: "pointer",
@@ -75,14 +67,9 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
         backgroundColor: "transparent"
       }
     }),
-    singleValue: (defaultStyles) => ({ ...defaultStyles, color: "#fff" }),
     valueContainer: (defaultStyles) => ({
       ...defaultStyles,
-      minWidth: "4rem",
-      fontSize: "0.675rem",
-      fontWeight: 700,
-      color: "#fff",
-      letterSpacing: "0.05em",
+      minWidth: "5rem",
       textTransform: "uppercase"
     })
   };
@@ -158,21 +145,6 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
     setTimePeriod(value);
     periodChangeHandler(timeUnit == "minutes" ? value / 60 : timeUnit == "hours" ? value : timeUnit == "days" ? value * 24 : timeUnit == "weeks" ? value * 168 : hoursInMonths);
 
-    // record will only fire if analytics are enabled 
-    Analytics.record({
-      name: "timeSeriesPeriodChange",
-      attributes: {
-        tenantId: tenantId,
-        area: area.NAME,
-        period: value + " " + timeUnit
-      }
-    })
-    .catch((error) => error.message.indexOf("No credentials, applicationId or region") == -1 ?
-      console.error(error)
-    :
-      {}
-    );
-
   };
 
   const onPeriodUnitChange = (value) => {
@@ -209,21 +181,6 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
 
       periodChangeHandler(newValue == "minutes" ? timePeriod / 60 : newValue == "hours" ? timePeriod : newValue == "days" ? timePeriod * 24 : newValue == "weeks" ? timePeriod * 168 : newValue == "months" ? hoursInMonths : -1);
       setDateRangeHandler([null, null]);
-
-      // record will only fire if analytics are enabled 
-      Analytics.record({
-        name: "timeSeriesUnitChange",
-        attributes: {
-          tenantId: tenantId,
-          area: area.NAME,
-          period: timePeriod + " " + newValue
-        }
-      })
-      .catch((error) => error.message.indexOf("No credentials, applicationId or region") == -1 ?
-        console.error(error)
-      :
-        {}
-      );
 
     } else {
 
@@ -310,15 +267,11 @@ const PeriodSelector = ({ period = 720, defaultPeriod = 48, tenantId, area, sche
         Option: IconOption
       }}
       options={[
-        { value: "minutes", label: "minutes", icon: timeUnit == "minutes" ? "tick-active.svg" : "" },
         { value: "hours", label: "hours", icon: timeUnit == "hours" ? "tick-active.svg" : "" },
         { value: "days", label: "days", icon: timeUnit == "days" ? "tick-active.svg" : "" }, 
         { value: "weeks", label: "weeks", icon: timeUnit == "weeks" ? "tick-active.svg" : "" },
         { value: "months", label: "months", icon: timeUnit == "months" ? "tick-active.svg" : "" }, 
-        showDateRange ?
-          { value: "range", label: "range", icon: timeUnit == "range" ? "tick-active.svg" : "" }
-        :
-          { value: "growth cycle", label: "growth cycle", icon: timeUnit == "growth cycle" ? "tick-active.svg" : "" }
+        { value: "range", label: "range", icon: timeUnit == "range" ? "tick-active.svg" : "" }
       ]} />
   </Flex>;
 

@@ -20,32 +20,10 @@
 }
 
 p.imageLabel {
-  padding-top: 0.2rem;
   text-align: center;
-  font-size: 0.67rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-p.imageLabelActiveAlert {
-  padding-top: 0.2rem;
-  text-align: center;
-  font-size: 0.67rem;
-  font-weight: 700;
-  color: #f5d205;
-}
-
-p.noData {
-  color: #fff;
 }
 
 p.zoneName {
-  font-weight: 700;
-  font-size: 0.67rem;
-  color: #636366;
-  text-align: left;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -62,22 +40,20 @@ p.zoneName {
 }
 
 p.legend {
-  font-weight: 700;
-  font-size: 0.67rem;
-  color: #f2f2f7;
+  font-size: 0.8rem;
   text-align: right;
-  letter-spacing: 0.05em;
   text-wrap: nowrap;
 }
 
 p.legendUC {
-  font-weight: 700;
-  font-size: 0.67rem;
-  color: #f2f2f7;
+  font-size: 0.8rem;
   text-align: right;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
   text-wrap: balance;
+}
+
+.imageCredits {
+  font-size: 0.5rem;
 }
 
 @media screen and (min-width: 1136px) and (max-width: 1439px) {

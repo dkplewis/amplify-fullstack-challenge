@@ -39,7 +39,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownN
         var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
-      // Redirect to the index page
+      // Redirect to the measure page
       router.push("/");
     } catch (error) {
       console.error(error);
@@ -72,7 +72,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownN
           </View>
         </MenuButton>
       }>
-        { rootLocation && topNavLocations?.length > 1 && topNavLocations.map((topLevelLocation, index) => {
+        { rootLocation && topNavLocations?.length > 1 && topNavLocations.map((topLevelLocation) => {
 
           const topNavLocationPathLen = topLevelLocation.PATH.split("#").length;
           const childLocationsForTopNavLocation = locations?.length > 0 ?
@@ -83,7 +83,7 @@ const UserAuth = ({ type, tId, isVisibleHandler = (newIsVisible) => {}, setTownN
           :
             childLocationsForTopNavLocation.find((location) => location.DEFAULT_LOCATION);
 
-          return <MenuItem key={topLevelLocation.LOCATION_HEADER_KEY + "_" + index}
+          return <MenuItem key={topLevelLocation.LOCATION_HEADER_KEY + "_" + measure}
             className={currentRoute.includes(`/${topLevelLocation.ENTITY_TYPE_ID.replace("LOCATION#", "")}`) ? styles.menuItemActive : styles.menuItem}
           >
             { tenantHeaderConfig[topLevelLocation.LOCATION_HEADER_KEY] ?

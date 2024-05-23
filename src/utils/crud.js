@@ -7,7 +7,7 @@ import { nameSort, timeSort } from '@/utils/sort';
 import { AREA_ENTITIES, SCHEDULE_ENTITIES, MEASUREMENTS_ENTITIES,
   LOCATION_ENTITIES, TENANT_ENTITY, ZONE_ENTITIES } from '@/utils/demoData';
 
-const SUPPORTED_INDICES = ["SUPPLY"];
+const SUPPORTED_INDICES = ["SUPPLY", "DEMAND"];
 
 /**
  * @type { import('aws-amplify/data').Client<import('@/aws-data/resource').Schema> }
@@ -281,7 +281,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
         // Set the measurements array
         data.measurements = measurementsData
-          .filter(index => !index.DELETED_AT);
+          .filter(measure => !measure.DELETED_AT);
 
         // Set the schedule array
         data.schedules = [querySchedule];
@@ -300,19 +300,19 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 };
 
 /**
- * Fetch the index entities for a given index type, location and date for a given tenant
+ * Fetch the measure entities for a given measure type, location and date for a given tenant
  * 
  * @async
  * @param {string} locId - The ID of the location for which we want to fetch measurement entities
- * @param {string} date - The date for which we want to fetch index entities, in YYYY-MM-DD format
- * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY" 
+ * @param {string} date - The date for which we want to fetch measure entities, in YYYY-MM-DD format
+ * @param {string} measure - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY" 
  * @param {string} tenantId - The tenant ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(Index[]|CSError[])>} The measurement entities or an error object,
  *  if an error was caught client-side
  * @throws The error message if an error was caught server-side
 */
-export const getLocationMeasurementsDataByDateAndType = async (locId, date, index, tenantId, ssr) => {
+export const getLocationMeasurementsDataByDateAndType = async (locId, date, measure, tenantId, ssr) => {
 
   /** @type {Index[]} */
   let data = [];
@@ -337,13 +337,13 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, inde
 };
 
 /**
- * Fetch the index entities for a given index type, location and date range for a given tenant
+ * Fetch the measure entities for a given measure type, location and date range for a given tenant
  * 
  * @async
  * @param {string} locId - The ID of the location for which we want to fetch measurement entities
  * @param {string} dateFrom - The date from which we want to fetch measurement entities, in YYYY-MM-DD(?THH:mm) format
  * @param {string} dateTo - The date from which we want to fetch measurement entities, in YYYY-MM-DD(?THH:mm) format
- * @param {string} index - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY"
+ * @param {string} measure - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY"
  * @param {number} areaCount - The number of areas to fetch data for
  * @param {string} tenantId - The tenant ID to indicate which table we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
@@ -351,7 +351,7 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, inde
  *  if an error was caught client-side
  * @throws The error message if an error was caught server-side
 */
-export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom, dateTo, index, areaCount, tenantId, ssr) => {
+export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom, dateTo, measure, areaCount, tenantId, ssr) => {
 
   /** @type {Index[]} */
   let data = [];

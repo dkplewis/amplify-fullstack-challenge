@@ -17,17 +17,8 @@
   justify-content: flex-start;
   align-items: flex-start;
   width: 71rem;
-  margin: 0.25rem auto 0 auto;
+  margin: 0.25rem auto 1.25rem auto;
   gap: 0;
-}
-
-.trayId {
-  margin-top: 0.3rem;
-  font-family: 'SF Pro Display', Inter, Roboto, Helvetica Neue, sans-serif;
-  font-size: 1.9rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  color: #767680;
 }
 
 .trayAlertContainer,
@@ -88,37 +79,11 @@
   width: 100%;
 }
 
-.indicesContainer {
+.measuresContainer {
   justify-content: center;
   padding: 0;
   gap: 1rem;
   align-items: flex-start;
-}
-
-.insightContainer {
-  padding: 0 2.65rem;
-  margin-bottom: 1.2rem;
-  gap: initial;
-  align-items: flex-start;
-}
-
-.overallHealth {
-  width: 11.85rem;
-  margin-top: 0.2rem;
-  margin-right: 3.5rem;
-  text-align: center;
-}
-
-.overallPerf {
-  width: 15.87rem;
-  margin-top: 3.75rem;
-  margin-right: 3rem;
-  text-align: center;
-}
-
-.healthIndex {
-  text-align: center;
-  margin-bottom: 1.25rem;
 }
 
 .chartDisplay {
@@ -128,20 +93,6 @@
 
 .imageDisplay {
   padding: 0 1.65rem;
-}
-
-.trayDisplay {
-  position: relative;
-  height: 24.25rem;
-  background: url('/images/canopy.png') center no-repeat;
-  background-size: cover;
-}
-
-p.infoLabel,
-p.infoText {
-  font-size: 1rem;
-  font-weight: 400;
-  color: #fff;
 }
 
 p.infoLabel {
@@ -157,24 +108,11 @@ p.infoText {
   width: max-content;
 }
 
-.happinessLevelContainer {
-  position: absolute;
-  top: 1rem;
-  left: 36%;
-  width: 13.75rem;
-}
-
 .trayBadgeContainer {
   justify-content: right;
   gap: 0.25rem;
   margin-top: 2rem;
   text-align: right;
-}
-
-p.trayBadge {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
 }
 
 .trayImage {

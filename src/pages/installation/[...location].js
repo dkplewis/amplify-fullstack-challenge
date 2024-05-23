@@ -464,7 +464,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
           zones: []
         });
       }} closeIcon={<Image src="/images/close.svg" alt="Close" />}
-        classNames={{ modal: "modal-details-view" + (pageData.tenantData?.CONFIG?.details?.detailsView == "indeximage" ? " view-wide" : "") }}>
+        classNames={{ modal: "modal-details-view" + (pageData.tenantData?.CONFIG?.details?.detailsView == "measureimage" ? " view-wide" : "") }}>
         <ModalContent areaData={modalData.area} areasData={modalData.areas}
           scheduleData={modalData.schedule} zoneData={modalData.zones} locationPath={locationPath}
           measurementsData={modalData.measurements} locationData={modalData.locations} tenantData={modalData.tenantData}

@@ -23,7 +23,7 @@ export const TENANT_ENTITY = {
       "breadCrumbLabel": "",
       "chartLineType": "linear",
       "childPath": "/details",
-      "detailsView": "indeximage",
+      "detailsView": "measureimage",
       "enableColourPalette": true,
       "icon": "area-breadcrumb-icon.svg",
       "isAreaContainer": true,
@@ -35,7 +35,7 @@ export const TENANT_ENTITY = {
       "showAlertDuration": true,
       "showLatestAlertOnly": true,
       "tileBackground": "area-icon.svg",
-      "trendlinePeriod": "1"
+      "trendlinePeriod": "24"
     },
     "enableHeatmap": true,
     "header": {
@@ -57,7 +57,7 @@ export const TENANT_ENTITY = {
       },
       "neighbourhood": {
         "allAreasLabel": "",
-        "breadCrumbLabel": "Neighbourhoods",
+        "breadCrumbLabel": "{name}",
         "icon": "location-breadcrumb-icon.svg",
         "isAreaContainer": true,
         "label": "Neighbourhood",
@@ -226,10 +226,6 @@ export const LOCATION_ENTITIES = [
 
 export const AREA_ENTITIES = [
   {
-    "CA_DIMENSIONS": [
-      0,
-      0
-    ],
     "CREATED_AT": "2023-03-28T16:18:08.150Z",
     "DELETED_AT": null,
     "ENTITY_TYPE": "AREA",
@@ -238,10 +234,6 @@ export const AREA_ENTITIES = [
     "PATH": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31#01GWMG6CM28MYG92WWMEQMTZ1Y"
   },
   {
-    "CA_DIMENSIONS": [
-      0,
-      1
-    ],
     "CREATED_AT": "2023-03-28T16:18:08.150Z",
     "DELETED_AT": null,
     "ENTITY_TYPE": "AREA",
@@ -279,9 +271,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "GSI5_PK": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[0] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 70,
+    "INDEX_HISTORY": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "INDEX_LATEST": 71
   },
   {
     "CREATED_AT": DEMO_DATES[0] + "T00:58:00.00Z",
@@ -292,9 +284,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "GSI5_PK": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[0] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 60,
+    "INDEX_HISTORY": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "INDEX_LATEST": 60
   },
   {
     "CREATED_AT": DEMO_DATES[1] + "T00:58:00.00Z",
@@ -305,9 +297,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "GSI5_PK": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[1] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 70,
+    "INDEX_HISTORY": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "INDEX_LATEST": 71
   },
   {
     "CREATED_AT": DEMO_DATES[1] + "T00:58:00.00Z",
@@ -318,9 +310,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "GSI5_PK": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[1] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 60,
+    "INDEX_HISTORY": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "INDEX_LATEST": 60
   },
   {
     "CREATED_AT": DEMO_DATES[2] + "T00:58:00.00Z",
@@ -331,9 +323,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GC6NGSW1JPHXE8CW271R9TNA",
     "GSI5_PK": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[2] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 70,
+    "INDEX_HISTORY": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "INDEX_LATEST": 71
   },
   {
     "CREATED_AT": DEMO_DATES[2] + "T00:58:00.00Z",
@@ -344,9 +336,9 @@ export const MEASUREMENTS_ENTITIES = [
     "GSI3_PK": "SCHEDULE#01GC6NGSW1JPHXE8CW271R9TNA",
     "GSI5_PK": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "GSI5_SK": DEMO_DATES[2] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "INDEX_AVG": 0.35,
-    "INDEX_HISTORY": "{\"10\":\"0.4\",\"11\":\"0.5\",\"12\":\"0.6\",\"13\":\"0.7\",\"14\":\"0.4\",\"15\":\"0.3\",\"16\":\"0.4\",\"17\":\"0.35\",\"07\":\"0.1\",\"08\":\"0.2\",\"09\":\"0.3\"}",
-    "INDEX_LATEST": 0.35
+    "INDEX_AVG": 60,
+    "INDEX_HISTORY": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "INDEX_LATEST": 60
   }
 ];
 

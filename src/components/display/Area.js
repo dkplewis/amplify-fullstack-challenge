@@ -5,30 +5,13 @@ import { Card, Text, View } from '@aws-amplify/ui-react';
 import styles from '@/component-styles/display/Area.module.css';
 
 const Area = ({ location, area, locationTypeConfig, resourcesBucket, onClickHandler,
-  indexValue, tenantId }) => {
+  measureValue, tenantId }) => {
 
-  const tileBg = useMemo(() => {
-
-    let result = "";
-      
-    if (indexValue != null) {
-
-      const tileBackgroundParts = locationTypeConfig.tileBackground?.split(".") || ["", ""];
-      let percentage = "100";
-      // Uses images 10, 20, 30, 40 and 100
-      const imageSet = ["10", "20", "30", "40", "100"];
-      percentage = imageSet[indexValue < 50 ? 0 : indexValue < 61 ? 1 : indexValue < 71 ? 2 : indexValue < 81 ? 3 : 4 ];
-      result = `/images/${resourcesBucket}/desktop-${tileBackgroundParts[0]}-pct${percentage}.${tileBackgroundParts[1]}`;
-
-    } else {
-
-      result = `/images/${resourcesBucket}/desktop-${locationTypeConfig.tileBackground}`;
-
-    }
-
-    return result;
-
-  }, [indexValue, locationTypeConfig, resourcesBucket]);
+  const tileBg = useMemo(() => `/images/${
+    resourcesBucket
+  }/desktop-${
+    locationTypeConfig.tileBackground
+  }`, [measureValue, locationTypeConfig, resourcesBucket]);
 
   return <>
     <Card className={`areaTile ${styles.locationTile}`} backgroundImage={"url('" + tileBg + "')"} title="Go to this area"
@@ -56,6 +39,6 @@ Area.propTypes = {
   onClickHandler: PropTypes.func.isRequired,
   variant: PropTypes.string,
   viewType: PropTypes.string,
-  indexValue: PropTypes.number,
+  measureValue: PropTypes.number,
   tenantId: PropTypes.string
 };

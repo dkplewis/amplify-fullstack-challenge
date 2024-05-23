@@ -62,6 +62,10 @@ p.amplify-text {
   width: 100%;
 }
 
+.standard-button.amplify-button {
+  width: 100%;
+}
+
 .standard-button.amplify-button,
 .standard-button.amplify-button:active,
 .standard-button.amplify-button:focus {
@@ -154,23 +158,6 @@ p.amplify-text {
   filter: invert(57%) sepia(17%) saturate(3876%) hue-rotate(6deg) brightness(105%) contrast(96%);
 }
 
-.highlightButton.demand.active.amplify-button[data-variation=link] img,
-.highlightButton.demand.amplify-button[data-variation=link]:hover img,
-.highlightButton.demand.amplify-button[data-variation=link]:active img,
-.highlightButton.demand.amplify-button[data-variation=link]:focus img,
-.highlightButton.supply.active.amplify-button[data-variation=link] img,
-.highlightButton.supply.amplify-button[data-variation=link]:hover img,
-.highlightButton.supply.amplify-button[data-variation=link]:active img,
-.highlightButton.supply.amplify-button[data-variation=link]:focus img,
-.highlightButton.area.active.amplify-button[data-variation=link] img,
-.highlightButton.area.amplify-button[data-variation=link]:hover img,
-.highlightButton.area.amplify-button[data-variation=link]:active img,
-.highlightButton.area.amplify-button[data-variation=link]:focus img,
-.custom-tooltip .custom-tooltip-image img.index-icon {
-  opacity: 1;
-  filter: invert(100%) sepia(3%) saturate(602%) hue-rotate(253deg) brightness(116%) contrast(100%);
-}
-
 /* Fix for radix ui accordion closing issue in React 18
 .amplify-expander__content[data-state=closed] {
   animation-fill-mode: forwards !important;
@@ -185,14 +172,12 @@ p.amplify-text {
   width: 15%;
 }
 
-.multiIndices .recharts-wrapper {
-  z-index: 10;
-  margin-left: -1.5rem;
-}
-
 .custom-tooltip {
   padding: 0.5rem 1.5rem 0.5rem 1.3rem;
   z-index: 13;
+  border: 1px solid #000;
+  border-radius: 3px;
+  background: #f2f2f7;
 }
 
 .custom-tooltip .custom-tooltip-image {
@@ -247,12 +232,12 @@ p.amplify-text {
   opacity: 1;
 }
 
-.react-tooltip.index-tooltip.react-tooltip__place-bottom-end,
-.react-tooltip.index-tooltip.react-tooltip__place-bottom-start,
-.react-tooltip.index-tooltip.react-tooltip__place-left-start,
-.react-tooltip.index-tooltip.react-tooltip__place-right-start,
-.react-tooltip.index-tooltip.react-tooltip__place-top-end,
-.react-tooltip.index-tooltip.react-tooltip__place-top-start {
+.react-tooltip.measure-tooltip.react-tooltip__place-bottom-end,
+.react-tooltip.measure-tooltip.react-tooltip__place-bottom-start,
+.react-tooltip.measure-tooltip.react-tooltip__place-left-start,
+.react-tooltip.measure-tooltip.react-tooltip__place-right-start,
+.react-tooltip.measure-tooltip.react-tooltip__place-top-end,
+.react-tooltip.measure-tooltip.react-tooltip__place-top-start {
   min-width: 18rem;
 }
 
@@ -260,7 +245,6 @@ p.amplify-text {
   margin-top: 0;
   border-radius: 4px;
   text-align: initial;  
-  color: #f2f2f7;
 }
 
 .react-tooltip-content-padded-all {
@@ -276,17 +260,19 @@ p.amplify-text {
 }
 
 .detailsView .react-datepicker {
-  background-color: #3a3a3c;
+  background-color: #f2f2f7;
+  border: 1px solid #3a3a3c;
 }
 
 .detailsView .react-datepicker__header {
-  background-color: #3a3a3c;
+  background-color: #f2f2f7;
   border: 0;
   gap: 3rem;
   justify-content: center;
 }
 
 .detailsView .react-datepicker__header .borderless-button {
+  color: #000;
   padding: 0;
   font-size: 16px;
 }
@@ -366,7 +352,7 @@ p.amplify-text {
   z-index: 1012;
 }
 
-.multiIndices .scrollableContent {
+.multiMeasurements .scrollableContent {
   overflow-y: auto;
   overflow-x: hidden;
   width: 76.7825rem;
@@ -464,11 +450,6 @@ ul.slider {
   padding: 1rem 2rem;
 }
 
-.isDesktop .detailsView.multiIndices .contentWellHeader {
-  width: 71rem;
-  padding: 0.25rem 0 0 0;
-}
-
 .isDesktop .contentWellHeader a:hover {
   text-decoration: underline;
 }
@@ -487,10 +468,6 @@ ul.slider {
   background-color: transparent;
   box-shadow: none;
   padding: 0 1rem;
-}
-
-.isDesktop .multiIndices .infoLabel {
-  width: auto;
 }
 
 [data-amplify-container] .login-logo-text {
@@ -650,10 +627,6 @@ ul.slider {
 
     .modal-details-view {
       width: 99%;
-    }
-
-    .multiIndices .scrollableContent {
-      width: 74.1825rem;
     }
 
   }

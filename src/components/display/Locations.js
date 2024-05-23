@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Collection, Accordion, Flex, Loader, View } from '@aws-amplify/ui-react';
+import { Alert, Collection, Flex, Loader, View } from '@aws-amplify/ui-react';
 import Area from '@/components/display/Area';
 import Location from '@/components/display/Location';
 import Breadcrumb from '@/components/structural/Breadcrumb';
 import ContentWellHeader from '@/components/structural/ContentWellHeader';
-import { caDimSort } from '@/utils/sort';
 
 import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/display/Locations.module.css';
@@ -15,25 +14,9 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
   showModalHandler, currentLocations, tenantId, locationBreadCrumbPaths, townName, topNavLocationData,
   isLoadingAlertData }) => {
 
-  const [expandedSection, setExpandedSection] = useState(["itemGroup_0"]);
-  const [indicesDate, setMeasurementsDate] = useState((process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T")[0]);
-  const [indicesType, setMeasurementsType] = useState("SUPPLY");
-  const [indices, setMeasurements] = useState({});
-  const [indicesLoaded, setMeasurementsLoaded] = useState(true);
-  const [historicMeasurementsLoaded, setHistoricMeasurementsLoaded] = useState(true);
-
-  const DEFAULT_PAGE_SIZE = 24;
-  const TODAY = new Date().toJSON().split("T")[0];
-
   useEffect(() => {
 
     document.body.style.cursor = "auto";
-
-  }, []);
-
-  const onChangeHandler = useCallback((newValue) => {
-
-    setExpandedSection(newValue);
 
   }, []);
 
@@ -74,21 +57,21 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
 
   }, []);
 
-  const getUnorderedCollection = useCallback((collectionItems, indices, indexType, tenantId) => {
+  const getUnorderedCollection = useCallback((collectionItems, measures, measureType, tenantId) => {
 
     return <Collection type="list" role="list" className="locationCollection"
       items={collectionItems}
       direction="row"
       wrap="wrap">
-      {(item, index) => (
+      {(item) => (
           tenantData.CONFIG?.locations[locationType]?.isAreaContainer ?      
             <View key={item.ENTITY_TYPE_ID} role="listitem"
               className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
               <Area location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
                 resourcesBucket={tenantData.CONFIG.resources}
                 area={item} onClickHandler={clickHandler}
-                viewType={indexType}
-                indexValue={(indices || []).find(index => index.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
+                viewType={measureType}
+                measureValue={(measures || []).find(measure => measure.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
                 tenantId={tenantId}
               />
             </View>
@@ -104,98 +87,6 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
     </Collection>;
 
   }, [alertData, clickHandler, currentLocations, scheduleData, locationType, tenantData]);
-
-  const getOrderedCollection = useCallback((collectionItems, indices, indexType, tenantId) => {
-
-    let collectionItemsByRow = {
-      row_0: []
-    };
-
-    const maxRow = collectionItems.reduce((max, curr) => curr.CA_DIMENSIONS[1] + 1 > max ? curr.CA_DIMENSIONS[1] + 1 : max, 1);
-
-    // Create an 8 x 8 grid of Control Areas and spacers
-    for (let c = 0, len = maxRow * 8; c < len; c += 1) {
-
-      const currTile = [c % 8, Math.floor(c / 8)];
-
-      if (collectionItemsByRow["row_" + currTile[1]] === undefined) collectionItemsByRow["row_" + currTile[1]] = [];
-
-      const currCollectionItem = collectionItems.find(collectionItem => collectionItem.CA_DIMENSIONS.length == currTile.length &&
-        collectionItem.CA_DIMENSIONS.every(( item, idx) => item === currTile[idx]));
-
-      collectionItemsByRow["row_" + currTile[1]].push(currCollectionItem ? currCollectionItem : { isSpacer: true });
-
-    }
-
-    return Object.values(collectionItemsByRow).map((items, idx) => {
-
-      return <Collection key={"row_" + idx} type="list" role="list" className="locationCollection"
-        items={items}
-        direction="row"
-        gap="1rem"
-        wrap="wrap">
-        {(item, index) => (
-            item.isSpacer ? 
-              <View key={"spacer_" + index} className={styles.dAreaCollectionTile}></View>
-            : 
-              <View key={item.ENTITY_TYPE_ID} className={`locationCollectionTile ${styles.dAreaCollectionTile}`}>
-                <Area location={currentLocations[0]} locationTypeConfig={tenantData.CONFIG.details}
-                  resourcesBucket={tenantData.CONFIG.resources}
-                  area={item} onClickHandler={clickHandler}
-                  viewType={indexType}
-                  indexValue={(indices || []).find(index => index.ENTITY_TYPE == "INDEXBY" + item.ENTITY_TYPE_ID)?.INDEX_AVG}
-                  tenantId={tenantId}
-                />
-              </View>
-        )}
-      </Collection>;
-    
-    });
-
-  }, [alertData, clickHandler, currentLocations, scheduleData, tenantData, TODAY]);
-
-  const getExpanderItems = useCallback((collectionItems, indicesItems, indexType, isAreaContainer, tenantId) => {
-
-    let expanderItems = [];
-
-    for (let c = 0, len = Math.ceil(collectionItems.length / (tenantData.CONFIG?.locations[locationType]?.resPerPage || DEFAULT_PAGE_SIZE)); c < len; c += 1) {
-
-      const itemGroupStartIdx = c == 0 ? c : (c * (tenantData.CONFIG?.locations[locationType]?.resPerPage || DEFAULT_PAGE_SIZE)) - 1;
-      const itemGroupEndIdx = (tenantData.CONFIG?.locations[locationType]?.resPerPage || DEFAULT_PAGE_SIZE) * (c + 1);
-
-      expanderItems.push(<Accordion.Item
-        key={"itemGroup_" + c}
-        value={"itemGroup_" + c}
-        className={genericStyles.expanderItem}
-      >
-        <Accordion.Trigger>
-          { getLocationTitle(tenantData.CONFIG?.locations[locationType]?.rangeLabel, itemGroupStartIdx + 1,
-            collectionItems.length < itemGroupEndIdx + 1 ? collectionItems.length : itemGroupEndIdx + 1) }
-          <Accordion.Icon />
-        </Accordion.Trigger>
-        <Accordion.Content>
-          { collectionItems.find(collectionItem => collectionItem.CA_DIMENSIONS) &&
-            getOrderedCollection(collectionItems
-              .filter(collectionItem => !collectionItem.DELETED_AT && collectionItem.CA_DIMENSIONS)
-              .sort((a, b) => caDimSort(a, b, "asc")),
-            indicesItems,
-            indexType,
-            tenantId
-          ) }
-          { getUnorderedCollection(collectionItems
-              .filter(collectionItem => !collectionItem.DELETED_AT && !collectionItem.CA_DIMENSIONS),
-            indicesItems,
-            indexType,
-            tenantId
-          ) }
-        </Accordion.Content>
-      </Accordion.Item>);
-
-    }
-
-    return expanderItems;
-
-  }, [getOrderedCollection, getUnorderedCollection, getLocationTitle, scheduleData, locationType, tenantData]);
 
   return isLoadingAlertData ? 
     <View className={styles.loadingContainer}>
