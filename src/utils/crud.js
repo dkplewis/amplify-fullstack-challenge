@@ -2,7 +2,7 @@
 
 //import { generateClient } from 'aws-amplify/data';
 //import { getMeasurementsByArea, getMeasurementsOfTypeByLocationForDate, getMeasurementsOfTypeByLocationForDates } from '@/graphql/queries';
-import { getUrl } from 'aws-amplify/storage';
+import { getUrl, list } from 'aws-amplify/storage';
 import { getActiveSchedule, getLatestSchedule } from '@/utils/datetime';
 import { nameSort } from '@/utils/sort';
 import { AREA_ENTITIES, SCHEDULE_ENTITIES, MEASUREMENTS_ENTITIES,
@@ -405,18 +405,20 @@ export const getStorageItems = async (scheduleId, zones) => {
 
       const zone = zones[c];
 
-      const zoneFileList = {
-        results: []
-      };
+      const zoneFileList = await list({ path: `areadetail/${
+        scheduleId.replace("SCHEDULE#", "")
+      }/${
+        zone.entityTypeId.replace("ZONE#", "")
+      }/`});
 
-      if (zoneFileList.results) {
+      if (zoneFileList.items) {
 
-        zoneFileList.results.forEach(zoneFile => {
+        zoneFileList.items.forEach(zoneFile => {
 
-          if (zoneFile.key.endsWith(".jpg")) {
+          if (zoneFile.path.endsWith(".jpg")) {
 
-            promiseArray.push(getStorageItem(zoneFile.key));
-            metaData[zoneFile.key] = { lastModified: zoneFile.lastModified };
+            promiseArray.push(getStorageItem(zoneFile.path));
+            metaData[zoneFile.path] = { lastModified: zoneFile.lastModified };
 
           }
 
