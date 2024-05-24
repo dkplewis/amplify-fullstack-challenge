@@ -11,8 +11,7 @@ import Loading from '@/components/display/Loading';
 import Locations from '@/components/display/Locations';
 import ModalContent from '@/components/display/ModalContent';
 import { StoreContext } from '@/store/store';
-import { getScheduleData, getScheduleMeasurementsData,
-  getLocationDataTenantDataAndArea, getLocationMeasurementsDataByDateAndType } from '@/utils/crud';
+import { getScheduleData, getScheduleMeasurementsData, getLocationDataTenantDataAndArea } from '@/utils/crud';
 import { getLocationBreadcrumbs } from '@/utils/location';
 import { orderSort } from '@/utils/sort';
 
@@ -155,13 +154,8 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
     });
 
     await queryClient.prefetchQuery({
-      queryKey: ["locationMeasurementsByDateAndType", TENANT_ID, locationId || "", new Date().toJSON().split("T")[0], "SUPPLY"],
-      queryFn: ({ queryKey }) => getLocationMeasurementsDataByDateAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[1])
-    });
-
-    await queryClient.prefetchQuery({
       queryKey: ["areaScheduleMeasurements", TENANT_ID, locationId || "", "locations"] || null,
-      queryFn: ({ queryKey }) => getScheduleMeasurementsData(queryKey[2], queryKey[1])
+      queryFn: ({ queryKey }) => getScheduleMeasurementsData(queryKey[2], queryKey[1], { req, res }),
     });
 
     returnObject.props["dehydratedState"] = dehydrate(queryClient);
@@ -236,14 +230,6 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
     queryKey: ["schedules", tenantId],
     queryFn: ({ queryKey }) => getScheduleData(queryKey[1]),
     enabled: (locationType !== "details" && !fetchLocationMeasurements)
-  });
-
-  const { isPending: isPendingLocationMeasurementsData, isError: isErrorLocationMeasurementsData, isSuccess: isSuccessLocationMeasurementsData,
-    data: locationMeasurementsData, error: locationMeasurementsError } = useQuery({
-    queryKey: ["locationMeasurementsByDateAndType", tenantId, locId, new Date().toJSON().split("T")[0], "SUPPLY"],
-    queryFn: ({ queryKey }) => getLocationMeasurementsDataByDateAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[1]),
-    enabled: (locationType !== "details" && fetchLocationMeasurements),
-    refetchInterval: 20000
   });
 
   const { isPending: isPendingAreaMeasurementsData, isError: isErrorAreaMeasurementsData, isSuccess: isSuccessAreaMeasurementsData,
@@ -423,20 +409,16 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
   }, []);
 
   if (isPendingPageData || (locationType === "details" && isPendingAreaMeasurementsData) ||
-  (locationType === "areas" && locId && isPendingLocationMeasurementsData) ||
   (locationType !== "details" && ((locationType === "areas" && !locId) ||
     locationType !== "areas") && isPendingScheduleData)) return <Loading />;
 
   if (isErrorPageData || (locationType === "details" && isErrorAreaMeasurementsData) ||
-    (locationType === "areas" && locId && isErrorLocationMeasurementsData) ||
     (locationType !== "details" && ((locationType === "areas" && !locId) || locationType !== "areas") && isErrorScheduleData)) {
 
     return <DataLoadError dataLoadError={pageError ?
       pageError.message
     : scheduleError ?
       scheduleError.message
-    : locationMeasurementsError ?
-      locationMeasurementsError.message
     :
       areaMeasurementsError.message
     } />;

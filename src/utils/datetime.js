@@ -378,6 +378,7 @@ export const getPeriodStartAndEndMs = (schedule, period, hourlyDailyThreshold, i
   const startDate = startDateJSON.split("T")[0];
   const endDate = endDateJSON.split("T")[0];
   const periodMeasurements = measurements.filter(measure => {
+    if (!measure.createdAt) return false;
     const [createDate, createTime] = measure.createdAt.split("T");
     return createDate >= startDate && createDate <= endDate;
   });
@@ -1048,6 +1049,7 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
   const [today, now] = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T");
 
   measurements
+    .filter(measure => measure.entityTypeId)
     .filter(measure => measurementsKeys.includes(measure.gsi5Sk.split("#")[0]))
     .map(measure => {
       const measureType = measure.gsi5Pk.indexOf("#SUPPLY#") > -1 ?
@@ -1057,7 +1059,7 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
       : "ign";
       const [createDate, createTime] = measure.createdAt.split("T");
       if (isHourly) {
-        const measureHistory = measure.indexHistory ? JSON.parse(measure.indexHistory) : {};
+        const measureHistory = measure.measurementMap ? JSON.parse(measure.measurementMap) : {};
         const measureHistoryKeys = Object.keys(measureHistory);
         for (let c = 0, len = measureHistoryKeys.length; c < len; c += 1) {
           let currKey = measureHistoryKeys[c];
@@ -1094,9 +1096,9 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
           data[dateKey].createDate = measure.createdAt;
           data[dateKey].displayDate = createDate + "T00:00:00.000Z";
           if (byCAID) {
-            data[dateKey][measure.entityType.replace("MEASUREMENTBYAREA#", "")] = measure.indexAvg;
+            data[dateKey][measure.entityType.replace("MEASUREMENTBYAREA#", "")] = measure.measurementAvg;
           } else {
-            data[dateKey][measureType] = measure.indexAvg;
+            data[dateKey][measureType] = measure.measurementAvg;
           }
           data[dateKey].hasData = true;
           data[dateKey].isHourly = false;
@@ -1144,17 +1146,17 @@ export const getLatestIndexValue = (latestIndex, isHourly, areaId) => {
 
   if (!latestIndex || latestIndex.entityType !== "MEASUREMENTBY" + areaId) return null;
 
-  const measureAvgValue = latestIndex.indexAvg;
-  let measureLatestValue = latestIndex.indexLatest;
+  const measureAvgValue = latestIndex.measurementAvg;
+  let measureLatestValue = latestIndex.measurementLatest;
 
   const hhmm = (process.env.NEXT_PUBLIC_NOW ?? new Date().toJSON()).split("T")[1].split(":")[0];
 
   let currentHourValue = null;
-  if (latestIndex.indexHistory) {
+  if (latestIndex.measurementMap) {
 
     try {
     
-      const measureHistory = JSON.parse(latestIndex.indexHistory);
+      const measureHistory = JSON.parse(latestIndex.measurementMap);
       currentHourValue = measureHistory[hhmm];
       measureLatestValue = currentHourValue && currentHourValue != measureLatestValue ? currentHourValue : measureLatestValue;
       
@@ -1206,8 +1208,8 @@ export const hasInsufficientHourlyData = (measurements) => {
   if (!measurements || !measurements.length) return true;
 
   // DL-2023-12-13 Support granularity down to one hour rather than 8
-  return measurements.reduce((acc, curr) => curr.indexHistory && curr.indexHistory != "null" ?
-    acc += curr.gsi5Pk.indexOf("#SUPPLY#") == -1 ? 0 : Object.keys(JSON.parse(curr.indexHistory)).length
+  return measurements.reduce((acc, curr) => curr.measurementMap && curr.measurementMap != "null" ?
+    acc += curr.gsi5Pk.indexOf("#SUPPLY#") == -1 ? 0 : Object.keys(JSON.parse(curr.measurementMap)).length
   :
     acc += curr.isHourly ? 1 : 0, 0) == 0;
 

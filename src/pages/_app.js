@@ -75,6 +75,8 @@ const ChallengeApp = ({ Component, pageProps }) => {
       <meta name="description" content="Dev Community AWS Amplify Fullstack TypeScript Challenge app by David Lewis" />
       <meta name="viewport" content="viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
     </Head>
+    <Authenticator variation="modal">
+      { ({ signOut, user }) => (
         <PersistQueryClientProvider client={queryClient} persistOptions={{persister}}>
           <HydrationBoundary state={pageProps?.dehydratedState}>
             <Store initialData={null}>
@@ -89,6 +91,8 @@ const ChallengeApp = ({ Component, pageProps }) => {
               </Store>
           </HydrationBoundary>
         </PersistQueryClientProvider>
+      ) }  
+    </Authenticator> 
   </>);
 
 }

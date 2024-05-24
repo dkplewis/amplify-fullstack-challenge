@@ -175,8 +175,8 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
         { areaData && scheduleData && <Flex className={styles.areaDetailsWideContainer}>
           <View className={styles.trayInfoContainer}>
             <Flex>
-              <Text className={`infoLabel ${styles.infoLabel}`}>Contract:</Text>
-              <Text className={styles.infoText}>{ scheduleData.contract }</Text>
+              <Text className={`infoLabel ${styles.infoLabel}`}>Monitoring period:</Text>
+              <Text className={styles.infoText}>{ scheduleData.period }</Text>
             </Flex>
           </View>
           <View className={styles.trayInfoContainer}>

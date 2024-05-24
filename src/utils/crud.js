@@ -1,31 +1,28 @@
 /** @module utils/crud */
 
-//import { generateClient } from 'aws-amplify/data';
-//import { getMeasurementsByArea, getMeasurementsOfTypeByLocationForDate, getMeasurementsOfTypeByLocationForDates } from '@/graphql/queries';
 import { getUrl, list } from 'aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+import { runWithAmplifyServerContext, reqResBasedClient } from '@/utils/amplifyServerUtils';
 import { getActiveSchedule, getLatestSchedule } from '@/utils/datetime';
 import { nameSort } from '@/utils/sort';
 import { AREA_ENTITIES, SCHEDULE_ENTITIES, MEASUREMENTS_ENTITIES,
   LOCATION_ENTITIES, TENANT_ENTITY, ZONE_ENTITIES } from '@/utils/demoData';
 
-const SUPPORTED_INDICES = ["SUPPLY", "DEMAND"];
-
 /**
- * @type { import('aws-amplify/data').Client<import('@/aws-data/resource').Schema> }
+ * @type {import('aws-amplify/data').Client<import('@/aws-data/resource').Schema>}
  */
-//const client = generateClient();
+const client = generateClient();
 
 /**
  * Custom types
  * @typedef {(Object)} StorageGetUrlOutput
  * @typedef {(Object)} AmplifyClass
- * @typedef {(Object)} Alert
  * @typedef {(Object)} CognitoUser
  * @typedef {(Object)} Area
  * @typedef {({isError: boolean, message: string})} CSError
  * @typedef {(Object)} Schedule
- * @typedef {({schedules: Schedule[], measurements: Index[], isError: boolean, message: string})} ScheduleMeasurementsData
- * @typedef {(Object)} Index
+ * @typedef {({schedules: Schedule[], measurements: Measure[], isError: boolean, message: string})} ScheduleMeasurementsData
+ * @typedef {(Object)} Measure
  * @typedef {(Object)} Location
  * @typedef {({rootLocation: Location, locations: Location[], topNavLocations: Location[], isError: boolean, message: string})} LocationData
  * @typedef {({rootLocation: Location, locations: Location[], tenantData: Tenant, topNavLocations: Location[], tenantDataHash: string, isError: boolean, message: string})} LocationTenantData
@@ -244,7 +241,7 @@ export const getScheduleData = async (tenantId, ssr) => {
  * @async
  * @param {string} areaId - The ID of the area for which we want to fetch schedule and measurements
  * @param {string} tenantId - The tenant ID to indicate which table we are querying
- * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
+ * @param {Object} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(ScheduleMeasurementsData)>} An object containing an array of schedule entities and an array of
  *  schedule measurements, or the error response if an error was caught client-side
  * @throws The error message if an error was caught server-side
@@ -261,9 +258,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
   try {
 
-    let scheduleData = [];
-
-    scheduleData = SCHEDULE_ENTITIES;
+    let scheduleData = SCHEDULE_ENTITIES;
 
     if (scheduleData) {
 
@@ -277,7 +272,29 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
 
       if (querySchedule) {
 
-        let measurementsData = MEASUREMENTS_ENTITIES;
+        let measurementsData = [];
+
+        if (ssr) {
+
+          measurementsData = await runWithAmplifyServerContext({
+            nextServerContext: { request: ssr.req, response: ssr.res },
+            operation: async (contextSpec) => {
+              const { data } = await reqResBasedClient.models.Measurements.list(contextSpec, {
+                entityType: "MEASUREBYAREA#" + areaId,
+                entityTypeId: {
+                  beginsWith: "MEASURE#"
+                }
+              });
+              return data;
+            }
+          });
+
+        } else {
+
+          const { data, errors } = await client.models.Measurements.list();
+          measurementsData = data;
+
+        }
 
         // Set the measurements array
         data.measurements = measurementsData
@@ -308,18 +325,43 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
  * @param {string} measure - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY" 
  * @param {string} tenantId - The tenant ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
- * @returns {Promise<(Index[]|CSError[])>} The measurement entities or an error object,
+ * @returns {Promise<(Measure[]|CSError[])>} The measurement entities or an error object,
  *  if an error was caught client-side
  * @throws The error message if an error was caught server-side
 */
 export const getLocationMeasurementsDataByDateAndType = async (locId, date, measure, tenantId, ssr) => {
 
-  /** @type {Index[]} */
+  /** @type {Measure[]} */
   let data = [];
 
   try {
 
-    let measurementsData = MEASUREMENTS_ENTITIES;
+    if (ssr) {
+
+      data = await runWithAmplifyServerContext({
+        nextServerContext: { request: ssr.req, response: ssr.res },
+        operation: async (contextSpec) => {
+          const { data } = await reqResBasedClient.models.Measurements.getMeasurementsOfTypeByLocationForDates(contextSpec, {
+            gsi5Pk: "MEASUREMENTBYAREA#" + measure + "#LOC#" + locId,
+            gsi5Sk: {
+              beginsWith: date + "#" + locId
+            }
+          });
+          return data;
+        }
+      });
+
+    } else {
+
+      const { data: measures, errors } = await client.models.Measurements.getMeasurementsOfTypeByLocationForDates({
+        gsi5Pk: "MEASUREMENTBYAREA#" + measure + "#LOC#" + locId,
+        gsi5Sk: {
+          beginsWith: date + "#" + locId
+        }
+      });
+      data = measures;
+
+    }
 
     if (date.indexOf("T") > -1) {
 
@@ -347,18 +389,43 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, meas
  * @param {number} areaCount - The number of areas to fetch data for
  * @param {string} tenantId - The tenant ID to indicate which table we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
- * @returns {Promise<(Index[]|CSError[])>} The measurement entities or an error object,
+ * @returns {Promise<(Measure[]|CSError[])>} The measurement entities or an error object,
  *  if an error was caught client-side
  * @throws The error message if an error was caught server-side
 */
 export const getLocationMeasurementsDataByDatesAndType = async (locId, dateFrom, dateTo, measure, areaCount, tenantId, ssr) => {
 
-  /** @type {Index[]} */
+  /** @type {Measure[]} */
   let data = [];
 
   try {
 
-    let measurementsData = MEASUREMENTS_ENTITIES;
+    if (ssr) {
+
+      data = await runWithAmplifyServerContext({
+        nextServerContext: { request: ssr.req, response: ssr.res },
+        operation: async (contextSpec) => {
+          const { data } = await reqResBasedClient.models.Measurements.getMeasurementsOfTypeByLocationForDates(contextSpec, {
+            gsi5Pk: "MEASUREMENTBYAREA#" + measure + "#LOC#" + locId,
+            gsi5Sk: {
+              between: [dateFrom + "#" + locId, dateTo + "#" + locId]
+            }
+          });
+          return data;
+        }
+      });
+
+    } else {
+
+      const { data: measures, errors } = await client.models.Measurements.getMeasurementsOfTypeByLocationForDates({
+        gsi5Pk: "MEASUREMENTBYAREA#" + measure + "#LOC#" + locId,
+        gsi5Sk: {
+          between: [dateFrom + "#" + locId, dateTo + "#" + locId]
+        }
+      });
+      data = measures;
+
+    }
 
     return new Promise((resolve) => resolve(data));
 
@@ -433,11 +500,12 @@ export const getStorageItems = async (scheduleId, zones) => {
       const res = await Promise.all(promiseArray);
       for (let c = 0, len = res.length; c < len; c +=1) {
         
-        const metaDataKey = Object.keys(metaData).find(datum => res[c].substring(datum) != -1);
+        const itemUrl = res[c].url.toString();
+        const metaDataKey = Object.keys(metaData).find(datum => itemUrl.substring(datum) != -1);
         data.push({
-          src: res[c].url,
+          src: itemUrl,
           metaData: metaData[metaDataKey]
-        })
+        });
       }
 
     }

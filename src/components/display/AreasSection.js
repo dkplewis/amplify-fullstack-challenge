@@ -104,18 +104,13 @@ const AreasSection = ({ sectionId, areaData = [], scheduleData = [],
             measureType,
             areaData.length
           ],
-          queryFn: ({ queryKey }) => getLocationMeasurementsDataByDatesAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[5], queryKey[6], queryKey[1]),
-          refetchInterval: 20000
+          queryFn: ({ queryKey }) => getLocationMeasurementsDataByDatesAndType(queryKey[2], queryKey[3], queryKey[4], queryKey[5], queryKey[6], queryKey[1])
         } 
       }),
     combine: (results) => {
       return ({
         data: results.reduce((acc, curr) => {
-          return acc.concat(curr.data ? curr.data.filter(datum => fromDate.lastIndexOf(":") == 16 ?
-            datum.gsi5Sk.lastIndexOf(":") == 16
-          : fromDate.lastIndexOf(":") == 13 ?
-            datum.gsi5Sk.lastIndexOf(":") == 13
-          : true) : []);
+          return acc.concat(curr.data);
         }, []),
         isPending: results.some(result => result.isPending),
         isRefetching: results.some(result => result.isRefetching),

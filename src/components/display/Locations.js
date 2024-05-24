@@ -71,7 +71,7 @@ const Locations = ({ scheduleData = [], locationData = [], rootLocationData, ale
                 resourcesBucket={tenantData.config.resources}
                 area={item} onClickHandler={clickHandler}
                 viewType={measureType}
-                measureValue={(measures || []).find(measure => measure.entityType == "INDEXBY" + item.entityTypeId)?.indexAvg}
+                measureValue={(measures || []).find(measure => measure.entityType == "INDEXBY" + item.entityTypeId)?.measurementAvg}
                 tenantId={tenantId}
               />
             </View>

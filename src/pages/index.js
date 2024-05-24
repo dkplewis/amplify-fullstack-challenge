@@ -7,9 +7,7 @@ import Loading from '@/components/display/Loading';
 import { StoreContext } from '@/store/store';
 import { getLocationDataAndTenant } from '@/utils/crud';
 
-import styles from '@/page-styles/Alert.module.css';
-
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, res }) => {
 
   const queryClient = new QueryClient();
 

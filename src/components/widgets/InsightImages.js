@@ -40,7 +40,7 @@ const InsightImages = ({ schedule, zones = [], tz = "UTC",
           }/${
             currZone.entityTypeId.replace("ZONE#", "")
           }/${idx + 1}.jpg`) != -1);
-          
+
           if (!imgData) return <Fragment key={`${currZone?.entityTypeId || "NA"}_img${idx}`}></Fragment>;
 
           return <View key={`${currZone?.entityTypeId || "NA"}_img${idx}`}>

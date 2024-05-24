@@ -474,12 +474,6 @@ ul.slider {
   text-transform: uppercase;
 }
 
-[data-amplify-authenticator] [data-amplify-router] {
-  background-color: transparent;
-  border: 0;
-  box-shadow: none;
-}
-
 [data-amplify-authenticator] [data-amplify-router] [data-amplify-authenticator-resetpassword] h3,
 [data-amplify-authenticator] [data-amplify-router] [data-amplify-authenticator-confirmresetpassword] h3,
 [data-amplify-authenticator] [data-amplify-router] [data-amplify-authenticator-forcenewpassword] h4 {
@@ -499,8 +493,14 @@ ul.slider {
   padding: 2em 2em 1em 2em;
 }
 
+[data-amplify-authenticator] [data-amplify-authenticator-signup] fieldset,
 [data-amplify-authenticator] [data-amplify-authenticator-signin] fieldset {
   margin-bottom: 2em;
+}
+
+[data-amplify-authenticator] [data-amplify-authenticator-signup] .amplify-field-group__outer-end,
+[data-amplify-authenticator] [data-amplify-authenticator-signin] .amplify-field-group__outer-end {
+  height: 2.6rem;
 }
 
 * {

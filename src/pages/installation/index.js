@@ -7,6 +7,8 @@ import DataLoadError from '@/components/display/DataLoadError';
 import { StoreContext } from '@/store/store';
 import { getLocationData, getLocationDataAndTenant } from '@/utils/crud';
 
+import styles from '@/component-styles/Locations.module.css';
+
 export const getServerSideProps = async ({ req, params, query }) => {
 
   const queryClient = new QueryClient();

@@ -237,7 +237,7 @@ export const SCHEDULE_ENTITIES = [
     "name": "Monitoring Period One",
     "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31#01GWMG6CM28MYG92WWMEQMTZ1Y",
     "provider": "Dev Community Amplify Challenge",
-    "contract": "Six Months"
+    "period": "Six Months"
   }
 ];
 
@@ -251,9 +251,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "gsi5Pk": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[0] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 70,
-    "indexHistory": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
-    "indexLatest": 71
+    "measurementAvg": 70,
+    "measurementMap": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "measurementLatest": 71
   },
   {
     "createdAt": DEMO_DATES[0] + "T00:58:00.00Z",
@@ -264,9 +264,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "gsi5Pk": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[0] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 60,
-    "indexHistory": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
-    "indexLatest": 60
+    "measurementAvg": 60,
+    "measurementMap": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "measurementLatest": 60
   },
   {
     "createdAt": DEMO_DATES[1] + "T00:58:00.00Z",
@@ -277,9 +277,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "gsi5Pk": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[1] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 70,
-    "indexHistory": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
-    "indexLatest": 71
+    "measurementAvg": 70,
+    "measurementMap": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "measurementLatest": 71
   },
   {
     "createdAt": DEMO_DATES[1] + "T00:58:00.00Z",
@@ -290,9 +290,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "gsi5Pk": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[1] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 60,
-    "indexHistory": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
-    "indexLatest": 60
+    "measurementAvg": 60,
+    "measurementMap": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "measurementLatest": 60
   },
   {
     "createdAt": DEMO_DATES[2] + "T00:58:00.00Z",
@@ -303,9 +303,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GC6NGSW1JPHXE8CW271R9TNA",
     "gsi5Pk": "MEASUREMENTBYAREA#SUPPLY#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[2] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 70,
-    "indexHistory": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
-    "indexLatest": 71
+    "measurementAvg": 70,
+    "measurementMap": "{\"10\":\"68\",\"11\":\"72\",\"12\":\"75\",\"13\":\"72\",\"14\":\"68\",\"15\":\"72\",\"16\":\"69\",\"17\":\"65\",\"07\":\"72\",\"08\":\"68\",\"09\":\"64\"}",
+    "measurementLatest": 71
   },
   {
     "createdAt": DEMO_DATES[2] + "T00:58:00.00Z",
@@ -316,9 +316,9 @@ export const MEASUREMENTS_ENTITIES = [
     "gsi3Pk": "SCHEDULE#01GC6NGSW1JPHXE8CW271R9TNA",
     "gsi5Pk": "MEASUREMENTBYAREA#DEMAND#LOC#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi5Sk": DEMO_DATES[2] + "#01GBX6RZBWRWY3Q37QST99KB31",
-    "indexAvg": 60,
-    "indexHistory": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
-    "indexLatest": 60
+    "measurementAvg": 60,
+    "measurementMap": "{\"10\":\"48\",\"11\":\"52\",\"12\":\"55\",\"13\":\"52\",\"14\":\"48\",\"15\":\"52\",\"16\":\"49\",\"17\":\"45\",\"07\":\"52\",\"08\":\"48\",\"09\":\"44\"}",
+    "measurementLatest": 60
   }
 ];
 
