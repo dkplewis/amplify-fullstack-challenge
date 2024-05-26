@@ -144,7 +144,7 @@ export const LOCATION_ENTITIES = [
   },
   {
     "createdAt": "2022-09-01T18:59:50.29Z",
-    "defaultLocation": false,
+    "defaultLocation": true,
     "entityType": "LOCATION",
     "deletedAt": null,
     "entityTypeId": "LOCATION#01HYD4FY2RG53YAGJABYY5H1PN",

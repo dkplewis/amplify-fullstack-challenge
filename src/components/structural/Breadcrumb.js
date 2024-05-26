@@ -16,14 +16,8 @@ const Breadcrumb = ({ viewType, resourcesPath, tenantName, label, icon,
         key="breadCrumb_tenant"
       >
         <Image src={`/images/${resourcesPath}/desktop-site-breadcrumb-icon.svg`} alt="" width={24} height={24} />
-        <View as="span">{locations.filter(location => location.gsi2Pk == "TYPE#TOWN").length > 1 ?
-          locations.filter(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path)).length > 1 ?
-            tenantName
-          :
-            locations.find(location => location.gsi2Pk == "TYPE#TOWN" && locationPath && locationPath.startsWith(location.path))?.name || tenantName
-        :
-          locations.find(location => location.gsi2Pk == "TYPE#TOWN")?.name || tenantName
-        }&nbsp;&nbsp;-&nbsp;&nbsp;</View>
+        <View as="span">United Kingdom&nbsp;&nbsp;-&nbsp;&nbsp;
+        </View>
       </Heading>
     :
       <Heading
