@@ -53,16 +53,14 @@ export const getMeasurementsZones = (area, zones) => {
  * @param {*} breadCrumbRootPath 
  * @param {*} locationPathParts 
  * @param {*} isAreaDetailsView 
- * @param {*} isAlertDetailsView 
  * @param {*} rootLocation 
  * @param {*} topNavLocation 
  * @param {*} locations 
- * @param {*} tId 
  * @param {*} topNavLocationPath 
  * @returns 
  */
 export const getLocationBreadcrumbs = (breadCrumbRootPath = "", locationPathParts = [], isAreaDetailsView = false,
-  isAlertDetailsView = false, rootLocation = "", topNavLocation = "", locations = [], tId, topNavLocationPath ) => {
+  rootLocation = "", topNavLocation = "", locations = [], topNavLocationPath ) => {
 
   let navButtonPath = null;
   const breadCrumbPaths = [];
@@ -115,8 +113,6 @@ export const getLocationBreadcrumbs = (breadCrumbRootPath = "", locationPathPart
 
   // Handle special case "close" button navigation
   if (isAreaDetailsView) navButtonPath = breadCrumbRootPath + "/areas";
-
-  if (isAlertDetailsView) navButtonPath = "/alerts/" + rootLocation + "/" + topNavLocation;
 
   return {
     breadCrumbs: breadCrumbPaths,

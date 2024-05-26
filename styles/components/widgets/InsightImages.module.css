@@ -40,13 +40,13 @@ p.zoneName {
 }
 
 p.legend {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-align: right;
   text-wrap: nowrap;
 }
 
 p.legendUC {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-align: right;
   text-transform: uppercase;
   text-wrap: balance;

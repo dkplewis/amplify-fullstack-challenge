@@ -132,11 +132,9 @@ export const getServerSideProps = async ({ req, res, params, query }) => {
       "/installation/",
       currentLocationPath?.replace("PATH#", "").split("#") || [],
       false,
-      false,
       rootLocation,
       topNavLocation,
       locationData,
-      null,
       tenantData.config?.header[topNavLocationData.find(location => location.entityTypeId == `LOCATION#${topNavLocation}`)?.locationHeaderKey || "NONE"]?.childPath || ""
     );
 
@@ -209,7 +207,7 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
   const [dateRange, setDateRange] = useState([null, null]);
   const [availableMeasurements, setAvailableMeasurements] = useState(null);
   const [show, setShow] = useState(null);
-  const [areaId, setCAId] = useState(locationType === "details" ? locId : null);
+  const [areaId, setCAId] = useState(null);
   
   const router = useRouter();
 
@@ -264,11 +262,9 @@ const Installation = ({ tenantId, locId, fetchLocationMeasurements, currentTownN
         "/installation/",
         area.path.replace("PATH#", "").split("#"),
         true,
-        false,
         urlPath.split("/")[2],
         pageData.topNavLocations,
         pageData.locations,
-        tenantId,
         pageData.tenantData.config?.header[pageData.topNavLocations.find(location => location.entityTypeId == `LOCATION#${currentTopNavLocation}`)?.locationHeaderKey || "NONE"]?.childPath || ""
       );
 

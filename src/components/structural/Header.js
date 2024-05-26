@@ -11,8 +11,8 @@ import styles from '@/component-styles/structural/Header.module.css';
 
 const Header = (props) => {
 
-  const { tId, type, tenantHeaderConfig, rootLocation, topNavLocations, locations,
-    currentLocation, alertsViewOnly, resourcesConfig } = props;
+  const { tenantHeaderConfig, rootLocation, topNavLocations, locations,
+    currentLocation, resourcesConfig } = props;
 
   const router = useRouter();
   const currentRoute = router.asPath;
@@ -59,70 +59,68 @@ const Header = (props) => {
       <View className={styles.logoText}>ChargeNG</View>
     </Link>
     <View className={styles.dHeader}>
-      { !alertsViewOnly && <>
-        <Link href={"/installation/" + 
-          rootLocation.entityTypeId.replace("LOCATION#", "") + 
-          "/" +
-          currentLocation[1] +
-          (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
-            tenantHeaderConfig[topNavLocation.locationHeaderKey || ""]?.childPath || ""
-          : defaultLocation ?
-            "/" + (defaultLocation?.gsi2Pk || "").replace("TYPE#", "").toLowerCase()
-          :
-            "/town"
-          ) +
-          "/" +
-          (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
-            topNavLocation.entityTypeId.replace("LOCATION#", "")
-          : defaultLocation ?
-            defaultLocation.entityTypeId.replace("LOCATION#", "")
-          :
-            rootLocation.entityTypeId.replace("LOCATION#", "")
-          )
-        } passHref className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
-          { tenantHeaderConfig && <>
-            <Image className={`headerNavImg ${styles.linkAdjustImage}`}  
-              src={`/images/${resourcesConfig}/${(
-                currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? 
-                  tenantHeaderConfig.installation.activeIcon
+      <Link href={"/installation/" + 
+        rootLocation.entityTypeId.replace("LOCATION#", "") + 
+        "/" +
+        currentLocation[1] +
+        (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+          tenantHeaderConfig[topNavLocation.locationHeaderKey || ""]?.childPath || ""
+        : defaultLocation ?
+          "/" + (defaultLocation?.gsi2Pk || "").replace("TYPE#", "").toLowerCase()
+        :
+          "/town"
+        ) +
+        "/" +
+        (topNavLocation && tenantHeaderConfig[topNavLocation.locationHeaderKey]?.childPath ? 
+          topNavLocation.entityTypeId.replace("LOCATION#", "")
+        : defaultLocation ?
+          defaultLocation.entityTypeId.replace("LOCATION#", "")
+        :
+          rootLocation.entityTypeId.replace("LOCATION#", "")
+        )
+      } passHref className={`headerNav ${currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? styles.dActive : styles.dLink}`}>
+        { tenantHeaderConfig && <>
+          <Image className={`headerNavImg ${styles.linkAdjustImage}`}  
+            src={`/images/${resourcesConfig}/${(
+              currentRoute.startsWith("/installation/") && currentRoute.indexOf("/areas") === -1 ? 
+                tenantHeaderConfig.installation.activeIcon
+            :
+                tenantHeaderConfig.installation.defaultIcon
+            )}`}
+            alt="" width={24} height={24} />
+          <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}  
+            src={`/images/${resourcesConfig}/${tenantHeaderConfig.installation.activeIcon}`}
+            alt="" width={24} height={24} />
+          <Text className={styles.linkText} as="span">
+            {tenantHeaderConfig.installation.label}
+          </Text>
+        </> }
+      </Link>
+      <View className={styles.dSpacer}></View>
+      <Link href={"/installation/" + 
+        (currentLocation.length ?
+          currentLocation.join("/") + "/areas"
+        :
+          null
+        )
+      } passHref className={`headerNav ${currentRoute.indexOf("/areas") !== -1 ? styles.dActive : styles.dLink}`}> 
+        { tenantHeaderConfig && <>
+          <Image className={`headerNavImg ${styles.linkAdjustImage}`}
+            src={`/images/${resourcesConfig}/${(
+              currentRoute.indexOf("/areas") !== -1 ?
+                tenantHeaderConfig.areas.activeIcon
               :
-                  tenantHeaderConfig.installation.defaultIcon
-              )}`}
-              alt="" width={24} height={24} />
-            <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}  
-              src={`/images/${resourcesConfig}/${tenantHeaderConfig.installation.activeIcon}`}
-              alt="" width={24} height={24} />
-            <Text className={styles.linkText} as="span">
-              {tenantHeaderConfig.installation.label}
-            </Text>
-          </> }
-        </Link>
-        <View className={styles.dSpacer}></View>
-        <Link href={"/installation/" + 
-          (currentLocation.length ?
-            currentLocation.join("/") + "/areas"
-          :
-            null
-          )
-        } passHref className={`headerNav ${currentRoute.indexOf("/areas") !== -1 ? styles.dActive : styles.dLink}`}> 
-          { tenantHeaderConfig && <>
-            <Image className={`headerNavImg ${styles.linkAdjustImage}`}
-              src={`/images/${resourcesConfig}/${(
-                currentRoute.indexOf("/areas") !== -1 ?
-                  tenantHeaderConfig.areas.activeIcon
-                :
-                  tenantHeaderConfig.areas.defaultIcon
-              )}`}
-              alt="" width={24} height={24} />
-            <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}
-              src={`/images/${resourcesConfig}/${tenantHeaderConfig.areas.activeIcon}`}
-              alt="" width={24} height={24} />
-            <Text className={styles.linkText} as="span">
-              {tenantHeaderConfig.areas.label}
-            </Text>
-          </> }
-        </Link>
-      </>}
+                tenantHeaderConfig.areas.defaultIcon
+            )}`}
+            alt="" width={24} height={24} />
+          <Image className={`headerNavHoverImg ${styles.linkAdjustImage}`}
+            src={`/images/${resourcesConfig}/${tenantHeaderConfig.areas.activeIcon}`}
+            alt="" width={24} height={24} />
+          <Text className={styles.linkText} as="span">
+            {tenantHeaderConfig.areas.label}
+          </Text>
+        </> }
+      </Link>
     </View>
     <UserAuth {...props}/>
   </header>;
@@ -138,14 +136,5 @@ Header.propTypes = {
   topNavLocations: PropTypes.arrayOf(PropTypes.object),
   locations: PropTypes.arrayOf(PropTypes.object),
   currentLocation: PropTypes.arrayOf(PropTypes.string),
-  animationHandler: PropTypes.func,
-  isVisibleHandler: PropTypes.func,
-  ssrDataHandler: PropTypes.func,
-  setTownName: PropTypes.func,
-  disconnectSocket: PropTypes.func,
-  unsubscribeClient: PropTypes.func,
-  tId: PropTypes.string,
-  alertsViewOnly: PropTypes.bool,
-  isVisible: PropTypes.bool,
-  type: PropTypes.string
+  setTownName: PropTypes.func
 };

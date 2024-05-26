@@ -36,7 +36,7 @@ const client = generateClient();
  * Fetch the root location, top-nav locations (if any) and all other locations for a given tenant
  * 
  * @async
- * @param {string} tenantId - The tenant ID to indicate which table we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<LocationData>} The location data object
  */
@@ -132,7 +132,7 @@ export const getLocationDataAndTenant = async (tenantId) => {
  * If none of these are given, returns all location data, area entities, zone entities and tenant entity
  * 
  * @async
- * @param {string} tenantId - The tenant ID to indicate which customer we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {string} [locId] - The ID of the location to fetch, if the request is made from the Installation page
  *  the All Areas View page
  * @returns {Promise<AreaLocationTenantZonesData>} The tenant entity or an error object,
@@ -207,7 +207,7 @@ export const getLocationDataTenantDataAndArea = async (tenantId, locId) => {
  * Fetch the schedule entities for a given tenant
  * 
  * @async
- * @param {string} tenantId - The tenant ID to indicate which table we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(Schedule[]|CSError[])>} An array of schedule entities or an array with a single error object,
  *  if an error was caught client-side
@@ -240,7 +240,7 @@ export const getScheduleData = async (tenantId, ssr) => {
  * 
  * @async
  * @param {string} areaId - The ID of the area for which we want to fetch schedule and measurements
- * @param {string} tenantId - The tenant ID to indicate which table we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {Object} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(ScheduleMeasurementsData)>} An object containing an array of schedule entities and an array of
  *  schedule measurements, or the error response if an error was caught client-side
@@ -279,12 +279,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
           measurementsData = await runWithAmplifyServerContext({
             nextServerContext: { request: ssr.req, response: ssr.res },
             operation: async (contextSpec) => {
-              const { data } = await reqResBasedClient.models.Measurements.list(contextSpec, {
-                entityType: "MEASUREBYAREA#" + areaId,
-                entityTypeId: {
-                  beginsWith: "MEASURE#"
-                }
-              });
+              const { data } = await reqResBasedClient.models.Measurements.list(contextSpec);
               return data;
             }
           });
@@ -323,7 +318,7 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
  * @param {string} locId - The ID of the location for which we want to fetch measurement entities
  * @param {string} date - The date for which we want to fetch measure entities, in YYYY-MM-DD format
  * @param {string} measure - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY" 
- * @param {string} tenantId - The tenant ID to indicate which customer we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(Measure[]|CSError[])>} The measurement entities or an error object,
  *  if an error was caught client-side
@@ -387,7 +382,7 @@ export const getLocationMeasurementsDataByDateAndType = async (locId, date, meas
  * @param {string} dateTo - The date from which we want to fetch measurement entities, in YYYY-MM-DD(?THH:mm) format
  * @param {string} measure - The measurement we want to fetch entities for. One of "PHI", "PS2", "PEI", "PUI", "ETR", "PAR", "SUPPLY"
  * @param {number} areaCount - The number of areas to fetch data for
- * @param {string} tenantId - The tenant ID to indicate which table we are querying
+ * @param {string} tenantId - The customer ID to indicate which customer we are querying
  * @param {AmplifyClass} [ssr] - The Amplify SSR context, if the request is being made server-side
  * @returns {Promise<(Measure[]|CSError[])>} The measurement entities or an error object,
  *  if an error was caught client-side

@@ -145,7 +145,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
     locationData.find(location => location.path == areaData?.path.split("#").slice(0, -1).join("#"))?.timeZoneId || "UTC",
     [areaData, locationData]);
 
-  const getLatestActivityDate = useCallback((alerts, area, schedule, measures, tz) => {
+  const getLatestActivityDate = useCallback((area, schedule, measures, tz) => {
 
     if (!schedule?.entityTypeId) return "";
 
@@ -183,7 +183,7 @@ const Details = ({ areaData, areasData, scheduleData, tenantData, locationData, 
             <Flex>
               <Text className={`infoLabel ${styles.infoLabel}`}>Date:</Text>
               <Text className={styles.infoText}>
-                { getLatestActivityDate([], areaData, scheduleData, measurementsDataByDateTime, tz) }
+                { getLatestActivityDate(areaData, scheduleData, measurementsDataByDateTime, tz) }
               </Text>
             </Flex>
             <Flex>

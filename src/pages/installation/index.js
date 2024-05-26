@@ -36,8 +36,6 @@ export const getServerSideProps = async ({ req, params, query }) => {
     let tenantId = null;
 
     tenantId = "GTDEMOAPP";
-    returnObject.props["alertsViewOnly"] = false;
-
     returnObject.props["tenantId"] = tenantId;
 
     const locations = await getLocationData(tenantId);
@@ -84,7 +82,7 @@ export const getServerSideProps = async ({ req, params, query }) => {
   
 };
 
-const Installation = ({ alertsViewOnly, tenantId, tId }) => {
+const Installation = ({ tenantId, tId }) => {
 
   const { currentTopNavLocation, setCurrentTopNavLocation, setAnimation } = useContext(StoreContext);
 

@@ -1,9 +1,9 @@
 import moment from 'moment';
 
 const DEMO_DATES = [
-  moment().subtract(1, 'days').format('YYYY-MM-DD'),
+  moment().subtract(3, 'days').format('YYYY-MM-DD'),
   moment().format('YYYY-MM-DD'),
-  moment().add(1, 'days').format('YYYY-MM-DD')
+  moment().add(3, 'days').format('YYYY-MM-DD')
 ];
 
 export const TENANT_ENTITY = {
@@ -159,36 +159,12 @@ export const LOCATION_ENTITIES = [
     "defaultLocation": false,
     "entityType": "LOCATION",
     "deletedAt": null,
-    "entityTypeId": "LOCATION#01HYD4QZ6B0R5T14NWGTA611GT",
-    "gsi2Pk": "TYPE#TOWN",
-    "locationHeaderKey": null,
-    "name": "Winchester",
-    "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4QZ6B0R5T14NWGTA611GT",
-    "timeZoneId": ""
-  },
-  {
-    "createdAt": "2022-09-01T18:59:50.29Z",
-    "defaultLocation": false,
-    "entityType": "LOCATION",
-    "deletedAt": null,
-    "entityTypeId": "LOCATION#01HYD4RDJB0R4GN0D165XB77AN",
-    "gsi2Pk": "TYPE#TOWN",
-    "locationHeaderKey": null,
-    "name": "Southampton",
-    "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4RDJB0R4GN0D165XB77AN",
-    "timeZoneId": ""
-  },
-  {
-    "createdAt": "2022-09-01T18:59:50.29Z",
-    "defaultLocation": false,
-    "entityType": "LOCATION",
-    "deletedAt": null,
     "entityTypeId": "LOCATION#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi2Pk": "TYPE#NEIGHBOURHOOD",
     "locationHeaderKey": null,
     "name": "South View",
     "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31",
-    "timeZoneId": "Europe/London"
+    "timeZoneId": ""
   },
   {
     "createdAt": "2022-09-01T18:59:50.29Z",
@@ -200,7 +176,7 @@ export const LOCATION_ENTITIES = [
     "locationHeaderKey": null,
     "name": "South Ham",
     "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01HYEEVJMRK4SM9X492BBTNAPS",
-    "timeZoneId": "Europe/London"
+    "timeZoneId": ""
   }
 ];
 
@@ -217,10 +193,11 @@ export const AREA_ENTITIES = [
     "createdAt": "2023-03-28T16:18:08.150Z",
     "deletedAt": null,
     "entityType": "AREA",
-    "entityTypeId": "AREA#01HYD4YE382CFHEYGD6JJ5E6T5",
-    "name": "Vivian Road",
-    "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31#01HYD4YE382CFHEYGD6JJ5E6T5"
+    "entityTypeId": "AREA#01HYTKED4KPN8Z5PT98ZKJC0ZR",
+    "name": "Western Way",
+    "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01HYEEVJMRK4SM9X492BBTNAPS#01HYTKED4KPN8Z5PT98ZKJC0ZR"
   }
+
 ];
 
 export const SCHEDULE_ENTITIES = [
@@ -234,8 +211,23 @@ export const SCHEDULE_ENTITIES = [
     "entityTypeId": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
     "gsi2Pk": "LOCATION#01GBX6RZBWRWY3Q37QST99KB31",
     "gsi3Pk": "AREA#01GWMG6CM28MYG92WWMEQMTZ1Y",
-    "name": "Monitoring Period One",
+    "name": "Monitoring Period One - Pemerton Road",
     "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01GBX6RZBWRWY3Q37QST99KB31#01GWMG6CM28MYG92WWMEQMTZ1Y",
+    "provider": "Dev Community Amplify Challenge",
+    "period": "Six Months"
+  },
+  {
+    "cycleCompletedAt": null,
+    "createdAt": "2023-03-29T08:31:17.844Z",
+    "cycleCompletingAt": DEMO_DATES[2] + "T23:59:59.000Z",
+    "cycleStartedAt": DEMO_DATES[0] + "T00:00:00.000Z",
+    "deletedAt": null,
+    "entityType": "SCHEDULE",
+    "entityTypeId": "SCHEDULE#01GWP7W9TKG2D7BFAJB8FMFDPQ",
+    "gsi2Pk": "LOCATION#01GBX6RZBWRWY3Q37QST99KB31",
+    "gsi3Pk": "AREA#01GWMG6CM28MYG92WWMEQMTZ1Y",
+    "name": "Monitoring Period One - Western Way",
+    "path": "PATH#01GBX6RZBVNXZWK8RAS1Y9YHHT#01HT2KHCEGY77YT43SW7TNQE8R#01HYD4FY2RG53YAGJABYY5H1PN#01HYEEVJMRK4SM9X492BBTNAPS#01HYTKED4KPN8Z5PT98ZKJC0ZR",
     "provider": "Dev Community Amplify Challenge",
     "period": "Six Months"
   }

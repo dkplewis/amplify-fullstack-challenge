@@ -282,12 +282,10 @@ AreasSection.propTypes = {
   sectionId: PropTypes.string,
   areaData: PropTypes.arrayOf(PropTypes.object),
   scheduleData: PropTypes.arrayOf(PropTypes.object),
-  alertData: PropTypes.arrayOf(PropTypes.object),
   tenantId: PropTypes.string,
   tenantConfig: PropTypes.object,
   location: PropTypes.object,
   clickHandler: PropTypes.func,
-  viewToggle: PropTypes.string,
   pageNo: PropTypes.number,
   fromDate: PropTypes.string,
   toDate: PropTypes.string

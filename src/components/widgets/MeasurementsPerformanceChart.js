@@ -1,14 +1,13 @@
-import { Fragment, useState, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Flex, Heading, Image, Text, View } from '@aws-amplify/ui-react';
-import { AreaChart, Area, ReferenceDot, ReferenceLine, Tooltip, XAxis, YAxis } from 'recharts';
+import { Flex, Heading, Image, Text, View } from '@aws-amplify/ui-react';
+import { AreaChart, Area, Tooltip, XAxis, YAxis } from 'recharts';
 import PeriodSelector from '@/components/widgets/PeriodSelector';
 import { getFormattedDate } from '@/utils/datetime';
 
 import genericStyles from '@/page-styles/Generic.module.css';
 import styles from '@/component-styles/widgets/PerformanceChart.module.css';
 
-const ACTIVE_COLOUR = "#000";
 const LINE_COLOURS = {
   DEMAND: {
     colour: "#f59705",
@@ -68,57 +67,6 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
     return result;
 
   }, [enabledMeasurements, data]);
-
-  // For each enabled measurere, get the latest measure value
-  // If two or more measures have the same value, decrease 
-  const yAxisLatestPoints = useMemo(() => {
-
-    let result = {
-      supply: null,
-      demand: null
-    };
-
-    for (let c = 0, len = enabledMeasurements.length; c < len; c += 1) {
-
-      const measure = enabledMeasurements[c];
-      const lastIndex = data.findLast(datum => datum[measure]);
-      const lastValue = lastIndex ? lastIndex[measure] : 0;
-      result[measure] = lastValue;
-
-    }
-
-    return result;
-
-  }, [enabledMeasurements, data]);
-
-  const yAxisTicks = useMemo(() => {
-
-    // For each enabled measure, determine the y-axis tick configuration and icon position
-    // Four ticks at 25%, 50%, 75% and 100%
-    // Icon position will be the percentage of the min / max range where the latest value occurs
-    let result = {
-      supply: null,
-      demand: null
-    };
-    Object.keys(dataMinMax).forEach((key) => {
-
-      const [min, max] = dataMinMax[key] ?
-        dataMinMax[key]
-      :
-        [undefined, undefined];
-      if (min != undefined && max != undefined) {
-
-        const diff = max - min;
-        const initialTick = diff / 4;
-        result[key] = [min, min + initialTick, min + (initialTick * 2), min + (initialTick * 3), max];
-
-      }
-      
-    });
-
-    return result;
-
-  }, [dataMinMax]);
 
   const CustomTooltip = (props) => {
 
@@ -204,7 +152,6 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
     return <g transform={`translate(0, -16)`}>
       { periodDates.isHourly && payload.value.indexOf("T00:00:") != -1 && 
         <g transform={`translate(${payload.index == 0 ? x - 20 : payload.index + 1 == length ? x + 15 : x}, ${y - 30})`}>
-          <rect x={-5} y={5} width="50" height="20" fill="#fff" fillOpacity="1" stroke="#fff" />    
           <text x={0} y={0} dy={20} textAnchor={payload.index == 0 ? "start" : payload.index + 1 == data.length ? "end" : "middle"} fontSize="0.675rem" fontWeight="700">
             { payload.value != "dataMax" && payload.value != "dataMin" ? getFormattedDate(new Date(payload.value), "Mmm-DD", tz) : "" }
           </text>
@@ -232,18 +179,6 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
 
   }
 
-  const CustomizedYAxisIcon = (props) => {
-
-    const { cy, children} = props;
-
-    return <g>
-      <foreignObject x={1310} y={cy - 12} width={22} height={22}>
-        {children}
-      </foreignObject>
-    </g>;
-
-  }
-
   return <>
     <View className={styles.healthPerformanceChart}>
       <View className={styles.headingContainer}>
@@ -256,7 +191,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
         margin={{ top: 5, right: 28, bottom: 5, left: 5 }}
       >
         {/* y-axis configurations */}
-        <YAxis domain={[0,100]} tickFormatter={(value) => `${value}%`} tick={false} />
+        <YAxis domain={[0,100]} tickFormatter={(value) => `${value}%`} />
         {/* Information tooltip */}
         <Tooltip content={<CustomTooltip config={measurementConfig} />} />
         {/* Default line charts for each measure. Shown when the measure is *not* active, i.e. green or coloured line
@@ -273,7 +208,7 @@ const MeasurementsPerformanceChart = ({ data = [], measurementConfig, period, de
 
             return <Fragment key={key + "_defaultLine"}>
               { (dataMinMax[keyLC] ?? []).length && 
-                <Area stackId="1" type={chartLineType} dataKey={keyLC}
+                <Area type={chartLineType} dataKey={keyLC}
                   name={measurementConfig[key].label} legendType="none" stroke={LINE_COLOURS[key].highlight}
                   fill={LINE_COLOURS[key].highlight}
                 />

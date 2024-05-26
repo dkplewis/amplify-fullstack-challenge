@@ -1063,7 +1063,6 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
         const measureHistoryKeys = Object.keys(measureHistory);
         for (let c = 0, len = measureHistoryKeys.length; c < len; c += 1) {
           let currKey = measureHistoryKeys[c];
-          currKey = Number.parseInt(currKey, 10) < 10 ? "0" + currKey : currKey;
           const dateTimeKey = "dd_" + createDate.split("-").reverse().join("_") +
             "_" + currKey + "_00";
           // We don't *have* to check whether the measure's create date is today, 
@@ -1080,7 +1079,6 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
             data[dateTimeKey].createDate = measure.createdAt;
             data[dateTimeKey].displayDate = createDate +
               "T" + currKey + ":00:00" + ".000Z";
-            data[dateTimeKey].isHourly = isHourly;
             if (byCAID) {
               data[dateTimeKey][measure.entityType.replace("MEASUREMENTBYAREA#", "")] = measureValue;
             } else {
@@ -1101,7 +1099,6 @@ export const getMeasurementsDataByTime = (measurements, currentDateMs, endDateMs
             data[dateKey][measureType] = measure.measurementAvg;
           }
           data[dateKey].hasData = true;
-          data[dateKey].isHourly = false;
         }
       }
       
@@ -1127,7 +1124,7 @@ export const getLatestIndexDateForAreas = (measurements, area, tz) => {
 
   // Find the latest measure date across all areas
   const latestDateMs = Math.max(...measurements
-    .filter(measure => measure.phi || measure.ps2 || measure.pui || measure.pei || measure.etr || measure.par || measure.qe)
+    .filter(measure => measure.supply || measure.demand)
     .map(measure => new Date(measure.createDate).getTime()));
   if (latestDateMs === -Infinity) return "";
   // Format the date for display
