@@ -279,14 +279,26 @@ export const getScheduleMeasurementsData = async (areaId, tenantId, ssr) => {
           measurementsData = await runWithAmplifyServerContext({
             nextServerContext: { request: ssr.req, response: ssr.res },
             operation: async (contextSpec) => {
-              const { data } = await reqResBasedClient.models.Measurements.list(contextSpec);
+              const { data } = await reqResBasedClient.models.Measurements.list(contextSpec, {
+                filter: {
+                  entityType: {
+                    eq: "MEASUREMENTBYAREA#" + areaId
+                  }
+                }
+              });
               return data;
             }
           });
 
         } else {
 
-          const { data, errors } = await client.models.Measurements.list();
+          const { data, errors } = await client.models.Measurements.list({
+            filter: {
+              entityType: {
+                eq: "MEASUREMENTBYAREA#" + areaId
+              }
+            }
+          });
           measurementsData = data;
 
         }
