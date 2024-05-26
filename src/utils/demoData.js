@@ -35,7 +35,7 @@ export const TENANT_ENTITY = {
       "showAlertDuration": true,
       "showLatestAlertOnly": true,
       "tileBackground": "area-icon.svg",
-      "trendlinePeriod": "24"
+      "trendlinePeriod": "72"
     },
     "enableHeatmap": true,
     "header": {
